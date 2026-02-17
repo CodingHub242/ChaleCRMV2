@@ -2,9 +2,15 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+// export const environment = {
+//   production: false
+// };
 export const environment = {
-  production: false
+  production: false,
+  apiUrl: 'https://expiry.codepps.online/api',
+  wsUrl: 'wss://expiry.codepps.online'
 };
+
 
 /*
  * For easier debugging in development mode, you can import the following file
