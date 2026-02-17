@@ -26,6 +26,10 @@ export class LoginPage implements OnInit {
     private alertController: AlertController
   ) {}
 
+  ngOnInit():void{
+
+  }
+
   togglePassword(): void {
     this.showPassword = !this.showPassword;
   }
