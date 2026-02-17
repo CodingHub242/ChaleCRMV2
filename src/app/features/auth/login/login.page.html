@@ -1,13 +1,74 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>login</ion-title>
-  </ion-toolbar>
-</ion-header>
+<div class="login-background">
+  <video autoplay muted loop playsinline class="video-bg">
+    <source src="../../../../assets/chale.mp4" type="video/mp4">
+  </video>
+  <div class="video-overlay"></div>
+</div>
+<ion-content class="login-content">
+  <div class="login-container">
+   
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">login</ion-title>
-    </ion-toolbar>
-  </ion-header>
+    <form (ngSubmit)="login()" class="login-form">
+      <div class="login-header">
+        <h1 style="background: #073336;
+    height: 56px;
+    padding: 0;
+    margin: 0;
+    top: 0;
+    position: relative;
+    width: 100%;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 23px;">Chale CRM</h1>
+        <p>Manage all leads and contacts in one place with Chale CRM. Ease your event dealings</p>
+      </div>
+      <ion-item lines="full" class="form-item">
+        <ion-label position="floating">Email</ion-label>
+        <ion-input 
+          type="email" 
+          [(ngModel)]="email" 
+          name="email" 
+          required
+          email
+          placeholder="Enter your email">
+        </ion-input>
+      </ion-item>
+
+      <ion-item lines="full" class="form-item">
+        <ion-label position="floating">Password</ion-label>
+        <ion-input 
+          [type]="showPassword ? 'text' : 'password'" 
+          [(ngModel)]="password" 
+          name="password" 
+          required
+          placeholder="Enter your password">
+        </ion-input>
+        <ion-button 
+          slot="end" 
+          fill="clear" 
+          (click)="togglePassword()"
+          class="password-toggle">
+          <ion-icon [name]="showPassword ? 'eye-off' : 'eye'"></ion-icon>
+        </ion-button>
+      </ion-item>
+
+      <div class="forgot-password">
+        <a href="#">Forgot Password?</a>
+      </div>
+
+      <ion-button 
+        type="submit" 
+        expand="block" 
+        class="login-btn"
+        [disabled]="isLoading">
+        <ion-spinner *ngIf="isLoading" name="lines-small"></ion-spinner>
+        <span *ngIf="!isLoading">Sign In</span>
+      </ion-button>
+
+       <div class="register-link">
+        <p>Don't have an account? <a (click)="goToRegister()">Sign Up</a></p>
+      </div>
+    </form>
+
+   
+  </div>
 </ion-content>
