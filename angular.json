@@ -33,7 +33,7 @@
               {
                 "glob": "**/*",
                 "input": "src/assets",
-                "output": "assets"
+                "output": "/assets"
               }
             ],
             "styles": ["src/global.scss", "src/theme/variables.scss"],
