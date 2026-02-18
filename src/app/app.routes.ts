@@ -41,10 +41,22 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/register/register.page').then(m => m.RegisterPage)
   },
   
-  // Main layout - all protected routes (no AuthGuard for now to test)
+  // Main layout with children for dashboard
   {
     path: '',
-    loadComponent: () => import('./features/layout/main-layout/main-layout.page').then(m => m.MainLayoutPage)
+    canActivate: [AuthGuard],
+    loadComponent: () => import('./features/layout/main-layout/main-layout.page').then(m => m.MainLayoutPage),
+    children: [
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./features/dashboard/dashboard.page').then(m => m.DashboardPage)
+      },
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      }
+    ]
   },
   
   // Redirect unknown routes to login
