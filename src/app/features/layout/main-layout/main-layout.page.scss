@@ -1,0 +1,226 @@
+// Variables
+$sidebar-width: 280px;
+$mobile-header-height: 56px;
+$breakpoint: 768px;
+
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f6f9;
+  position: relative;
+}
+
+// Mobile Header
+.mobile-header {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: $mobile-header-height;
+  background: linear-gradient(135deg, #073336 70%, #ff9f22 100%);
+  color: white;
+  align-items: center;
+  padding: 0 16px;
+  z-index: 1001;
+
+  ion-button {
+    --color: white;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    margin-left: 10px;
+  }
+}
+
+// Sidebar
+.sidebar {
+  width: $sidebar-width;
+  min-width: $sidebar-width;
+  background: white;
+  border-right: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 100;
+  overflow: hidden; // Prevent sidebar from scrolling
+
+  // On desktop, always visible
+  @media (min-width: $breakpoint) {
+    transform: translateX(0);
+  }
+
+  // On mobile, hidden by default
+  @media (max-width: #{$breakpoint - 1}) {
+    transform: translateX(-100%);
+    z-index: 1001;
+
+    &.visible {
+      transform: translateX(0);
+    }
+  }
+}
+
+// Sidebar Overlay (for mobile)
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+
+  @media (max-width: #{$breakpoint - 1}) {
+    &.visible {
+      display: block;
+    }
+  }
+}
+
+// Main Content - scrollable
+.main-content {
+  flex: 1;
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+  min-height: 100vh;
+  overflow-y: auto; // Enable vertical scrolling
+  position: relative;
+  z-index: 1;
+
+  // Desktop: sidebar always visible, content has margin
+  @media (min-width: $breakpoint) {
+    margin-left: $sidebar-width;
+  }
+
+  // Mobile: content takes full width when sidebar is closed
+  @media (max-width: #{$breakpoint - 1}) {
+    margin-top: $mobile-header-height;
+    margin-left: 0;
+    padding: 16px;
+
+    // When sidebar is open on mobile, content shifts
+    &.col-8 {
+      margin-left: $sidebar-width;
+    }
+  }
+}
+
+// Menu Header
+.menu-header {
+  padding: 20px;
+  background: linear-gradient(135deg, #073336 70%, #ff9f22 100%);
+  color: white;
+  flex-shrink: 0;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: white;
+  color: #073336;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.user-details h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.user-details p {
+  margin: 5px 0 0;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.menu-content-list {
+  flex: 1;
+  overflow-y: auto; // Allow menu items to scroll if too many
+  padding: 10px 0;
+}
+
+.menu-list {
+  padding: 10px 0;
+}
+
+.menu-list ion-item-divider {
+  --background: transparent;
+  --color: #999;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 15px 20px 5px;
+}
+
+.menu-list ion-item {
+  --background: transparent;
+  --padding-start: 20px;
+  --padding-end: 20px;
+  --color: #333;
+  --border-radius: 8px;
+  margin: 2px 10px;
+}
+
+.menu-list ion-item:hover {
+  --background: rgba(102, 126, 234, 0.1);
+}
+
+// Active menu item
+.menu-list ion-item.router-link-active,
+.menu-list ion-item.active {
+  --background: #0733362b;
+  --color: #073336;
+  font-weight: 500;
+  border-left: 3px solid #073336;
+}
+
+.menu-list ion-item ion-icon {
+  color: #073336;
+  margin-right: 10px;
+}
+
+.menu-list ion-item.router-link-active ion-icon,
+.menu-list ion-item.active ion-icon {
+  color: #073336;
+}
+
+.menu-footer {
+  padding: 10px;
+  border-top: 1px solid #e0e0e0;
+  flex-shrink: 0;
+}
+
+.menu-footer ion-item {
+  --background: transparent;
+  --color: #dc3545;
+}
+
+.menu-footer ion-item ion-icon {
+  color: #dc3545;
+}
+
+// Show mobile header only on mobile
+@media (max-width: #{$breakpoint - 1}) {
+  .mobile-header {
+    display: flex;
+  }
+}
