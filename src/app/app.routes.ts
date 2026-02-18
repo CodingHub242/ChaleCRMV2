@@ -34,69 +34,28 @@ export const routes: Routes = [
   // Auth routes (no layout)
   {
     path: 'login',
-    component: LoginPage
+    loadComponent: () => import('./features/auth/login/login.page').then(m => m.LoginPage)
   },
   {
     path: 'register',
-    component: RegisterPage
+    loadComponent: () => import('./features/auth/register/register.page').then(m => m.RegisterPage)
   },
   
   // Main app routes with sidebar layout
   {
     path: '',
-    component: MainLayoutPage,
     canActivate: [AuthGuard],
+    loadComponent: () => import('./features/layout/main-layout/main-layout.page').then(m => m.MainLayoutPage),
     children: [
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./features/dashboard/dashboard.page').then(m => m.DashboardPage)
+      },
       {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'
-      },
-      {
-        path: 'dashboard',
-        component: DashboardPage
-      },
-      // Placeholder routes - will redirect to dashboard for now
-      {
-        path: 'contacts',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
-      },
-      {
-        path: 'companies',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
-      },
-      {
-        path: 'deals',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
-      },
-      {
-        path: 'tasks',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
-      },
-      {
-        path: 'activities',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
-      },
-      {
-        path: 'products',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
-      },
-      {
-        path: 'quotes',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
-      },
-      {
-        path: 'invoices',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
-      },
+      }
     ]
   },
   
@@ -104,5 +63,5 @@ export const routes: Routes = [
   {
     path: '**',
     redirectTo: 'login'
-  },
+  }
 ];
