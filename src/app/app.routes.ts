@@ -56,110 +56,47 @@ export const routes: Routes = [
         path: 'dashboard',
         component: DashboardPage
       },
-      // // Contacts
-      // {
-      //   path: 'contacts',
-      //   component: ContactsListPage
-      // },
-      // {
-      //   path: 'contacts/new',
-      //   component: ContactFormPage
-      // },
-      // {
-      //   path: 'contacts/:id',
-      //   component: ContactFormPage
-      // },
-      // // Companies
-      // {
-      //   path: 'companies',
-      //   component: CompaniesListPage
-      // },
-      // {
-      //   path: 'companies/new',
-      //   component: CompanyFormPage
-      // },
-      // {
-      //   path: 'companies/:id',
-      //   component: CompanyFormPage
-      // },
-      // // Deals
-      // {
-      //   path: 'deals',
-      //   component: DealsListPage
-      // },
-      // {
-      //   path: 'deals/new',
-      //   component: DealFormPage
-      // },
-      // {
-      //   path: 'deals/:id',
-      //   component: DealFormPage
-      // },
-      // // Tasks
-      // {
-      //   path: 'tasks',
-      //   component: TasksListPage
-      // },
-      // {
-      //   path: 'tasks/new',
-      //   component: TaskFormPage
-      // },
-      // {
-      //   path: 'tasks/:id',
-      //   component: TaskFormPage
-      // },
-      // // Activities
-      // {
-      //   path: 'activities',
-      //   component: ActivitiesListPage
-      // },
-      // {
-      //   path: 'activities/new',
-      //   component: ActivityFormPage
-      // },
-      // {
-      //   path: 'activities/:id',
-      //   component: ActivityFormPage
-      // },
-      // // Products
-      // {
-      //   path: 'products',
-      //   component: ProductsListPage
-      // },
-      // {
-      //   path: 'products/new',
-      //   component: ProductFormPage
-      // },
-      // {
-      //   path: 'products/:id',
-      //   component: ProductFormPage
-      // },
-      // // Quotes
-      // {
-      //   path: 'quotes',
-      //   component: QuotesListPage
-      // },
-      // {
-      //   path: 'quotes/new',
-      //   component: QuoteFormPage
-      // },
-      // {
-      //   path: 'quotes/:id',
-      //   component: QuoteFormPage
-      // },
-      // // Invoices
-      // {
-      //   path: 'invoices',
-      //   component: InvoicesListPage
-      // },
-      // {
-      //   path: 'invoices/new',
-      //   component: InvoiceFormPage
-      // },
-      // {
-      //   path: 'invoices/:id',
-      //   component: InvoiceFormPage
-      // }
+      // Placeholder routes - will redirect to dashboard for now
+      {
+        path: 'contacts',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
+      {
+        path: 'companies',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
+      {
+        path: 'deals',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
+      {
+        path: 'tasks',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
+      {
+        path: 'activities',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
+      {
+        path: 'products',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
+      {
+        path: 'quotes',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
+      {
+        path: 'invoices',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
     ]
   },
   
@@ -168,9 +105,4 @@ export const routes: Routes = [
     path: '**',
     redirectTo: 'login'
   },
-  {
-    path: 'main-layout',
-    loadComponent: () => import('./features/layout/main-layout/main-layout.page').then( m => m.MainLayoutPage)
-  },
-  
 ];

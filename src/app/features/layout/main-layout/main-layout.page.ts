@@ -2,8 +2,8 @@ import { Component, OnInit,HostListener, CUSTOM_ELEMENTS_SCHEMA } from '@angular
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonIcon, IonLabel, IonItemDivider, IonButton, IonButtons } from '@ionic/angular/standalone';
 import { IonicModule, MenuController, NavController } from '@ionic/angular';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { AuthService } from '../../../core/services/auth.service';
 import { addIcons } from 'ionicons';
 import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, businessOutline, homeOutline, peopleOutline, trendingUpOutline, checkboxOutline, calendarOutline, cubeOutline, documentTextOutline, receiptOutline } from 'ionicons/icons';
@@ -14,7 +14,7 @@ import { briefcase,add, trash, create, mail, document, close, eye, download, che
   styleUrls: ['./main-layout.page.scss'],
   standalone: true,
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonIcon, IonLabel, IonItemDivider, IonButton, IonButtons, CommonModule, FormsModule, RouterModule, IonicModule]
 })
 export class MainLayoutPage implements OnInit {
  currentUser: any;
