@@ -66,11 +66,11 @@ export const routes: Routes = [
   // Auth routes
   {
     path: 'login',
-    loadComponent: () => import('./features/auth/login/login.page').then(m => m.LoginPage)
+    component: LoginPage
   },
   {
     path: 'register',
-    loadComponent: () => import('./features/auth/register/register.page').then(m => m.RegisterPage)
+    component: RegisterPage
   },
   
   // Main app routes with sidebar layout
