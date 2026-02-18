@@ -2,7 +2,7 @@ import { Component, OnInit,HostListener, CUSTOM_ELEMENTS_SCHEMA } from '@angular
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonIcon, IonLabel, IonItemDivider, IonButton, IonButtons } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonIcon, IonLabel, IonItemDivider, IonButton, IonButtons, IonRouterOutlet } from '@ionic/angular/standalone';
 import { IonicModule, MenuController, NavController } from '@ionic/angular';
 import { AuthService } from '../../../core/services/auth.service';
 import { addIcons } from 'ionicons';
