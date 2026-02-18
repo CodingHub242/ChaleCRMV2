@@ -1,13 +1,319 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>dashboard</ion-title>
+<ion-header>
+  <ion-toolbar class="bigin-header">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Dashboard</ion-title>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
+      </ion-button>
+      <ion-button>
+        <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">dashboard</ion-title>
-    </ion-toolbar>
-  </ion-header>
-</ion-content>
+  <ion-content class="bigin-content">
+    <ion-row>
+      <ion-col size="8" class="dashboard-header">
+         <div class="dashboard-container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+          <div class="welcome-text">
+            <h1>Welcome back, {{ currentUserName }}</h1>
+            <p>Here's what's happening with your business today.</p>
+          </div>
+        </div>
+
+        <!-- Stats Grid - Bigin Style -->
+        <div class="stats-grid">
+          <div class="stat-card contacts">
+            <div class="stat-icon">
+              <ion-icon name="people"></ion-icon>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value">{{ stats?.total_contacts || 0 }}</span>
+              <span class="stat-label">Contacts</span>
+            </div>
+            <div class="stat-trend up">
+              <ion-icon name="trending-up"></ion-icon>
+            </div>
+          </div>
+
+          <div class="stat-card companies">
+            <div class="stat-icon">
+              <ion-icon name="business"></ion-icon>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value">{{ stats?.total_companies || 0 }}</span>
+              <span class="stat-label">Companies</span>
+            </div>
+            <div class="stat-trend up">
+              <ion-icon name="trending-up"></ion-icon>
+            </div>
+          </div>
+
+          <div class="stat-card deals">
+            <div class="stat-icon">
+              <ion-icon name="flag"></ion-icon>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value">{{ stats?.total_deals || 0 }}</span>
+              <span class="stat-label">Deals</span>
+            </div>
+            <div class="stat-trend up">
+              <ion-icon name="trending-up"></ion-icon>
+            </div>
+          </div>
+
+          <div class="stat-card revenue">
+            <div class="stat-icon">
+              <ion-icon name="cash"></ion-icon>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value">{{ formatCurrency(stats?.total_deals_value || 0) }}</span>
+              <span class="stat-label">Pipeline Value</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Won Deals Card -->
+        <div class="won-card">
+          <div class="won-header">
+            <div class="won-icon-container">
+              <ion-icon name="trophy-outline" class="won-icon"></ion-icon>
+            </div>
+            <div class="won-info">
+              <h3>Won Deals</h3>
+              <p>{{ stats?.won_deals || 0 }} deals this month</p>
+            </div>
+            <div class="won-value">
+              {{ formatCurrency(stats?.won_deals_value || 0) }}
+            </div>
+          </div>
+          <div class="won-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="getWonPercentage()"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two Column Layout -->
+        <div class="two-column">
+          <!-- Location/Geographic Distribution -->
+          <div class="section-card">
+            <div class="section-header">
+              <h2>Leads by Location</h2>
+              <ion-button fill="clear" class="byt" size="small" routerLink="/contacts">View All</ion-button>
+            </div>
+            <div class="location-list">
+              <div class="location-item" *ngFor="let location of locationGroups" (click)="openLocation(location)">
+                <div class="location-info">
+                  <ion-icon name="location-outline"></ion-icon>
+                  <span class="location-name">{{ location.location }}</span>
+                </div>
+                <div class="location-count">{{ location.count }} leads</div>
+              </div>
+              <div class="empty-location" *ngIf="!locationGroups.length">
+                <ion-icon name="globe-outline"></ion-icon>
+                <p>No location data available</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activities -->
+          <div class="section-card">
+            <div class="section-header">
+              <h2>Recent Activities</h2>
+              <ion-button fill="clear" class="byt" size="small" routerLink="/activities">View All</ion-button>
+            </div>
+            <div class="activities-timeline">
+              <div class="activity-item" *ngFor="let activity of stats?.recent_activities">
+                <div class="activity-dot" [ngClass]="activity.type"></div>
+                <div class="activity-content">
+                  <h4>{{ activity.title }}</h4>
+                  <p>{{ activity.description || 'No description' }}</p>
+                  <span class="activity-time">{{ activity.created_at | date:'short' }}</span>
+                </div>
+              </div>
+              <div class="empty-activities" *ngIf="!stats?.recent_activities?.length">
+                <ion-icon name="calendar-outline"></ion-icon>
+                <p>No recent activities</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pipeline Overview - Clickable -->
+        <div class="pipeline-section">
+          <div class="section-header">
+            <h2>Pipeline Overview</h2>
+            <ion-button fill="clear" class="byt" size="small" routerLink="/deals">View All Deals</ion-button>
+          </div>
+          <div class="pipeline-grid">
+            <div class="pipeline-stage" *ngFor="let stage of pipelineStages" (click)="openPipelineStage(stage)" [class.clickable]="stage.count > 0">
+              <div class="stage-header">
+                <span class="stage-name">{{ stage.name }}</span>
+                <span class="stage-count">{{ stage.count }} deals</span>
+              </div>
+              <div class="stage-value">{{ formatCurrency(stage.value) }}</div>
+              <div class="stage-bar">
+                <div class="stage-fill" [style.width.%]="getStageWidth(stage.value)"></div>
+              </div>
+              <div class="stage-percentage" *ngIf="stage.percentage > 0">{{ stage.percentage }}%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+          <ion-button expand="block" class="action-btn primary" routerLink="/contacts/new">
+            <ion-icon slot="start" name="person-add"></ion-icon>
+            Add Contact
+          </ion-button>
+          <ion-button expand="block" class="action-btn success" routerLink="/deals/new">
+            <ion-icon slot="start" name="add-circle"></ion-icon>
+            New Deal
+          </ion-button>
+          <ion-button expand="block" class="action-btn" routerLink="/quotes/new">
+            <ion-icon slot="start" name="document-text"></ion-icon>
+            Create Quote
+          </ion-button>
+        </div>
+      </div>
+      </ion-col>
+
+      <ion-col size="4" class="calendar-sidebar">
+        <!-- Calendar Section -->
+        <div class="calendar-container">
+          <div class="calendar-header">
+            <ion-button fill="clear" (click)="previousMonth()">
+              <ion-icon name="chevron-back"></ion-icon>
+            </ion-button>
+            <h3>{{ currentMonthYear }}</h3>
+            <ion-button fill="clear" (click)="nextMonth()">
+              <ion-icon name="chevron-forward"></ion-icon>
+            </ion-button>
+          </div>
+          
+          <div class="calendar-weekdays">
+            <span *ngFor="let day of weekdays">{{ day }}</span>
+          </div>
+          
+          <div class="calendar-days">
+            <div 
+              *ngFor="let day of calendarDays" 
+              class="calendar-day" 
+              [class.other-month]="day.otherMonth"
+              [class.today]="day.isToday"
+              [class.has-events]="day.events.length > 0"
+              (click)="selectDate(day)">
+              <span class="day-number">{{ day.date }}</span>
+              <div class="day-events" *ngIf="day.events.length > 0">
+                <div class="event-dot" *ngFor="let event of day.events.slice(0, 3)"></div>
+                <span class="more-events" *ngIf="day.events.length > 3">+{{ day.events.length - 3 }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Selected Day Events Cards -->
+        <div class="day-events-section" *ngIf="selectedDate">
+          <div class="events-header">
+            <h3>{{ selectedDate | date:'MMMM d, yyyy' }}</h3>
+            <span class="event-count">{{ selectedDateEvents.length }} events</span>
+          </div>
+          
+          <div class="events-list">
+            <div class="event-card" *ngFor="let event of selectedDateEvents" [ngClass]="event.type">
+              <div class="event-time">
+                <ion-icon name="time-outline"></ion-icon>
+                {{ event.time || 'All day' }}
+              </div>
+              <div class="event-details">
+                <h4>{{ event.title }}</h4>
+                <p *ngIf="event.description">{{ event.description }}</p>
+                <div class="event-meta">
+                  <span class="event-type-badge" [ngClass]="event.type">
+                    <ion-icon [name]="getEventIcon(event.type)"></ion-icon>
+                    {{ event.type }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="no-events" *ngIf="!selectedDateEvents.length">
+              <ion-icon name="calendar-outline"></ion-icon>
+              <p>No events scheduled for this day</p>
+            </div>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+     
+    </ion-content>
+
+
+
+<!-- Pipeline Stage Modal -->
+<ion-modal [isOpen]="showPipelineModal" (didDismiss)="closePipelineModal()" class="pipeline-modal">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>{{ selectedStageName }} Deals</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closePipelineModal()">Close</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="modal-content">
+      <div class="modal-deals-list">
+        <div class="modal-deal-item" *ngFor="let deal of selectedStageDeals" routerLink="/deals/{{deal.id}}">
+          <div class="deal-info">
+            <h4>{{ deal.name || deal.title }}</h4>
+            <p>{{ deal.company || 'No company' }}</p>
+          </div>
+          <div class="deal-amount">{{ formatCurrency(deal.amount || 0) }}</div>
+        </div>
+        <div class="empty-modal" *ngIf="!selectedStageDeals.length">
+          <ion-icon name="briefcase-outline"></ion-icon>
+          <p>No deals in this stage</p>
+        </div>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<!-- Location Modal -->
+<ion-modal [isOpen]="showLocationModal" (didDismiss)="closeLocationModal()" class="location-modal">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>{{ selectedLocation?.location }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeLocationModal()">Close</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="modal-content">
+      <div class="modal-header-info">
+        <h3>{{ selectedLocation?.count }} Leads in {{ selectedLocation?.location }}</h3>
+      </div>
+      <div class="modal-contacts-list">
+        <div class="modal-contact-item" *ngFor="let contact of selectedLocation?.contacts" routerLink="/contacts/{{contact.id}}">
+          <div class="contact-avatar">{{ contact.first_name?.[0] || '?' }}{{ contact.last_name?.[0] || '' }}</div>
+          <div class="contact-info">
+            <h4>{{ contact.first_name }} {{ contact.last_name }}</h4>
+            <p>{{ contact.email || 'No email' }}</p>
+          </div>
+        </div>
+        <div class="empty-modal" *ngIf="!selectedLocation?.contacts?.length">
+          <ion-icon name="people-outline"></ion-icon>
+          <p>No contacts in this location</p>
+        </div>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>
