@@ -1,6 +1,7 @@
 <div class="login-background">
-  <video #videoPlayer autoplay muted loop playsinline class="video-bg" poster="../../../../assets/chale.mp4" (error)="onVideoError($event)">
-    <source src="../../../../assets/chale.mp4" type="video/mp4">
+  <!-- Video hidden - using noise background instead -->
+  <video #videoPlayer class="video-bg" style="display: none;">
+    <source src="assets/chale.mp4" type="video/mp4">
   </video>
   <div class="video-overlay"></div>
 </div>
@@ -23,7 +24,7 @@
         <p>Manage all leads and contacts in one place with Chale CRM. Ease your event dealings</p>
       </div>
       <ion-item lines="full" class="form-item">
-        <ion-label position="floating">Email</ion-label>
+        <!-- <ion-label position="floating">Email</ion-label> -->
         <ion-input 
           type="email" 
           [(ngModel)]="email" 
@@ -35,7 +36,7 @@
       </ion-item>
 
       <ion-item lines="full" class="form-item">
-        <ion-label position="floating">Password</ion-label>
+        <!-- <ion-label position="floating">Password</ion-label> -->
         <ion-input 
           [type]="showPassword ? 'text' : 'password'" 
           [(ngModel)]="password" 
