@@ -107,7 +107,7 @@
 
 .stat-value {
   display: block;
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 700;
   color: #1a1a2e;
   line-height: 1.2;
@@ -118,7 +118,7 @@
 
 .stat-label {
   display: block;
-  font-size: 12px;
+  font-size: 11px;
   color: #888;
   margin-top: 2px;
   white-space: nowrap;
@@ -578,7 +578,7 @@
 // Responsive
 @media (max-width: 1400px) {
   .stat-value {
-    font-size: 20px;
+    font-size: 16px;
   }
 }
 
@@ -594,13 +594,13 @@
   }
   
   .stat-icon {
-    width: 40px;
-    height: 40px;
-    font-size: 18px;
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
   }
   
   .stat-value {
-    font-size: 18px;
+    font-size: 14px;
   }
   
   .stat-trend {
@@ -635,18 +635,18 @@
   }
   
   .stat-icon {
-    width: 36px;
-    height: 36px;
-    font-size: 16px;
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
     border-radius: 8px;
   }
   
   .stat-value {
-    font-size: 16px;
+    font-size: 14px;
   }
   
   .stat-label {
-    font-size: 11px;
+    font-size: 10px;
   }
   
   .pipeline-grid {
@@ -673,17 +673,17 @@
   }
   
   .stat-icon {
-    width: 32px;
-    height: 32px;
-    font-size: 14px;
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
   }
   
   .stat-value {
-    font-size: 14px;
+    font-size: 12px;
   }
   
   .stat-label {
-    font-size: 10px;
+    font-size: 9px;
   }
   
   .won-card {
