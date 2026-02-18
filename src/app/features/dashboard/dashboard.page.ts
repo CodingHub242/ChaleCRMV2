@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar,IonButton,IonButtons,IonMenuButton,IonIcon,IonRow,IonCol } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar,IonButton,IonButtons,IonMenuButton,IonIcon,IonRow,IonCol,IonModal } from '@ionic/angular/standalone';
 import { RouterModule } from '@angular/router';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { ApiService } from '../../core/services/api.service';
@@ -32,7 +32,7 @@ interface CalendarEvent {
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar,IonButton,IonButtons,IonIcon,IonRow,IonCol,IonMenuButton, CommonModule, FormsModule]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar,IonButton,IonButtons,IonIcon,IonModal,IonRow,IonCol,IonMenuButton, CommonModule, FormsModule]
 })
 export class DashboardPage implements OnInit {
 stats: any = {
