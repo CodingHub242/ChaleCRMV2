@@ -7,7 +7,7 @@ import { homeOutline, peopleOutline, businessOutline, trendingUpOutline, checkbo
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
-  imports: [IonApp, IonRouterOutlet, IonicModule],
+  imports: [IonApp, IonRouterOutlet],
 })
 export class AppComponent {
   constructor() {
