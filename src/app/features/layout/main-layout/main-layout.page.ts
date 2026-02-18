@@ -1,33 +1,34 @@
-import { Component, OnInit,HostListener, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { IonicModule, MenuController, NavController } from '@ionic/angular';
 import { Router, RouterModule } from '@angular/router';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonIcon, IonLabel, IonItemDivider, IonButton, IonButtons, IonRouterOutlet } from '@ionic/angular/standalone';
 import { AuthService } from '../../../core/services/auth.service';
 import { addIcons } from 'ionicons';
 import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, businessOutline, homeOutline, peopleOutline, trendingUpOutline, checkboxOutline, calendarOutline, cubeOutline, documentTextOutline, receiptOutline } from 'ionicons/icons';
-
+   
 @Component({
   selector: 'app-main-layout',
-  templateUrl: './main-layout.page.html',
-  styleUrls: ['./main-layout.page.scss'],
   standalone: true,
-  schemas:[CUSTOM_ELEMENTS_SCHEMA],
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonIcon, IonLabel, IonItemDivider, IonButton, IonButtons, IonRouterOutlet, CommonModule, FormsModule, RouterModule]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonIcon, IonLabel, IonItemDivider, IonButton, IonButtons, IonRouterOutlet, CommonModule, FormsModule, RouterModule],
+  templateUrl: './main-layout.page.html',
+  styleUrls: ['./main-layout.page.scss']
 })
 export class MainLayoutPage implements OnInit {
- currentUser: any;
+  currentUser: any;
   sidebarOpen = false;
   isMobile = false;
 
   constructor(
+    private menuController: MenuController,
     private authService: AuthService,
     private router: Router
   ) {
       addIcons({briefcase,notificationsOutline,settingsOutline,trendingUp,cash,chevronBack,chevronForward,chevronDown,alertCircle, add, trash, cubeOutline,documentTextOutline,receiptOutline, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, checkboxOutline,calendarOutline,checkmarkCircle,cloudUpload,layers,time,person,logOut,list,calendar,analytics,people,flag,homeOutline,peopleOutline,trendingUpOutline,ellipse,businessOutline});
      }
 
- ngOnInit(): void {
+  ngOnInit(): void {
     this.authService.currentUser$.subscribe(user => {
       this.currentUser = user;
     });
@@ -73,5 +74,4 @@ export class MainLayoutPage implements OnInit {
   logout(): void {
     this.authService.logout();
   }
-
 }
