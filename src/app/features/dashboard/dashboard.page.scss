@@ -44,21 +44,22 @@
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: 16px;
   margin-bottom: 24px;
 }
 
 .stat-card {
   background: white;
   border-radius: 12px;
-  padding: 20px;
+  padding: 16px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
+  min-height: 90px;
 }
 
 .stat-card:hover {
@@ -81,13 +82,14 @@
 .stat-card.revenue::before { background: linear-gradient(180deg, #43e97b, #38f9d7); }
 
 .stat-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 20px;
+  flex-shrink: 0;
 }
 
 .stat-card.contacts .stat-icon { background: rgba(102, 126, 234, 0.1); color: #667eea; }
@@ -97,21 +99,26 @@
 
 .stat-info {
   flex: 1;
+  min-width: 0;
 }
 
 .stat-value {
   display: block;
-  font-size: 28px;
+  font-size: clamp(16px, 2.5vw, 20px);
   font-weight: 700;
   color: #1a1a2e;
   line-height: 1.2;
+  word-break: break-word;
 }
 
 .stat-label {
   display: block;
-  font-size: 13px;
+  font-size: clamp(10px, 1.2vw, 13px);
   color: #888;
-  margin-top: 4px;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .stat-trend {
@@ -564,6 +571,27 @@
 }
 
 // Responsive
+@media (max-width: 1200px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .stat-card {
+    padding: 14px;
+    gap: 10px;
+  }
+  
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+  
+  .stat-value {
+    font-size: clamp(14px, 2vw, 24px);
+  }
+}
+
 @media (max-width: 1024px) {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -581,6 +609,28 @@
 @media (max-width: 768px) {
   .stats-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .stat-card {
+    padding: 12px;
+    min-height: 70px;
+    gap: 10px;
+  }
+  
+  .stat-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    border-radius: 8px;
+  }
+  
+  .stat-value {
+    font-size: clamp(16px, 4vw, 22px);
+  }
+  
+  .stat-label {
+    font-size: 11px;
   }
   
   .pipeline-grid {
@@ -589,6 +639,43 @@
   
   .quick-actions {
     grid-template-columns: 1fr;
+  }
+  
+  .dashboard-container {
+    padding: 12px;
+  }
+  
+  .welcome-text h1 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-card {
+    padding: 10px;
+    gap: 8px;
+  }
+  
+  .stat-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+  
+  .stat-value {
+    font-size: 16px;
+  }
+  
+  .stat-label {
+    font-size: 10px;
+  }
+  
+  .won-card {
+    padding: 16px;
+  }
+  
+  .won-value {
+    font-size: 24px;
   }
 }
 
