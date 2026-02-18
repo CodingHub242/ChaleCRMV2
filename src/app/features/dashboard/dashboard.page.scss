@@ -581,6 +581,10 @@
   .stat-value {
     font-size: 16px;
   }
+
+  .stats-grid {
+    display: ruby-text;
+  }
 }
 
 @media (max-width: 1200px) {
