@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { 
@@ -39,7 +39,9 @@ import { AuthService } from '../../../core/services/auth.service';
   ]
 })
 export class LoginPage implements OnInit {
- email = '';
+  @ViewChild('videoPlayer') videoPlayer!: ElementRef<HTMLVideoElement>;
+  
+  email = '';
   password = '';
   showPassword = false;
   isLoading = false;
@@ -52,7 +54,17 @@ export class LoginPage implements OnInit {
   ) {}
 
   ngOnInit():void{
+    // Try to play video after view init
+    setTimeout(() => {
+      const video = this.videoPlayer?.nativeElement;
+      if (video) {
+        video.play().catch(err => console.log('Autoplay blocked:', err));
+      }
+    }, 500);
+  }
 
+  onVideoError(event: Event): void {
+    console.error('Video failed to load:', event);
   }
 
   togglePassword(): void {

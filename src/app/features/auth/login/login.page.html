@@ -1,5 +1,5 @@
 <div class="login-background">
-  <video autoplay muted loop playsinline class="video-bg" poster="assets/icon/favicon.png">
+  <video #videoPlayer autoplay muted loop playsinline class="video-bg" poster="../../../../assets/chale.mp4" (error)="onVideoError($event)">
     <source src="../../../../assets/chale.mp4" type="video/mp4">
   </video>
   <div class="video-overlay"></div>
