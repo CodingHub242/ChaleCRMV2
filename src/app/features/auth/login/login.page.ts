@@ -81,7 +81,7 @@ export class LoginPage implements OnInit {
     this.authService.login(this.email, this.password).subscribe({
       next: () => {
         this.isLoading = false;
-        this.router.navigate(['/']);
+        this.router.navigate(['/dashboard']);
       },
       error: (error: any) => {
         this.isLoading = false;

@@ -31,7 +31,7 @@ import { DashboardPage } from './features/dashboard/dashboard.page';
 //   },
 // ];
 export const routes: Routes = [
-  // Auth routes (no layout)
+  // Auth routes
   {
     path: 'login',
     loadComponent: () => import('./features/auth/login/login.page').then(m => m.LoginPage)
@@ -41,24 +41,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/register/register.page').then(m => m.RegisterPage)
   },
   
-  // Main app routes with sidebar layout
+  // Main layout - all protected routes (no AuthGuard for now to test)
   {
     path: '',
-    component: MainLayoutPage,
-    canActivate: [AuthGuard],
-    children: [
-      {
-        path: '',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
-      },
-      {
-        path: 'dashboard',
-        component: DashboardPage
-      },
-    ],
-    },
-  
+    loadComponent: () => import('./features/layout/main-layout/main-layout.page').then(m => m.MainLayoutPage)
+  },
   
   // Redirect unknown routes to login
   {
