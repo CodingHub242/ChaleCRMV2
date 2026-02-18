@@ -11,18 +11,18 @@ import { homeOutline, peopleOutline, businessOutline, trendingUpOutline, checkbo
 export class AppComponent {
   constructor() {
     // Register global icons
-    addIcons({
-      homeOutline,
-      peopleOutline,
-      businessOutline,
-      trendingUpOutline,
-      checkboxOutline,
-      calendarOutline,
-      cubeOutline,
-      documentTextOutline,
-      receiptOutline,
-      logOutOutline,
-      menuOutline
-    });
+    // addIcons({
+    //   homeOutline,
+    //   peopleOutline,
+    //   businessOutline,
+    //   trendingUpOutline,
+    //   checkboxOutline,
+    //   calendarOutline,
+    //   cubeOutline,
+    //   documentTextOutline,
+    //   receiptOutline,
+    //   logOutOutline,
+    //   menuOutline
+    // });
   }
 }

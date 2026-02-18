@@ -14,7 +14,7 @@ import { briefcase,add, trash, create, mail, document, close, eye, download, che
   styleUrls: ['./main-layout.page.scss'],
   standalone: true,
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonIcon, IonLabel, IonItemDivider, IonButton, IonButtons, IonRouterOutlet, CommonModule, FormsModule, RouterModule]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonIcon, IonLabel, IonItemDivider, IonButton, IonButtons, IonRouterOutlet, CommonModule, FormsModule, RouterModule,IonicModule]
 })
 export class MainLayoutPage implements OnInit {
  currentUser: any;
