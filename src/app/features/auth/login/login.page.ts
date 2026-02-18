@@ -11,11 +11,13 @@ import {
   IonInput,
   IonButton,
   IonIcon,
-  IonSpinner
+  IonSpinner,
+  IonNote
 } from '@ionic/angular/standalone';
-import { IonicModule, LoadingController, AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { addIcons } from 'ionicons';
+import { eyeOutline, eyeOffOutline, logInOutline, personAddOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-login',
@@ -33,6 +35,7 @@ import { AuthService } from '../../../core/services/auth.service';
     IonButton,
     IonIcon,
     IonSpinner,
+    IonNote,
     CommonModule, 
     FormsModule
   ]
@@ -45,12 +48,12 @@ export class LoginPage implements OnInit {
   showPassword = false;
   isLoading = false;
 
-   constructor(
+  constructor(
     private authService: AuthService,
-    private router: Router,
-    private loadingController: LoadingController,
-    private alertController: AlertController
-  ) {}
+    private router: Router
+  ) {
+    addIcons({ eyeOutline, eyeOffOutline, logInOutline, personAddOutline });
+  }
 
   ngOnInit():void{
     // Try to play video after view init
@@ -70,9 +73,8 @@ export class LoginPage implements OnInit {
     this.showPassword = !this.showPassword;
   }
 
-  async login(): Promise<void> {
+  login(): void {
     if (!this.email || !this.password) {
-      this.showAlert('Error', 'Please enter email and password');
       return;
     }
 
@@ -85,22 +87,12 @@ export class LoginPage implements OnInit {
       },
       error: (error: any) => {
         this.isLoading = false;
-        const message = error.error?.message || 'Login failed. Please try again.';
-        this.showAlert('Error', message);
+        console.error('Login error:', error);
       }
     });
   }
 
   goToRegister(): void {
     this.router.navigate(['/register']);
-  }
-
-  private async showAlert(title: string, message: string): Promise<void> {
-    const alert = await this.alertController.create({
-      header: title,
-      message: message,
-      buttons: ['OK']
-    });
-    await alert.present();
   }
 }
