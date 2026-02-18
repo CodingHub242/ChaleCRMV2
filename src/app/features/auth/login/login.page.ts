@@ -34,8 +34,7 @@ import { AuthService } from '../../../core/services/auth.service';
     IonIcon,
     IonSpinner,
     CommonModule, 
-    FormsModule,
-    IonicModule
+    FormsModule
   ]
 })
 export class LoginPage implements OnInit {
