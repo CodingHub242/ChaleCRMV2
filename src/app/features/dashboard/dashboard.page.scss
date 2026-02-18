@@ -42,7 +42,7 @@
 
 // Stats Grid - Zoho Bigin Style
 .stats-grid {
-  display: grid;
+  display: flex;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   margin-bottom: 24px;
