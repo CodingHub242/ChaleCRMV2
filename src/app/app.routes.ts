@@ -44,20 +44,21 @@ export const routes: Routes = [
   // Main app routes with sidebar layout
   {
     path: '',
+    component: MainLayoutPage,
     canActivate: [AuthGuard],
-    loadComponent: () => import('./features/layout/main-layout/main-layout.page').then(m => m.MainLayoutPage),
     children: [
-      {
-        path: 'dashboard',
-        loadComponent: () => import('./features/dashboard/dashboard.page').then(m => m.DashboardPage)
-      },
       {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'
-      }
-    ]
-  },
+      },
+      {
+        path: 'dashboard',
+        component: DashboardPage
+      },
+    ],
+    },
+  
   
   // Redirect unknown routes to login
   {
