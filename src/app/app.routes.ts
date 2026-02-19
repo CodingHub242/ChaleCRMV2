@@ -43,6 +43,8 @@ import { QuoteFormPage } from './features/quotes/quote-form/quote-form.page';
 import { InvoicesListPage } from './features/invoices/invoices-list/invoices-list.page';
 import { InvoiceFormPage } from './features/invoices/invoice-form/invoice-form.page';
 
+import { ForecastingPage } from './features/forecasting/forecasting.page';
+
 // export const routes: Routes = [
 //   {
 //     path: 'home',
@@ -191,6 +193,51 @@ export const routes: Routes = [
       {
         path: 'invoices/:id',
         component: InvoiceFormPage
+      },
+      // Campaigns
+      {
+        path: 'campaigns',
+        loadComponent: () => import('./features/campaigns/campaigns.page').then(m => m.CampaignsPage)
+      },
+      // Sales Orders
+      {
+        path: 'sales-orders',
+        loadComponent: () => import('./features/sales-orders/sales-orders.page').then(m => m.SalesOrdersPage)
+      },
+      // Contracts
+      {
+        path: 'contracts',
+        loadComponent: () => import('./features/contracts/contracts.page').then(m => m.ContractsPage)
+      },
+      // Workflows
+      {
+        path: 'workflows',
+        loadComponent: () => import('./features/workflows/workflows.page').then(m => m.WorkflowsPage)
+      },
+      // Email Templates
+      {
+        path: 'email-templates',
+        loadComponent: () => import('./features/email-templates/email-templates.page').then(m => m.EmailTemplatesPage)
+      },
+      // Analytics
+      {
+        path: 'analytics',
+        loadComponent: () => import('./features/analytics/analytics.page').then(m => m.AnalyticsPage)
+      },
+      // Tags & Labels
+      {
+        path: 'tags',
+        loadComponent: () => import('./features/tags/tags.page').then(m => m.TagsPage)
+      },
+      // Segments
+      {
+        path: 'segments',
+        loadComponent: () => import('./features/segments/segments.page').then(m => m.SegmentsPage)
+      },
+      // Forecasting
+      {
+        path: 'forecasting',
+        loadComponent: () => import('./features/forecasting/forecasting.page').then(m => m.ForecastingPage)
       }
     ]
   },

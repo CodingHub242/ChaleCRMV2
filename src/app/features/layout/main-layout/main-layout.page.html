@@ -73,6 +73,57 @@
           <ion-icon slot="start" name="receipt-outline"></ion-icon>
           <ion-label>Invoices</ion-label>
         </ion-item>
+
+        <ion-item button routerLink="/sales-orders" routerLinkActive="active" routerDirection="root" (click)="closeSidebarOnMobile()">
+          <ion-icon slot="start" name="cart-outline"></ion-icon>
+          <ion-label>Sales Orders</ion-label>
+        </ion-item>
+
+        <ion-item button routerLink="/contracts" routerLinkActive="active" routerDirection="root" (click)="closeSidebarOnMobile()">
+          <ion-icon slot="start" name="document-lock-outline"></ion-icon>
+          <ion-label>Contracts</ion-label>
+        </ion-item>
+
+        <ion-item-divider>Marketing</ion-item-divider>
+
+        <ion-item button routerLink="/campaigns" routerLinkActive="active" routerDirection="root" (click)="closeSidebarOnMobile()">
+          <ion-icon slot="start" name="megaphone-outline"></ion-icon>
+          <ion-label>Campaigns</ion-label>
+        </ion-item>
+
+        <ion-item button routerLink="/segments" routerLinkActive="active" routerDirection="root" (click)="closeSidebarOnMobile()">
+          <ion-icon slot="start" name="people-outline"></ion-icon>
+          <ion-label>Segments</ion-label>
+        </ion-item>
+
+        <ion-item button routerLink="/email-templates" routerLinkActive="active" routerDirection="root" (click)="closeSidebarOnMobile()">
+          <ion-icon slot="start" name="mail-outline"></ion-icon>
+          <ion-label>Email Templates</ion-label>
+        </ion-item>
+
+        <ion-item-divider>Automation</ion-item-divider>
+
+        <ion-item button routerLink="/workflows" routerLinkActive="active" routerDirection="root" (click)="closeSidebarOnMobile()">
+          <ion-icon slot="start" name="git-branch-outline"></ion-icon>
+          <ion-label>Workflows</ion-label>
+        </ion-item>
+
+        <ion-item button routerLink="/tags" routerLinkActive="active" routerDirection="root" (click)="closeSidebarOnMobile()">
+          <ion-icon slot="start" name="pricetags-outline"></ion-icon>
+          <ion-label>Tags & Labels</ion-label>
+        </ion-item>
+
+        <ion-item-divider>Reports</ion-item-divider>
+
+        <ion-item button routerLink="/analytics" routerLinkActive="active" routerDirection="root" (click)="closeSidebarOnMobile()">
+          <ion-icon slot="start" name="bar-chart-outline"></ion-icon>
+          <ion-label>Analytics</ion-label>
+        </ion-item>
+
+        <ion-item button routerLink="/forecasting" routerLinkActive="active" routerDirection="root" (click)="closeSidebarOnMobile()">
+          <ion-icon slot="start" name="trending-up-outline"></ion-icon>
+          <ion-label>Forecasting</ion-label>
+        </ion-item>
       </ion-list>
     </div>
 

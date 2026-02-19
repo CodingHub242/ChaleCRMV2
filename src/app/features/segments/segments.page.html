@@ -1,0 +1,44 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Segments</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/segments/new">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="ion-padding">
+    <ion-searchbar placeholder="Search segments..." (ionInput)="searchChanged($event)" [debounce]="500"></ion-searchbar>
+
+    <ion-list>
+      <ion-item-sliding *ngFor="let segment of segments">
+        <ion-item button (click)="viewSegment(segment)">
+          <ion-icon slot="start" name="people" color="primary"></ion-icon>
+          <ion-label>
+            <h2>{{ segment.name }}</h2>
+            <p>{{ segment.type | titlecase }} - {{ segment.conditions?.length || 0 }} conditions</p>
+          </ion-label>
+          <ion-badge slot="end" color="secondary">{{ segment.contacts_count || 0 }}</ion-badge>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="primary" (click)="analyzeSegment(segment)">Analyze</ion-item-option>
+          <ion-item-option color="tertiary" (click)="exportSegment(segment)">Export</ion-item-option>
+          <ion-item-option color="danger" (click)="deleteSegment(segment)">Delete</ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+
+    <div *ngIf="segments.length === 0" class="empty-state">
+      <ion-icon name="people-outline" size="large"></ion-icon>
+      <h3>No Segments</h3>
+      <p>Create customer segments for targeted marketing</p>
+      <ion-button routerLink="/segments/new">Create Segment</ion-button>
+    </div>
+  </div>
+</ion-content>

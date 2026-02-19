@@ -16,7 +16,16 @@ import {
   DashboardStats,
   User,
   CustomField,
-  CustomFieldValue
+  CustomFieldValue,
+  Campaign,
+  SalesOrder,
+  PurchaseOrder,
+  Contract,
+  Workflow,
+  EmailTemplate,
+  Segment,
+  Tag,
+  Label
 } from '../../models';
 
 @Injectable({
@@ -309,5 +318,327 @@ export class ApiService {
     return this.http.post(`${this.baseUrl}/upload/photo`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
+  }
+
+  // ==================== CAMPAIGNS ====================
+  getCampaigns(params?: { page?: number; per_page?: number; status?: string; type?: string; search?: string }): Observable<PaginatedResponse<Campaign>> {
+    let httpParams = new HttpParams();
+    if (params) {
+      if (params.page) httpParams = httpParams.set('page', params.page.toString());
+      if (params.per_page) httpParams = httpParams.set('per_page', params.per_page.toString());
+      if (params.status) httpParams = httpParams.set('status', params.status);
+      if (params.type) httpParams = httpParams.set('type', params.type);
+      if (params.search) httpParams = httpParams.set('search', params.search);
+    }
+    return this.http.get<PaginatedResponse<Campaign>>(`${this.baseUrl}/campaigns`, { params: httpParams });
+  }
+
+  getCampaign(id: number): Observable<ApiResponse<Campaign>> {
+    return this.http.get<ApiResponse<Campaign>>(`${this.baseUrl}/campaigns/${id}`);
+  }
+
+  createCampaign(data: Partial<Campaign>): Observable<ApiResponse<Campaign>> {
+    return this.http.post<ApiResponse<Campaign>>(`${this.baseUrl}/campaigns`, data);
+  }
+
+  updateCampaign(id: number, data: Partial<Campaign>): Observable<ApiResponse<Campaign>> {
+    return this.http.put<ApiResponse<Campaign>>(`${this.baseUrl}/campaigns/${id}`, data);
+  }
+
+  deleteCampaign(id: number): Observable<ApiResponse<null>> {
+    return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/campaigns/${id}`);
+  }
+
+  duplicateCampaign(id: number): Observable<ApiResponse<Campaign>> {
+    return this.http.post<ApiResponse<Campaign>>(`${this.baseUrl}/campaigns/${id}/duplicate`, {});
+  }
+
+  getCampaignStatistics(id: number): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/campaigns/${id}/statistics`);
+  }
+
+  // ==================== SALES ORDERS ====================
+  getSalesOrders(params?: { page?: number; per_page?: number; status?: string; customer_id?: number; search?: string }): Observable<PaginatedResponse<SalesOrder>> {
+    let httpParams = new HttpParams();
+    if (params) {
+      if (params.page) httpParams = httpParams.set('page', params.page.toString());
+      if (params.per_page) httpParams = httpParams.set('per_page', params.per_page.toString());
+      if (params.status) httpParams = httpParams.set('status', params.status);
+      if (params.customer_id) httpParams = httpParams.set('customer_id', params.customer_id.toString());
+      if (params.search) httpParams = httpParams.set('search', params.search);
+    }
+    return this.http.get<PaginatedResponse<SalesOrder>>(`${this.baseUrl}/sales-orders`, { params: httpParams });
+  }
+
+  getSalesOrder(id: number): Observable<ApiResponse<SalesOrder>> {
+    return this.http.get<ApiResponse<SalesOrder>>(`${this.baseUrl}/sales-orders/${id}`);
+  }
+
+  createSalesOrder(data: Partial<SalesOrder>): Observable<ApiResponse<SalesOrder>> {
+    return this.http.post<ApiResponse<SalesOrder>>(`${this.baseUrl}/sales-orders`, data);
+  }
+
+  updateSalesOrder(id: number, data: Partial<SalesOrder>): Observable<ApiResponse<SalesOrder>> {
+    return this.http.put<ApiResponse<SalesOrder>>(`${this.baseUrl}/sales-orders/${id}`, data);
+  }
+
+  deleteSalesOrder(id: number): Observable<ApiResponse<null>> {
+    return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/sales-orders/${id}`);
+  }
+
+  convertSalesOrderToInvoice(id: number): Observable<ApiResponse<Invoice>> {
+    return this.http.post<ApiResponse<Invoice>>(`${this.baseUrl}/sales-orders/${id}/convert-to-invoice`, {});
+  }
+
+  // ==================== PURCHASE ORDERS ====================
+  getPurchaseOrders(params?: { page?: number; per_page?: number; status?: string; vendor_id?: number }): Observable<PaginatedResponse<PurchaseOrder>> {
+    let httpParams = new HttpParams();
+    if (params) {
+      if (params.page) httpParams = httpParams.set('page', params.page.toString());
+      if (params.per_page) httpParams = httpParams.set('per_page', params.per_page.toString());
+      if (params.status) httpParams = httpParams.set('status', params.status);
+      if (params.vendor_id) httpParams = httpParams.set('vendor_id', params.vendor_id.toString());
+    }
+    return this.http.get<PaginatedResponse<PurchaseOrder>>(`${this.baseUrl}/purchase-orders`, { params: httpParams });
+  }
+
+  getPurchaseOrder(id: number): Observable<ApiResponse<PurchaseOrder>> {
+    return this.http.get<ApiResponse<PurchaseOrder>>(`${this.baseUrl}/purchase-orders/${id}`);
+  }
+
+  createPurchaseOrder(data: Partial<PurchaseOrder>): Observable<ApiResponse<PurchaseOrder>> {
+    return this.http.post<ApiResponse<PurchaseOrder>>(`${this.baseUrl}/purchase-orders`, data);
+  }
+
+  updatePurchaseOrder(id: number, data: Partial<PurchaseOrder>): Observable<ApiResponse<PurchaseOrder>> {
+    return this.http.put<ApiResponse<PurchaseOrder>>(`${this.baseUrl}/purchase-orders/${id}`, data);
+  }
+
+  deletePurchaseOrder(id: number): Observable<ApiResponse<null>> {
+    return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/purchase-orders/${id}`);
+  }
+
+  // ==================== CONTRACTS ====================
+  getContracts(params?: { page?: number; per_page?: number; status?: string; type?: string }): Observable<PaginatedResponse<Contract>> {
+    let httpParams = new HttpParams();
+    if (params) {
+      if (params.page) httpParams = httpParams.set('page', params.page.toString());
+      if (params.per_page) httpParams = httpParams.set('per_page', params.per_page.toString());
+      if (params.status) httpParams = httpParams.set('status', params.status);
+      if (params.type) httpParams = httpParams.set('type', params.type);
+    }
+    return this.http.get<PaginatedResponse<Contract>>(`${this.baseUrl}/contracts`, { params: httpParams });
+  }
+
+  getContract(id: number): Observable<ApiResponse<Contract>> {
+    return this.http.get<ApiResponse<Contract>>(`${this.baseUrl}/contracts/${id}`);
+  }
+
+  createContract(data: Partial<Contract>): Observable<ApiResponse<Contract>> {
+    return this.http.post<ApiResponse<Contract>>(`${this.baseUrl}/contracts`, data);
+  }
+
+  updateContract(id: number, data: Partial<Contract>): Observable<ApiResponse<Contract>> {
+    return this.http.put<ApiResponse<Contract>>(`${this.baseUrl}/contracts/${id}`, data);
+  }
+
+  deleteContract(id: number): Observable<ApiResponse<null>> {
+    return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/contracts/${id}`);
+  }
+
+  sendContractForSignature(id: number, data: { subject: string; message?: string }): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/contracts/${id}/send-for-signature`, data);
+  }
+
+  signContract(id: number, data: { signer_id: number; signature: string }): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/contracts/${id}/sign`, data);
+  }
+
+  // ==================== WORKFLOWS ====================
+  getWorkflows(params?: { is_active?: boolean; trigger_type?: string }): Observable<ApiResponse<Workflow[]>> {
+    let httpParams = new HttpParams();
+    if (params) {
+      if (params.is_active !== undefined) httpParams = httpParams.set('is_active', params.is_active.toString());
+      if (params.trigger_type) httpParams = httpParams.set('trigger_type', params.trigger_type);
+    }
+    return this.http.get<ApiResponse<Workflow[]>>(`${this.baseUrl}/workflows`, { params: httpParams });
+  }
+
+  getWorkflow(id: number): Observable<ApiResponse<Workflow>> {
+    return this.http.get<ApiResponse<Workflow>>(`${this.baseUrl}/workflows/${id}`);
+  }
+
+  createWorkflow(data: Partial<Workflow>): Observable<ApiResponse<Workflow>> {
+    return this.http.post<ApiResponse<Workflow>>(`${this.baseUrl}/workflows`, data);
+  }
+
+  updateWorkflow(id: number, data: Partial<Workflow>): Observable<ApiResponse<Workflow>> {
+    return this.http.put<ApiResponse<Workflow>>(`${this.baseUrl}/workflows/${id}`, data);
+  }
+
+  deleteWorkflow(id: number): Observable<ApiResponse<null>> {
+    return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/workflows/${id}`);
+  }
+
+  activateWorkflow(id: number): Observable<ApiResponse<Workflow>> {
+    return this.http.post<ApiResponse<Workflow>>(`${this.baseUrl}/workflows/${id}/activate`, {});
+  }
+
+  deactivateWorkflow(id: number): Observable<ApiResponse<Workflow>> {
+    return this.http.post<ApiResponse<Workflow>>(`${this.baseUrl}/workflows/${id}/deactivate`, {});
+  }
+
+  // ==================== EMAIL TEMPLATES ====================
+  getEmailTemplates(params?: { category?: string; search?: string }): Observable<ApiResponse<EmailTemplate[]>> {
+    let httpParams = new HttpParams();
+    if (params) {
+      if (params.category) httpParams = httpParams.set('category', params.category);
+      if (params.search) httpParams = httpParams.set('search', params.search);
+    }
+    return this.http.get<ApiResponse<EmailTemplate[]>>(`${this.baseUrl}/email-templates`, { params: httpParams });
+  }
+
+  getEmailTemplate(id: number): Observable<ApiResponse<EmailTemplate>> {
+    return this.http.get<ApiResponse<EmailTemplate>>(`${this.baseUrl}/email-templates/${id}`);
+  }
+
+  createEmailTemplate(data: Partial<EmailTemplate>): Observable<ApiResponse<EmailTemplate>> {
+    return this.http.post<ApiResponse<EmailTemplate>>(`${this.baseUrl}/email-templates`, data);
+  }
+
+  updateEmailTemplate(id: number, data: Partial<EmailTemplate>): Observable<ApiResponse<EmailTemplate>> {
+    return this.http.put<ApiResponse<EmailTemplate>>(`${this.baseUrl}/email-templates/${id}`, data);
+  }
+
+  deleteEmailTemplate(id: number): Observable<ApiResponse<null>> {
+    return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/email-templates/${id}`);
+  }
+
+  previewEmailTemplate(id: number, variables?: Record<string, any>): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/email-templates/${id}/preview`, { variables });
+  }
+
+  // ==================== TAGS ====================
+  getTags(params?: { entity_type?: string }): Observable<ApiResponse<Tag[]>> {
+    let httpParams = new HttpParams();
+    if (params?.entity_type) httpParams = httpParams.set('entity_type', params.entity_type);
+    return this.http.get<ApiResponse<Tag[]>>(`${this.baseUrl}/tags`, { params: httpParams });
+  }
+
+  createTag(data: Partial<Tag>): Observable<ApiResponse<Tag>> {
+    return this.http.post<ApiResponse<Tag>>(`${this.baseUrl}/tags`, data);
+  }
+
+  updateTag(id: number, data: Partial<Tag>): Observable<ApiResponse<Tag>> {
+    return this.http.put<ApiResponse<Tag>>(`${this.baseUrl}/tags/${id}`, data);
+  }
+
+  deleteTag(id: number): Observable<ApiResponse<null>> {
+    return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/tags/${id}`);
+  }
+
+  assignTag(tagId: number, entityType: string, entityIds: number[]): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/tags/${tagId}/assign`, { entity_type: entityType, entity_ids: entityIds });
+  }
+
+  // ==================== LABELS ====================
+  getLabels(params?: { entity_type?: string }): Observable<ApiResponse<Label[]>> {
+    let httpParams = new HttpParams();
+    if (params?.entity_type) httpParams = httpParams.set('entity_type', params.entity_type);
+    return this.http.get<ApiResponse<Label[]>>(`${this.baseUrl}/labels`, { params: httpParams });
+  }
+
+  createLabel(data: Partial<Label>): Observable<ApiResponse<Label>> {
+    return this.http.post<ApiResponse<Label>>(`${this.baseUrl}/labels`, data);
+  }
+
+  updateLabel(id: number, data: Partial<Label>): Observable<ApiResponse<Label>> {
+    return this.http.put<ApiResponse<Label>>(`${this.baseUrl}/labels/${id}`, data);
+  }
+
+  deleteLabel(id: number): Observable<ApiResponse<null>> {
+    return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/labels/${id}`);
+  }
+
+  // ==================== SEGMENTS ====================
+  getSegments(params?: { type?: string }): Observable<ApiResponse<Segment[]>> {
+    let httpParams = new HttpParams();
+    if (params?.type) httpParams = httpParams.set('type', params.type);
+    return this.http.get<ApiResponse<Segment[]>>(`${this.baseUrl}/segments`, { params: httpParams });
+  }
+
+  getSegment(id: number): Observable<ApiResponse<Segment>> {
+    return this.http.get<ApiResponse<Segment>>(`${this.baseUrl}/segments/${id}`);
+  }
+
+  createSegment(data: Partial<Segment>): Observable<ApiResponse<Segment>> {
+    return this.http.post<ApiResponse<Segment>>(`${this.baseUrl}/segments`, data);
+  }
+
+  updateSegment(id: number, data: Partial<Segment>): Observable<ApiResponse<Segment>> {
+    return this.http.put<ApiResponse<Segment>>(`${this.baseUrl}/segments/${id}`, data);
+  }
+
+  deleteSegment(id: number): Observable<ApiResponse<null>> {
+    return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/segments/${id}`);
+  }
+
+  analyzeSegment(id: number): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/segments/${id}/analyze`, {});
+  }
+
+  // ==================== ANALYTICS ====================
+  getAnalyticsOverview(params?: { from_date?: string; to_date?: string }): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    if (params?.from_date) httpParams = httpParams.set('from_date', params.from_date);
+    if (params?.to_date) httpParams = httpParams.set('to_date', params.to_date);
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/analytics/overview`, { params: httpParams });
+  }
+
+  getAnalyticsSales(params?: { from_date?: string; to_date?: string }): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    if (params?.from_date) httpParams = httpParams.set('from_date', params.from_date);
+    if (params?.to_date) httpParams = httpParams.set('to_date', params.to_date);
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/analytics/sales`, { params: httpParams });
+  }
+
+  getAnalyticsPipeline(): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/analytics/pipeline`);
+  }
+
+  // ==================== FORECASTING ====================
+  getForecastPredictions(params?: { period?: number; from_date?: string }): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    if (params?.period) httpParams = httpParams.set('period', params.period.toString());
+    if (params?.from_date) httpParams = httpParams.set('from_date', params.from_date);
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/forecasting/predictions`, { params: httpParams });
+  }
+
+  analyzeForecast(data: { deal_stage?: string; time_period?: number }): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/forecasting/analyze`, data);
+  }
+
+  // ==================== DUPLICATES ====================
+  checkDuplicates(entityType: string, entityId?: number): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams().set('entity_type', entityType);
+    if (entityId) httpParams = httpParams.set('entity_id', entityId.toString());
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/duplicates/check`, { params: httpParams });
+  }
+
+  mergeDuplicates(data: { entity_type: string; primary_id: number; secondary_ids: number[]; merge_strategy?: string }): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/duplicates/merge`, data);
+  }
+
+  // ==================== DATA ENRICHMENT ====================
+  enrichEntity(entityType: string, entityId: number, provider?: string): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/enrichment/enrich`, {
+      entity_type: entityType,
+      entity_id: entityId,
+      provider
+    });
+  }
+
+  getEnrichmentProviders(): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/enrichment/providers`);
   }
 }

@@ -1,0 +1,67 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Sales Orders</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/sales-orders/new">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="ion-padding">
+    <ion-segment (ionChange)="filterChanged($event)" value="all">
+      <ion-segment-button value="all">
+        <ion-label>All</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="draft">
+        <ion-label>Draft</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="confirmed">
+        <ion-label>Confirmed</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="delivered">
+        <ion-label>Delivered</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <ion-searchbar placeholder="Search orders..." (ionInput)="searchChanged($event)" [debounce]="500"></ion-searchbar>
+
+    <ion-list>
+      <ion-item-sliding *ngFor="let order of orders">
+        <ion-item button (click)="viewOrder(order)">
+          <ion-icon slot="start" name="document-text" color="primary"></ion-icon>
+          <ion-label>
+            <h2>{{ order.order_number }}</h2>
+            <p>{{ order.customer?.first_name + ' ' + order.customer?.last_name || 'No customer' }}</p>
+            <p>{{ order.order_date | date:'mediumDate' }}</p>
+          </ion-label>
+          <ion-badge slot="end" [color]="getStatusColor(order.status)">
+            {{ order.status }}
+          </ion-badge>
+          <ion-text slot="end" class="total">{{ order.total | currency }}</ion-text>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="primary" (click)="editOrder(order)">Edit</ion-item-option>
+          <ion-item-option color="success" (click)="convertToInvoice(order)">To Invoice</ion-item-option>
+          <ion-item-option color="danger" (click)="deleteOrder(order)">Delete</ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+
+    <div *ngIf="orders.length === 0 && !loading" class="empty-state">
+      <ion-icon name="document-text-outline" size="large"></ion-icon>
+      <h3>No Sales Orders</h3>
+      <p>Create your first sales order</p>
+      <ion-button routerLink="/sales-orders/new">Create Order</ion-button>
+    </div>
+
+    <div *ngIf="loading" class="loading">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  </div>
+</ion-content>

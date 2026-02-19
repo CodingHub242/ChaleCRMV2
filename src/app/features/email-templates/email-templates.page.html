@@ -1,0 +1,53 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Email Templates</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/email-templates/new">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="ion-padding">
+    <ion-segment (ionChange)="filterChanged($event)" value="all">
+      <ion-segment-button value="all"><ion-label>All</ion-label></ion-segment-button>
+      <ion-segment-button value="lead"><ion-label>Lead</ion-label></ion-segment-button>
+      <ion-segment-button value="deal"><ion-label>Deal</ion-label></ion-segment-button>
+      <ion-segment-button value="invoice"><ion-label>Invoice</ion-label></ion-segment-button>
+    </ion-segment>
+
+    <ion-searchbar placeholder="Search templates..." (ionInput)="searchChanged($event)" [debounce]="500"></ion-searchbar>
+
+    <ion-list>
+      <ion-item-sliding *ngFor="let template of templates">
+        <ion-item button (click)="viewTemplate(template)">
+          <ion-icon slot="start" name="mail" color="primary"></ion-icon>
+          <ion-label>
+            <h2>{{ template.name }}</h2>
+            <p>{{ template.category | titlecase }} - {{ template.subject }}</p>
+          </ion-label>
+          <ion-badge slot="end" [color]="template.is_active ? 'success' : 'medium'">
+            {{ template.is_active ? 'Active' : 'Inactive' }}
+          </ion-badge>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="primary" (click)="editTemplate(template)">Edit</ion-item-option>
+          <ion-item-option color="tertiary" (click)="previewTemplate(template)">Preview</ion-item-option>
+          <ion-item-option color="success" (click)="duplicateTemplate(template)">Duplicate</ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+
+    <div *ngIf="templates.length === 0" class="empty-state">
+      <ion-icon name="mail-outline" size="large"></ion-icon>
+      <h3>No Email Templates</h3>
+      <p>Create email templates for your team</p>
+      <ion-button routerLink="/email-templates/new">Create Template</ion-button>
+    </div>
+  </div>
+</ion-content>

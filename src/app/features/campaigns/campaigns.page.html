@@ -1,0 +1,87 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Campaigns</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/campaigns/new">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Campaigns</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="ion-padding">
+    <!-- Filters -->
+    <ion-segment (ionChange)="filterChanged($event)" value="all">
+      <ion-segment-button value="all">
+        <ion-label>All</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="active">
+        <ion-label>Active</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="draft">
+        <ion-label>Draft</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="completed">
+        <ion-label>Completed</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <!-- Search -->
+    <ion-searchbar 
+      placeholder="Search campaigns..." 
+      (ionInput)="searchChanged($event)"
+      [debounce]="500">
+    </ion-searchbar>
+
+    <!-- Campaign List -->
+    <ion-list>
+      <ion-item-sliding *ngFor="let campaign of campaigns">
+        <ion-item button (click)="viewCampaign(campaign)">
+          <ion-icon slot="start" name="megaphone" [color]="getCampaignColor(campaign.type)"></ion-icon>
+          <ion-label>
+            <h2>{{ campaign.name }}</h2>
+            <p>{{ campaign.type | titlecase }} - {{ campaign.status | titlecase }}</p>
+            <p *ngIf="campaign.start_date">
+              {{ campaign.start_date | date:'mediumDate' }}
+              <span *ngIf="campaign.end_date"> - {{ campaign.end_date | date:'mediumDate' }}</span>
+            </p>
+          </ion-label>
+          <ion-badge slot="end" [color]="getStatusColor(campaign.status)">
+            {{ campaign.status }}
+          </ion-badge>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="primary" (click)="editCampaign(campaign)">
+            <ion-icon slot="icon-only" name="create"></ion-icon>
+          </ion-item-option>
+          <ion-item-option color="danger" (click)="deleteCampaign(campaign)">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+
+    <!-- Empty State -->
+    <div *ngIf="campaigns.length === 0 && !loading" class="empty-state">
+      <ion-icon name="megaphone-outline" size="large"></ion-icon>
+      <h3>No Campaigns Found</h3>
+      <p>Create your first campaign to get started</p>
+      <ion-button routerLink="/campaigns/new">Create Campaign</ion-button>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="loading">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  </div>
+</ion-content>

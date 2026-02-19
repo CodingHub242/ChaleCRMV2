@@ -1,0 +1,45 @@
+/* Forecasting Page Styles */
+ion-card {
+  margin-bottom: 16px;
+  
+  ion-card-header {
+    padding-bottom: 0;
+  }
+  
+  ion-card-content {
+    padding-top: 8px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0 0 8px;
+    color: var(--ion-color-primary);
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0 0 4px;
+  }
+  
+  h3 {
+    font-weight: 600;
+    margin: 0;
+  }
+  
+  p {
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+}
+
+ion-list {
+  ion-item {
+    --padding-start: 0;
+  }
+}
+
+ion-badge {
+  font-weight: 600;
+}

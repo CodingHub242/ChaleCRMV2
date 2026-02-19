@@ -1,0 +1,52 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Contracts</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/contracts/new">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="ion-padding">
+    <ion-segment (ionChange)="filterChanged($event)" value="all">
+      <ion-segment-button value="all"><ion-label>All</ion-label></ion-segment-button>
+      <ion-segment-button value="active"><ion-label>Active</ion-label></ion-segment-button>
+      <ion-segment-button value="pending"><ion-label>Pending</ion-label></ion-segment-button>
+      <ion-segment-button value="expired"><ion-label>Expired</ion-label></ion-segment-button>
+    </ion-segment>
+
+    <ion-searchbar placeholder="Search contracts..." (ionInput)="searchChanged($event)" [debounce]="500"></ion-searchbar>
+
+    <ion-list>
+      <ion-item-sliding *ngFor="let contract of contracts">
+        <ion-item button (click)="viewContract(contract)">
+          <ion-icon slot="start" name="document-lock" [color]="getStatusColor(contract.status)"></ion-icon>
+          <ion-label>
+            <h2>{{ contract.title }}</h2>
+            <p>{{ contract.type | titlecase }} - {{ contract.customer?.first_name + ' ' + contract.customer?.last_name || 'No customer' }}</p>
+            <p *ngIf="contract.end_date">Expires: {{ contract.end_date | date:'mediumDate' }}</p>
+          </ion-label>
+          <ion-badge slot="end" [color]="getStatusColor(contract.status)">{{ contract.status }}</ion-badge>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="primary" (click)="sendForSignature(contract)">Send for Signature</ion-item-option>
+          <ion-item-option color="success" (click)="download(contract)">Download</ion-item-option>
+          <ion-item-option color="danger" (click)="deleteContract(contract)">Delete</ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+
+    <div *ngIf="contracts.length === 0" class="empty-state">
+      <ion-icon name="document-lock-outline" size="large"></ion-icon>
+      <h3>No Contracts</h3>
+      <p>Create your first contract</p>
+      <ion-button routerLink="/contracts/new">Create Contract</ion-button>
+    </div>
+  </div>
+</ion-content>

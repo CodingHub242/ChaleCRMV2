@@ -1,0 +1,131 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Analytics & Reports</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="ion-padding">
+    <ion-segment (ionChange)="segmentChanged($event)" value="overview">
+      <ion-segment-button value="overview"><ion-label>Overview</ion-label></ion-segment-button>
+      <ion-segment-button value="sales"><ion-label>Sales</ion-label></ion-segment-button>
+      <ion-segment-button value="pipeline"><ion-label>Pipeline</ion-label></ion-segment-button>
+      <ion-segment-button value="performance"><ion-label>Performance</ion-label></ion-segment-button>
+    </ion-segment>
+
+    <!-- Date Range Picker -->
+    <ion-item>
+      <ion-label>Date Range</ion-label>
+      <ion-datetime display-format="MMM DD, YYYY" [(ngModel)]="dateRange"></ion-datetime>
+    </ion-item>
+
+    <!-- Overview Stats -->
+    <div *ngIf="currentSegment === 'overview'">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Revenue</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <h1>{{ stats.total_revenue | currency }}</h1>
+          <p>This period</p>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-card>
+              <ion-card-content>
+                <h2>{{ stats.total_deals }}</h2>
+                <p>Total Deals</p>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+          <ion-col>
+            <ion-card>
+              <ion-card-content>
+                <h2>{{ stats.total_contacts }}</h2>
+                <p>Contacts</p>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-card>
+              <ion-card-content>
+                <h2>{{ stats.conversion_rate | number:'1.1-1' }}%</h2>
+                <p>Conversion Rate</p>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+          <ion-col>
+            <ion-card>
+              <ion-card-content>
+                <h2>{{ stats.average_deal_size | currency }}</h2>
+                <p>Avg Deal Size</p>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+
+    <!-- Sales Chart -->
+    <div *ngIf="currentSegment === 'sales'">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Sales by Month</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p>Chart placeholder</p>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Pipeline -->
+    <div *ngIf="currentSegment === 'pipeline'">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Pipeline Overview</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <h2>{{ pipeline.total_pipeline_value | currency }}</h2>
+          <p>{{ pipeline.deals_count }} deals in pipeline</p>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Performance -->
+    <div *ngIf="currentSegment === 'performance'">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Team Performance</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list>
+            <ion-item>
+              <ion-label>Tasks Completed</ion-label>
+              <ion-badge slot="end" color="success">{{ performance.tasks_completed }}</ion-badge>
+            </ion-item>
+            <ion-item>
+              <ion-label>Calls Logged</ion-label>
+              <ion-badge slot="end" color="primary">{{ performance.calls_logged }}</ion-badge>
+            </ion-item>
+            <ion-item>
+              <ion-label>Meetings Scheduled</ion-label>
+              <ion-badge slot="end" color="tertiary">{{ performance.meetings_scheduled }}</ion-badge>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <ion-button expand="block" color="secondary" (click)="generateReport()">
+      Generate Report
+    </ion-button>
+  </div>
+</ion-content>

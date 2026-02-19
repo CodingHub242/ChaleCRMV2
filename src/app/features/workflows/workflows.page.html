@@ -1,0 +1,48 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Workflows</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/workflows/new">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="ion-padding">
+    <ion-segment (ionChange)="filterChanged($event)" value="all">
+      <ion-segment-button value="all"><ion-label>All</ion-label></ion-segment-button>
+      <ion-segment-button value="active"><ion-label>Active</ion-label></ion-segment-button>
+      <ion-segment-button value="inactive"><ion-label>Inactive</ion-label></ion-segment-button>
+    </ion-segment>
+
+    <ion-list>
+      <ion-item-sliding *ngFor="let workflow of workflows">
+        <ion-item button (click)="viewWorkflow(workflow)">
+          <ion-icon slot="start" name="git-branch" [color]="workflow.is_active ? 'success' : 'medium'"></ion-icon>
+          <ion-label>
+            <h2>{{ workflow.name }}</h2>
+            <p>{{ workflow.trigger_type | titlecase }}</p>
+            <p>{{ workflow.actions?.length || 0 }} actions</p>
+          </ion-label>
+          <ion-toggle slot="end" [checked]="workflow.is_active" (ionChange)="toggleWorkflow(workflow)"></ion-toggle>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="primary" (click)="editWorkflow(workflow)">Edit</ion-item-option>
+          <ion-item-option color="danger" (click)="deleteWorkflow(workflow)">Delete</ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+
+    <div *ngIf="workflows.length === 0" class="empty-state">
+      <ion-icon name="git-branch-outline" size="large"></ion-icon>
+      <h3>No Workflows</h3>
+      <p>Create automation workflows</p>
+      <ion-button routerLink="/workflows/new">Create Workflow</ion-button>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,78 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Sales Forecasting</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="ion-padding">
+    <ion-item>
+      <ion-label>Forecast Period (months)</ion-label>
+      <ion-select [(ngModel)]="forecastPeriod" (ionChange)="loadForecast()">
+        <ion-select-option value="3">3 Months</ion-select-option>
+        <ion-select-option value="6">6 Months</ion-select-option>
+        <ion-select-option value="12">12 Months</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Revenue Forecast</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <h1>{{ totalPredictedRevenue | currency }}</h1>
+        <p>Predicted revenue for next {{ forecastPeriod }} months</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Pipeline Analysis</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item>
+            <ion-label>Total Pipeline Value</ion-label>
+            <ion-badge slot="end" color="primary">{{ pipeline.total_pipeline_value | currency }}</ion-badge>
+          </ion-item>
+          <ion-item>
+            <ion-label>Weighted Forecast</ion-label>
+            <ion-badge slot="end" color="success">{{ pipeline.weighted_forecast | currency }}</ion-badge>
+          </ion-item>
+          <ion-item>
+            <ion-label>Probability Weighted</ion-label>
+            <ion-badge slot="end" color="warning">{{ pipeline.probability_weighted | currency }}</ion-badge>
+          </ion-item>
+          <ion-item>
+            <ion-label>Open Deals</ion-label>
+            <ion-badge slot="end">{{ pipeline.total_open_deals }}</ion-badge>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Monthly Predictions</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item *ngFor="let prediction of predictions">
+            <ion-label>
+              <h3>{{ prediction.month }}</h3>
+              <p>Confidence: {{ prediction.confidence_interval?.low | currency }} - {{ prediction.confidence_interval?.high | currency }}</p>
+            </ion-label>
+            <ion-badge slot="end" color="success">{{ prediction.predicted_revenue | currency }}</ion-badge>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-button expand="block" color="secondary" (click)="refreshForecast()">
+      Refresh Forecast
+    </ion-button>
+  </div>
+</ion-content>
