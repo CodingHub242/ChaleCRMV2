@@ -5,11 +5,12 @@ import { IonicModule, SearchbarCustomEvent, AlertController } from '@ionic/angul
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { Task, User } from '../../../models';
+import { IonContent, IonHeader, IonTitle,IonSegment,IonSegmentButton, IonToolbar, IonButton, IonButtons, IonMenuButton, IonIcon, IonRow, IonCol, IonModal, IonLabel, IonItem, IonDatetime } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-tasks-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule, RouterModule],
+  imports: [CommonModule, FormsModule, IonicModule, RouterModule,IonSegment,IonSegmentButton],
   templateUrl: './tasks-list.page.html',
   styleUrls: ['./tasks-list.page.scss']
 })
