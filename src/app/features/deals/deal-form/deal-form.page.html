@@ -1,0 +1,222 @@
+<ion-header class="bigin-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="router.navigate(['/deals'])">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ isEditing ? 'Edit Deal' : 'New Deal' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" [strong]="true">Save</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="form-container" *ngIf="!isLoading; else loadingTpl">
+    <!-- Amount Card -->
+    <div class="amount-card">
+      <h4>Deal Value</h4>
+      <div class="amount-input">
+        <span class="currency-symbol">{{ deal.currency || '$' }}</span>
+        <input 
+          type="number" 
+          [(ngModel)]="deal.amount" 
+          placeholder="0"
+          min="0"
+          step="100"
+        >
+      </div>
+    </div>
+
+    <!-- Stage Selection -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="flag-outline"></ion-icon>
+        <h3>Deal Stage</h3>
+      </div>
+      <div class="stage-selector">
+        <div 
+          *ngFor="let stage of stages" 
+          class="stage-chip"
+          [class.active]="deal.stage === stage"
+          [ngClass]="getStageClass(stage)"
+          (click)="deal.stage = stage; onStageChange()"
+        >
+          {{ stage }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Deal Information -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="business-outline"></ion-icon>
+        <h3>Deal Information</h3>
+      </div>
+      
+      <div class="form-grid">
+        <div class="form-field full-width">
+          <label>Deal Name <span class="required">*</span></label>
+          <ion-item lines="none">
+            <ion-input 
+              [(ngModel)]="deal.name" 
+              name="name" 
+              placeholder="Enter deal name"
+              required
+            ></ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-field">
+          <label>Probability</label>
+          <div class="probability-section">
+            <span class="label">Win Probability</span>
+            <ion-range 
+              [(ngModel)]="deal.probability" 
+              name="probability"
+              min="0" 
+              max="100" 
+              step="10"
+              class="probability-slider"
+            ></ion-range>
+            <span class="value">{{ deal.probability }}%</span>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>Currency</label>
+          <ion-item lines="none">
+            <ion-select 
+              [(ngModel)]="deal.currency" 
+              name="currency" 
+              interface="popover"
+            >
+              <ion-select-option *ngFor="let currency of currencies" [value]="currency">
+                {{ currency }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+
+        <div class="form-field full-width">
+          <label>Expected Close Date</label>
+          <ion-item lines="none">
+            <ion-datetime style="max-width: 100%;"
+              [(ngModel)]="deal.expected_close_date" 
+              name="expected_close_date"
+              presentation="date"
+              placeholder="Select date"
+            ></ion-datetime>
+          </ion-item>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related To -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="link-outline"></ion-icon>
+        <h3>Related To</h3>
+      </div>
+      
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Contact</label>
+          <div 
+            class="related-card" 
+            *ngIf="!deal.contact_id; else selectedContact"
+            (click)="showContactPicker()"
+          >
+            <div class="avatar">
+              <ion-icon name="person-outline"></ion-icon>
+            </div>
+            <div class="info">
+              <div class="title">Link a Contact</div>
+              <div class="subtitle">Optional</div>
+            </div>
+            <ion-icon class="arrow" name="chevron-forward-outline"></ion-icon>
+          </div>
+          <ng-template #selectedContact>
+            <div class="related-card" (click)="showContactPicker()">
+              <div class="avatar">
+                {{ getContactInitials(deal.contact_id) }}
+              </div>
+              <div class="info">
+                <div class="title">{{ getContactName(deal.contact_id) }}</div>
+                <div class="subtitle">Contact</div>
+              </div>
+              <ion-icon class="arrow" name="chevron-forward-outline"></ion-icon>
+            </div>
+          </ng-template>
+        </div>
+
+        <div class="form-field">
+          <label>Company</label>
+          <div 
+            class="related-card" 
+            *ngIf="!deal.company_id; else selectedCompany"
+            (click)="showCompanyPicker()"
+          >
+            <div class="avatar">
+              <ion-icon name="business-outline"></ion-icon>
+            </div>
+            <div class="info">
+              <div class="title">Link a Company</div>
+              <div class="subtitle">Optional</div>
+            </div>
+            <ion-icon class="arrow" name="chevron-forward-outline"></ion-icon>
+          </div>
+          <ng-template #selectedCompany>
+            <div class="related-card" (click)="showCompanyPicker()">
+              <div class="avatar">
+                {{ getCompanyInitials(deal.company_id) }}
+              </div>
+              <div class="info">
+                <div class="title">{{ getCompanyName(deal.company_id) }}</div>
+                <div class="subtitle">Company</div>
+              </div>
+              <ion-icon class="arrow" name="chevron-forward-outline"></ion-icon>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="document-text-outline"></ion-icon>
+        <h3>Description</h3>
+      </div>
+      
+      <div class="description-field">
+        <ion-item lines="none">
+          <ion-textarea 
+            [(ngModel)]="deal.description" 
+            name="description" 
+            rows="4"
+            placeholder="Add notes about this deal..."
+          ></ion-textarea>
+        </ion-item>
+      </div>
+    </div>
+
+     <!-- Action Buttons -->
+      <div class="form-actions">
+        <ion-button expand="block" class="cancel-btn" fill="outline" (click)="router.navigate(['/deals'])">
+          Cancel
+        </ion-button>
+        <ion-button expand="block" class="save-btn-full" (click)="save()">
+          {{ isEditing ? 'Update Deal' : 'Save Deal' }}
+        </ion-button>
+      </div>
+  </div>
+
+  <ng-template #loadingTpl>
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading deal...</p>
+    </div>
+  </ng-template>
+</ion-content>

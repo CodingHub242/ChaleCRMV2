@@ -1,0 +1,137 @@
+<ion-header>
+  <ion-toolbar class="bigin-header">
+    <ion-buttons slot="start">
+      <ion-button (click)="router.navigate(['/contacts'])">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ isEditing ? 'Edit Contact' : 'New Contact' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" [strong]="true" class="save-btn">Save</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="form-page">
+    <div class="form-card">
+      <!-- Profile Photo Section -->
+      <div class="profile-section">
+        <div class="profile-avatar" [style.background]="avatarPreview || getAvatarColor()">
+          <img *ngIf="avatarPreview" [src]="avatarPreview" alt="Avatar" class="avatar-preview" />
+          <span *ngIf="!avatarPreview">{{ getInitials() }}</span>
+        </div>
+        <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" hidden />
+        <ion-button fill="clear" class="change-photo-btn" (click)="fileInput.click()">
+          <ion-icon slot="start" name="camera-outline"></ion-icon>
+          {{ avatarPreview ? 'Change Photo' : 'Add Photo' }}
+        </ion-button>
+        <ion-button *ngIf="avatarPreview" fill="clear" color="danger" class="remove-photo-btn" (click)="removePhoto()">
+          <ion-icon slot="start" name="trash-outline"></ion-icon>
+          Remove
+        </ion-button>
+      </div>
+
+      <!-- Basic Information -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon">
+            <ion-icon name="person-outline"></ion-icon>
+          </div>
+          <h3>Basic Information</h3>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-field">
+            <!-- <ion-label position="floating">First Name *</ion-label> -->
+            <ion-input [(ngModel)]="contact.first_name" name="first_name" placeholder="Enter first name"></ion-input>
+          </div>
+
+          <div class="form-field">
+            <!-- <ion-label position="floating">Last Name *</ion-label> -->
+            <ion-input [(ngModel)]="contact.last_name" name="last_name" placeholder="Enter last name"></ion-input>
+          </div>
+
+          <div class="form-field full-width">
+            <!-- <ion-label position="floating">Email *</ion-label> -->
+            <ion-input type="email" [(ngModel)]="contact.email" name="email" placeholder="Enter email address"></ion-input>
+          </div>
+
+          <div class="form-field">
+            <!-- <ion-label position="floating">Phone</ion-label> -->
+            <ion-input type="tel" [(ngModel)]="contact.phone" name="phone" placeholder="Enter phone number"></ion-input>
+          </div>
+
+          <div class="form-field">
+            <!-- <ion-label position="floating">Mobile</ion-label> -->
+            <ion-input type="tel" [(ngModel)]="contact.mobile" name="mobile" placeholder="Enter mobile number"></ion-input>
+          </div>
+        </div>
+      </div>
+
+      <!-- Company Information -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon">
+            <ion-icon name="business-outline"></ion-icon>
+          </div>
+          <h3>Company Information</h3>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-field full-width">
+            <!-- <ion-label position="floating">Company</ion-label> -->
+            <ion-select [(ngModel)]="contact.company_id" name="company_id" interface="popover" placeholder="Select a company">
+              <ion-select-option [value]="undefined">No Company</ion-select-option>
+              <ion-select-option *ngFor="let company of companies" [value]="company.id">
+                {{ company.name }}
+              </ion-select-option>
+            </ion-select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lead Information -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon">
+            <ion-icon name="flag-outline"></ion-icon>
+          </div>
+          <h3>Lead Information</h3>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-field">
+            <!-- <ion-label position="floating">Lead Status</ion-label> -->
+            <ion-select [(ngModel)]="contact.lead_status" name="lead_status" interface="popover" placeholder="Select status">
+              <ion-select-option value="">Select Status</ion-select-option>
+              <ion-select-option *ngFor="let status of leadStatuses" [value]="status">
+                {{ status }}
+              </ion-select-option>
+            </ion-select>
+          </div>
+
+          <div class="form-field">
+            <!-- <ion-label position="floating">Source</ion-label> -->
+            <ion-select [(ngModel)]="contact.source" name="source" interface="popover" placeholder="Select source">
+              <ion-select-option value="">Select Source</ion-select-option>
+              <ion-select-option *ngFor="let source of sources" [value]="source">
+                {{ source }}
+              </ion-select-option>
+            </ion-select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="form-actions">
+        <ion-button expand="block" class="cancel-btn" fill="outline" (click)="router.navigate(['/contacts'])">
+          Cancel
+        </ion-button>
+        <ion-button expand="block" class="save-btn-full" (click)="save()">
+          {{ isEditing ? 'Update Contact' : 'Create Contact' }}
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>

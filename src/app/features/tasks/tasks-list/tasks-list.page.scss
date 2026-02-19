@@ -1,0 +1,347 @@
+.bigin-header {
+  --background: #073336;
+    --border-color: #e0e0e0;
+    --color: #e3e3e3;
+}
+
+.bigin-header ion-toolbar {
+ --background: #073336;
+    --border-color: #e0e0e0;
+    --color: #e3e3e3;
+}
+
+.bigin-header ion-title {
+  font-weight: 600;
+}
+
+.bigin-header ion-button {
+  --color: #e09027;
+}
+
+.bigin-search {
+  --background: #f5f7fa;
+  --border-radius: 10px;
+  --box-shadow: none;
+}
+
+.bigin-segment {
+  --background: #ffffff;
+}
+
+.bigin-segment ion-segment-button {
+  --background-checked: #ffa126;
+  --color-checked: #ffffff;
+  --indicator-color: transparent;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.bigin-content {
+  --background: #f5f7fa;
+}
+
+.tasks-container {
+  padding: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+// Stats Bar
+.stats-bar {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
+  padding: 16px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.stat-value.pending { color: #f57c00; }
+.stat-value.in-progress { color: #19b6d2; }
+.stat-value.completed { color: #43e97b; }
+.stat-value.overdue { color: #e53935; }
+
+.stat-label {
+  font-size: 13px;
+  color: #666;
+}
+
+// Loading State
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  text-align: center;
+  color: #999;
+}
+
+.loading-state ion-spinner {
+  margin-bottom: 16px;
+  color: #e09027;
+}
+
+// Empty State
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  text-align: center;
+  padding: 20px;
+}
+
+.empty-illustration {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.empty-illustration ion-icon {
+  font-size: 48px;
+  color: #e09027;
+}
+
+.empty-state h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.empty-state p {
+  margin: 8px 0 24px;
+  color: #666;
+}
+
+.primary-btn {
+  --background: #e09027;
+  --background-hover: #3d8de8;
+  --border-radius: 10px;
+  --color: white;
+  font-weight: 500;
+  height: 44px;
+}
+
+// Tasks List
+.tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+// Task Card
+.task-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  gap: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.task-card.completed {
+  opacity: 0.7;
+}
+
+.task-card.completed .task-content h3 {
+  text-decoration: line-through;
+  color: #999;
+}
+
+// Checkbox
+.task-checkbox {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.task-checkbox ion-icon {
+  font-size: 24px;
+  color: #ddd;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.task-checkbox:hover ion-icon {
+  color: #e09027;
+}
+
+.task-checkbox.completed ion-icon {
+  color: #43e97b;
+}
+
+// Task Content
+.task-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  gap: 12px;
+}
+
+.task-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a2e;
+  flex: 1;
+  line-height: 1.4;
+}
+
+// Priority Badge
+.priority-badge {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.priority-badge.low { background: #e8f5e9; color: #2e7d32; }
+.priority-badge.medium { background: #fff3e0; color: #f57c00; }
+.priority-badge.high { background: #ffebee; color: #c62828; }
+
+// Task Description
+.task-description {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// Task Meta
+.task-meta {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #888;
+}
+
+.meta-item ion-icon {
+  font-size: 14px;
+  color: #aaa;
+}
+
+.meta-item.due-date.overdue {
+  color: #e53935;
+}
+
+.meta-item.due-date.overdue ion-icon {
+  color: #e53935;
+}
+
+// Status Badge
+.status-badge {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: capitalize;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.status-badge.pending { background: #f5f5f5; color: #666; }
+.status-badge.in_progress { background: #e3f2fd; color: #1976d2; }
+.status-badge.completed { background: #c8e6c9; color: #2e7d32; }
+.status-badge.overdue { background: #ffcdd2; color: #c62828; }
+
+// Due Date Indicator
+.due-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.due-indicator.today { background: #f57c00; }
+.due-indicator.overdue { background: #e53935; }
+.due-indicator.upcoming { background: #4facfe; }
+
+// Related To
+.related-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: #666;
+}
+
+.related-info ion-icon {
+  font-size: 14px;
+  color: #999;
+}
+
+// Add Button
+.add-btn {
+  --color: #4facfe;
+  font-weight: 600;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .stats-bar {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .task-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .status-badge {
+    margin-left: 0;
+  }
+}

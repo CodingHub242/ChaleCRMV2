@@ -1,0 +1,125 @@
+<ion-header>
+  <ion-toolbar class="bigin-header">
+    <ion-buttons slot="start">
+      <ion-button (click)="router.navigate(['/companies'])">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ isEditing ? 'Edit Company' : 'New Company' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" [strong]="true" class="save-btn">Save</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="form-page">
+    <div class="form-card">
+      <!-- Profile Logo Section -->
+      <div class="profile-section">
+        <div class="profile-avatar" [style.background]="logoPreview || getAvatarColor()">
+          <img *ngIf="logoPreview" [src]="logoPreview" alt="Logo" class="avatar-preview" />
+          <span *ngIf="!logoPreview">{{ getInitials() }}</span>
+        </div>
+        <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" hidden />
+        <ion-button fill="clear" class="change-photo-btn" (click)="fileInput.click()">
+          <ion-icon slot="start" name="camera-outline"></ion-icon>
+          {{ logoPreview ? 'Change Logo' : 'Add Logo' }}
+        </ion-button>
+        <ion-button *ngIf="logoPreview" fill="clear" color="danger" class="remove-photo-btn" (click)="removePhoto()">
+          <ion-icon slot="start" name="trash-outline"></ion-icon>
+          Remove
+        </ion-button>
+      </div>
+
+      <!-- Basic Information -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon">
+            <ion-icon name="business-outline"></ion-icon>
+          </div>
+          <h3>Company Information</h3>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-field full-width">
+            <!-- <ion-label position="floating">Company Name *</ion-label> -->
+            <ion-input [(ngModel)]="company.name" name="name" placeholder="Enter company name"></ion-input>
+          </div>
+
+          <div class="form-field">
+            <!-- <ion-label position="floating">Industry</ion-label> -->
+            <ion-select [(ngModel)]="company.industry" name="industry" interface="popover" placeholder="Select industry">
+              <ion-select-option value="">Select Industry</ion-select-option>
+              <ion-select-option *ngFor="let industry of industries" [value]="industry">
+                {{ industry }}
+              </ion-select-option>
+            </ion-select>
+          </div>
+
+          <div class="form-field">
+            <!-- <ion-label position="floating">Phone</ion-label> -->
+            <ion-input type="tel" [(ngModel)]="company.phone" name="phone" placeholder="Enter phone number"></ion-input>
+          </div>
+
+          <div class="form-field full-width">
+            <!-- <ion-label position="floating">Email</ion-label> -->
+            <ion-input type="email" [(ngModel)]="company.email" name="email" placeholder="Enter email address"></ion-input>
+          </div>
+
+          <div class="form-field full-width">
+            <!-- <ion-label position="floating">Website</ion-label> -->
+            <ion-input type="url" [(ngModel)]="company.website" name="website" placeholder="Enter website URL"></ion-input>
+          </div>
+        </div>
+      </div>
+
+      <!-- Address Information -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon">
+            <ion-icon name="location-outline"></ion-icon>
+          </div>
+          <h3>Address Information</h3>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-field full-width">
+            <!-- <ion-label position="floating">Address</ion-label> -->
+            <ion-input [(ngModel)]="company.address" name="address" placeholder="Enter street address"></ion-input>
+          </div>
+
+          <div class="form-field">
+            <!-- <ion-label position="floating">City</ion-label> -->
+            <ion-input [(ngModel)]="company.city" name="city" placeholder="Enter city"></ion-input>
+          </div>
+
+          <div class="form-field">
+            <!-- <ion-label position="floating">State/Province</ion-label> -->
+            <ion-input [(ngModel)]="company.state" name="state" placeholder="Enter state"></ion-input>
+          </div>
+
+          <div class="form-field">
+            <!-- <ion-label position="floating">Country</ion-label> -->
+            <ion-input [(ngModel)]="company.country" name="country" placeholder="Enter country"></ion-input>
+          </div>
+
+          <div class="form-field">
+            <!-- <ion-label position="floating">Zip/Postal Code</ion-label> -->
+            <ion-input [(ngModel)]="company.zip_code" name="zip_code" placeholder="Enter zip code"></ion-input>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="form-actions">
+        <ion-button expand="block" class="cancel-btn" fill="outline" (click)="router.navigate(['/companies'])">
+          Cancel
+        </ion-button>
+        <ion-button expand="block" class="save-btn-full" (click)="save()">
+          {{ isEditing ? 'Update Company' : 'Create Company' }}
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>

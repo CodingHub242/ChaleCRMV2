@@ -1,0 +1,116 @@
+<ion-header class="bigin-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="router.navigate(['/products'])">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ isEditing ? 'Edit Product' : 'New Product' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" [strong]="true">Save</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="form-container">
+    <!-- Product Info -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="cube-outline"></ion-icon>
+        <h3>Product Information</h3>
+      </div>
+      
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Product Name <span class="required">*</span></label>
+          <ion-item lines="none">
+            <ion-input [(ngModel)]="product.name" name="name" placeholder="Enter product name" required></ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-field">
+          <label>Product Code <span class="required">*</span></label>
+          <ion-item lines="none">
+            <ion-input [(ngModel)]="product.code" name="code" placeholder="e.g., PRD-001" required></ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-field full-width">
+          <label>Description</label>
+          <ion-item lines="none">
+            <ion-textarea [(ngModel)]="product.description" name="description" rows="3" placeholder="Product description"></ion-textarea>
+          </ion-item>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pricing -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="pricetag-outline"></ion-icon>
+        <h3>Pricing</h3>
+      </div>
+      
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Unit Price</label>
+          <ion-item lines="none">
+            <ion-input type="number" [(ngModel)]="product.unit_price" name="unit_price" placeholder="0.00"></ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-field">
+          <label>Currency</label>
+          <ion-item lines="none">
+            <ion-select [(ngModel)]="product.currency" name="currency" interface="popover">
+              <ion-select-option *ngFor="let currency of currencies" [value]="currency">{{ currency }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+
+        <div class="form-field">
+          <label>Unit</label>
+          <ion-item lines="none">
+            <ion-select [(ngModel)]="product.unit" name="unit" interface="popover" placeholder="Select unit">
+              <ion-select-option *ngFor="let unit of units" [value]="unit">{{ unit | titlecase }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+
+        <div class="form-field">
+          <label>Quantity in Stock</label>
+          <ion-item lines="none">
+            <ion-input type="number" [(ngModel)]="product.quantity" name="quantity" placeholder="0"></ion-input>
+          </ion-item>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="power-outline"></ion-icon>
+        <h3>Status</h3>
+      </div>
+      
+      <div class="toggle-item">
+        <div class="toggle-info">
+          <span class="toggle-label">Active</span>
+          <span class="toggle-desc">Product will be available for quotes and invoices</span>
+        </div>
+        <ion-toggle [(ngModel)]="product.active" name="active"></ion-toggle>
+      </div>
+    </div>
+
+     <!-- Action Buttons -->
+      <div class="form-actions">
+        <ion-button expand="block" class="cancel-btn" fill="outline" (click)="router.navigate(['/products'])">
+          Cancel
+        </ion-button>
+        <ion-button expand="block" class="save-btn-full" (click)="save()">
+          {{ isEditing ? 'Update Product' : 'Save Product' }}
+        </ion-button>
+      </div>
+  </div>
+</ion-content>

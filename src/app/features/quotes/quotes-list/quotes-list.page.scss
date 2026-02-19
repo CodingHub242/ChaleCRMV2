@@ -1,0 +1,257 @@
+.bigin-header {
+  --background: #ffffff;
+  --border-color: #e0e0e0;
+}
+
+.bigin-header ion-toolbar {
+  --background: #073336;
+    --border-color: #e0e0e0;
+    --color: #e3e3e3;
+}
+
+.bigin-header ion-title {
+  font-weight: 600;
+}
+
+.bigin-header ion-button {
+  --color: #fff;
+}
+
+.bigin-segment {
+  --background: #ffffff;
+}
+
+.bigin-segment ion-segment-button {
+  --background-checked: #073336;
+  --color-checked: #ffffff;
+  --indicator-color: transparent;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.bigin-content {
+  --background: #f5f7fa;
+}
+
+.quotes-container {
+  padding: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+// Stats Bar
+.stats-bar {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 20px;
+  padding: 16px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #073336;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #666;
+}
+
+// Loading State
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  text-align: center;
+  color: #999;
+}
+
+.loading-state ion-spinner {
+  margin-bottom: 16px;
+  color: #073336;
+}
+
+// Empty State
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  text-align: center;
+  padding: 20px;
+}
+
+.empty-illustration {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.empty-illustration ion-icon {
+  font-size: 48px;
+  color: #073336;
+}
+
+.empty-state h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.empty-state p {
+  margin: 8px 0 24px;
+  color: #666;
+}
+
+.primary-btn {
+  --background: #073336;
+  --background-hover: #073336;
+  --border-radius: 10px;
+  --color: white;
+  font-weight: 500;
+  height: 44px;
+}
+
+// Quotes List
+.quotes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+// Quote Card
+.quote-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.quote-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.quote-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.quote-info h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.quote-number {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #888;
+}
+
+// Status Badge
+.status-badge {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.status-badge.draft { background: #f5f5f5; color: #666; }
+.status-badge.sent { background: #e3f2fd; color: #1976d2; }
+.status-badge.accepted { background: #c8e6c9; color: #2e7d32; }
+.status-badge.declined { background: #ffcdd2; color: #c62828; }
+.status-badge.expired { background: #fff3e0; color: #f57c00; }
+
+// Quote Contact
+.quote-contact {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.quote-contact ion-icon {
+  font-size: 16px;
+  color: #999;
+}
+
+// Quote Footer
+.quote-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.quote-amount {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.quote-amount .currency {
+  font-size: 14px;
+  color: #888;
+}
+
+.quote-amount .amount {
+  font-size: 24px;
+  font-weight: 700;
+  color: #073336;
+}
+
+.quote-date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #888;
+}
+
+.quote-date ion-icon {
+  font-size: 14px;
+  color: #aaa;
+}
+
+// Add Button
+.add-btn {
+  --color: #073336;
+  font-weight: 600;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .quote-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}

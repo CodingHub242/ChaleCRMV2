@@ -1,0 +1,296 @@
+.bigin-header {
+  --background: #073336;
+    --border-color: #e0e0e0;
+    --color: #e3e3e3;
+}
+
+.bigin-header ion-title {
+  font-weight: 600;
+}
+
+.search-toolbar {
+  --background: #ffffff;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  padding-bottom: 8px;
+}
+
+.bigin-search {
+  --background: #f5f7fa;
+  --border-radius: 10px;
+  --box-shadow: none;
+  --placeholder-color: #999;
+  padding: 0;
+}
+
+.bigin-content {
+  --background: #f5f7fa;
+}
+
+.deals-container {
+  padding: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+// Stats Bar
+.stats-bar {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 20px;
+  padding: 16px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #e09027;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #666;
+}
+
+// Loading State
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  text-align: center;
+  color: #999;
+}
+
+.loading-state ion-spinner {
+  margin-bottom: 16px;
+  color: #e09027;
+}
+
+// Empty State
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  text-align: center;
+  padding: 20px;
+}
+
+.empty-illustration {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.empty-illustration ion-icon {
+  font-size: 48px;
+  color: #e09027;
+}
+
+.empty-state h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.empty-state p {
+  margin: 8px 0 24px;
+  color: #666;
+}
+
+.primary-btn {
+  --background: #e09027;
+  --background-hover: #3d8de8;
+  --border-radius: 10px;
+  --color: white;
+  font-weight: 500;
+  height: 44px;
+}
+
+// Deals Grid
+.deals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+// Deal Card
+.deal-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.deal-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16px 16px 0;
+}
+
+.deal-info {
+  flex: 1;
+}
+
+.deal-name {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin-bottom: 8px;
+}
+
+.stage-badge {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.stage-badge.new { background: #e3f2fd; color: #1976d2; }
+.stage-badge.qualification { background: #fff3e0; color: #f57c00; }
+.stage-badge.needs-analysis { background: #f3e5f5; color: #7b1fa2; }
+.stage-badge.proposal { background: #fce4ec; color: #c2185b; }
+.stage-badge.negotiation { background: #e8f5e9; color: #388e3c; }
+.stage-badge.closed-won { background: #c8e6c9; color: #2e7d32; }
+.stage-badge.closed-lost { background: #ffcdd2; color: #c62828; }
+
+.more-btn {
+  --color: #999;
+}
+
+// Card Amount
+.card-amount {
+  padding: 12px 16px;
+}
+
+.amount {
+  font-size: 28px;
+  font-weight: 700;
+  color: #e09027;
+}
+
+.currency {
+  font-size: 14px;
+  color: #999;
+  margin-left: 4px;
+}
+
+// Card Body
+.card-body {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #666;
+}
+
+.info-row ion-icon {
+  font-size: 16px;
+  color: #999;
+  flex-shrink: 0;
+}
+
+// Card Footer
+.card-footer {
+  padding: 16px;
+  background: #fafafa;
+  border-top: 1px solid #f0f0f0;
+  margin-top: 12px;
+}
+
+.progress-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #e09027, #013d41);
+}
+
+.progress-fill.new { background: linear-gradient(90deg, #667eea, #764ba2); }
+.progress-fill.qualification { background: linear-gradient(90deg, #f093fb, #f5576c); }
+.progress-fill.needs-analysis { background: linear-gradient(90deg, #a8edea, #fed6e3); }
+.progress-fill.proposal { background: linear-gradient(90deg, #fa709a, #fee140); }
+.progress-fill.negotiation { background: linear-gradient(90deg, #43e97b, #38f9d7); }
+.progress-fill.closed-won { background: linear-gradient(90deg, #11998e, #38ef7d); }
+.progress-fill.closed-lost { background: linear-gradient(90deg, #eb3349, #f45c43); }
+
+.probability {
+  font-size: 12px;
+  font-weight: 600;
+  color: #e09027;
+}
+
+.owner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #999;
+}
+
+.owner ion-icon {
+  font-size: 16px;
+}
+
+// Add Button
+.add-btn {
+  --color: #fff;
+  font-weight: 600;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .deals-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stats-bar {
+    flex-wrap: wrap;
+  }
+}

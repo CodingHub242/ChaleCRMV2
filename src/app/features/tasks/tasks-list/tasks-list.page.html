@@ -1,0 +1,142 @@
+<ion-header class="bigin-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Tasks</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/tasks/new" class="add-btn">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar 
+      class="bigin-search"
+      placeholder="Search tasks..." 
+      (ionChange)="onSearch($event)"
+      [value]="searchQuery">
+    </ion-searchbar>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment class="bigin-segment" (ionChange)="onStatusChange()" [(ngModel)]="statusFilter">
+      <ion-segment-button value="">
+        <ion-label>All</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="pending">
+        <ion-label>Pending</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="in_progress">
+        <ion-label>In Progress</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="completed">
+        <ion-label>Completed</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="tasks-container">
+    <!-- Stats Bar -->
+    <div class="stats-bar" *ngIf="tasks.length > 0">
+      <div class="stat-item">
+        <span class="stat-value pending">{{ getPendingCount() }}</span>
+        <span class="stat-label">Pending</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value in-progress">{{ getInProgressCount() }}</span>
+        <span class="stat-label">In Progress</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value completed">{{ getCompletedCount() }}</span>
+        <span class="stat-label">Completed</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value overdue">{{ getOverdueCount() }}</span>
+        <span class="stat-label">Overdue</span>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading && tasks.length === 0" class="loading-state">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading tasks...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && tasks.length === 0" class="empty-state">
+      <div class="empty-illustration">
+        <ion-icon name="checkbox-outline"></ion-icon>
+      </div>
+      <h3>No tasks found</h3>
+      <p>Get started by creating your first task</p>
+      <ion-button routerLink="/tasks/new" class="primary-btn">Create Task</ion-button>
+    </div>
+
+    <!-- Tasks List -->
+    <div *ngIf="tasks.length > 0" class="tasks-list">
+      <div 
+        class="task-card" 
+        *ngFor="let task of tasks" 
+        [class.completed]="task.status === 'completed'"
+      >
+        <!-- Checkbox -->
+        <div class="task-checkbox" (click)="completeTask(task); $event.stopPropagation()" *ngIf="task.status !== 'completed'">
+          <ion-icon name="radio-button-off"></ion-icon>
+        </div>
+        <div class="task-checkbox completed" *ngIf="task.status === 'completed'">
+          <ion-icon name="checkmark-circle"></ion-icon>
+        </div>
+        
+        <!-- Task Content -->
+        <div class="task-content" [routerLink]="['/tasks', task.id]">
+          <div class="task-header">
+            <h3>{{ task.title }}</h3>
+            <ion-badge [class]="'priority-badge ' + task.priority">
+              {{ task.priority }}
+            </ion-badge>
+          </div>
+          
+          <!-- Description -->
+          <p *ngIf="task.description" class="task-description">{{ task.description }}</p>
+          
+          <!-- Task Meta -->
+          <div class="task-meta">
+            <!-- Due Date -->
+            <div class="meta-item due-date" [class.overdue]="isOverdue(task.due_date)" *ngIf="task.due_date">
+              <div class="due-indicator" [class]="getDueIndicatorClass(task.due_date)"></div>
+              <ion-icon name="calendar-outline"></ion-icon>
+              <span>{{ task.due_date | date:'MMM d, y' }}</span>
+            </div>
+            
+            <!-- Assignee -->
+            <div class="meta-item" *ngIf="task.assigned_to">
+              <ion-icon name="person-outline"></ion-icon>
+              <span>{{ getAssigneeName(task.assigned_to) }}</span>
+            </div>
+            
+            <!-- Status -->
+            <ion-badge [class]="'status-badge ' + task.status">
+              {{ formatStatus(task.status) }}
+            </ion-badge>
+          </div>
+
+          <!-- Related To -->
+          <div class="related-info" *ngIf="task.related_to_type && task.related_to_id">
+            <ion-icon name="link-outline"></ion-icon>
+            <span>Related to {{ task.related_to_type }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Infinite Scroll -->
+    <ion-infinite-scroll (ionInfinite)="loadMore($event)" *ngIf="tasks.length > 0">
+      <ion-infinite-scroll-content
+        loading-spinner="crescent"
+        loading-text="Loading more...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </div>
+</ion-content>

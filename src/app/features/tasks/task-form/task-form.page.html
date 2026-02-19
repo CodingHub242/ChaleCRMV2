@@ -1,0 +1,179 @@
+<ion-header class="bigin-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="router.navigate(['/tasks'])">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ isEditing ? 'Edit Task' : 'New Task' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" [strong]="true">Save</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="form-container" *ngIf="!isLoading; else loadingTpl">
+    <!-- Priority & Status Card -->
+    <div class="status-card">
+      <div class="priority-selector">
+        <span class="label">Priority</span>
+        <div class="priority-chips">
+          <div 
+            *ngFor="let priority of priorities" 
+            class="priority-chip"
+            [class.active]="task.priority === priority"
+            [ngClass]="priority"
+            (click)="setPriority(priority)"
+          >
+            {{ formatPriority(priority) }}
+          </div>
+        </div>
+      </div>
+      
+      <div class="status-selector">
+        <span class="label">Status</span>
+        <div class="status-chips">
+          <div 
+            *ngFor="let status of statuses" 
+            class="status-chip"
+            [class.active]="task.status === status"
+            [ngClass]="status.replace('_', '-')"
+            (click)="setStatus(status)"
+          >
+            {{ formatStatus(status) }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task Information -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="clipboard-outline"></ion-icon>
+        <h3>Task Information</h3>
+      </div>
+      
+      <div class="form-grid">
+        <div class="form-field full-width">
+          <label>Task Title <span class="required">*</span></label>
+          <ion-item lines="none">
+            <ion-input 
+              [(ngModel)]="task.title" 
+              name="title" 
+              placeholder="Enter task title"
+              required
+            ></ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-field full-width">
+          <label>Due Date</label>
+          <ion-item lines="none">
+            <ion-datetime style="max-width: 100%;"
+              [(ngModel)]="task.due_date" 
+              name="due_date"
+              presentation="date"
+              placeholder="Select date"
+            ></ion-datetime>
+          </ion-item>
+        </div>
+
+        <div class="form-field full-width">
+          <label>Assigned To</label>
+          <ion-item lines="none">
+            <ion-select 
+              [(ngModel)]="task.assigned_to" 
+              name="assigned_to" 
+              interface="popover"
+              placeholder="Select assignee"
+            >
+              <ion-select-option *ngFor="let user of users" [value]="user.id">
+                {{ user.name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related To -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="link-outline"></ion-icon>
+        <h3>Related To</h3>
+      </div>
+      
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Related Type</label>
+          <ion-item lines="none">
+            <ion-select 
+              [(ngModel)]="task.related_to_type" 
+              name="related_to_type" 
+              interface="popover"
+              placeholder="Select type"
+              (ionChange)="onRelatedTypeChange()"
+            >
+              <ion-select-option *ngFor="let type of relatedTypes" [value]="type.value">
+                {{ type.label }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+
+        <div class="form-field" *ngIf="task.related_to_type">
+          <label>{{ getRelatedTypeLabel() }}</label>
+          <ion-item lines="none">
+            <ion-select 
+              [(ngModel)]="task.related_to_id" 
+              name="related_to_id" 
+              interface="popover"
+              placeholder="Select record"
+            >
+              <ion-select-option *ngFor="let item of getRelatedItems()" [value]="item.id">
+                {{ getRelatedItemName(item) }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="document-text-outline"></ion-icon>
+        <h3>Description</h3>
+      </div>
+      
+      <div class="description-field">
+        <ion-item lines="none">
+          <ion-textarea 
+            [(ngModel)]="task.description" 
+            name="description" 
+            rows="4"
+            placeholder="Add notes about this task..."
+          ></ion-textarea>
+        </ion-item>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+      <div class="form-actions">
+        <ion-button expand="block" class="cancel-btn" fill="outline" (click)="router.navigate(['/tasks'])">
+          Cancel
+        </ion-button>
+        <ion-button expand="block" class="save-btn-full" (click)="save()">
+          {{ isEditing ? 'Update Task' : 'Save Task' }}
+        </ion-button>
+      </div>
+  </div>
+
+  <ng-template #loadingTpl>
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading task...</p>
+    </div>
+  </ng-template>
+</ion-content>

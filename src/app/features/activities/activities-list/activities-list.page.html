@@ -1,0 +1,115 @@
+<ion-header class="bigin-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Activities</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/activities/new" class="add-btn">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment class="bigin-segment" (ionChange)="onTypeChange($event)" [(ngModel)]="typeFilter">
+      <ion-segment-button value="">
+        <ion-label>All</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="call">
+        <ion-label>Calls</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="meeting">
+        <ion-label>Meetings</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="note">
+        <ion-label>Notes</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="activities-container">
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="activities.length === 0 && !isLoading">
+      <div class="empty-illustration">
+        <ion-icon name="calendar-outline"></ion-icon>
+      </div>
+      <h3>No activities found</h3>
+      <p>Track your interactions with contacts</p>
+      <ion-button routerLink="/activities/new" class="primary-btn">Add Activity</ion-button>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="isLoading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading activities...</p>
+    </div>
+
+    <!-- Activities List -->
+    <div class="activities-list" *ngIf="activities.length > 0">
+      <div 
+        class="activity-card" 
+        *ngFor="let activity of activities"
+        [class.completed]="activity.completed"
+      >
+        <!-- Activity Type Icon -->
+        <div class="activity-icon" [ngClass]="activity.type">
+          <ion-icon [name]="getIcon(activity.type)"></ion-icon>
+        </div>
+
+        <!-- Activity Content -->
+        <div class="activity-content">
+          <div class="activity-header">
+            <h3>{{ activity.title }}</h3>
+            <ion-badge [class]="'type-badge ' + activity.type">
+              {{ activity.type | titlecase }}
+            </ion-badge>
+          </div>
+
+          <p *ngIf="activity.description" class="activity-description">
+            {{ activity.description }}
+          </p>
+
+          <div class="activity-meta">
+            <!-- Due Date -->
+            <div class="meta-item" *ngIf="activity.due_date">
+              <ion-icon name="calendar-outline"></ion-icon>
+              <span>{{ activity.due_date | date:'MMM d, y' }}</span>
+            </div>
+
+            <!-- Duration -->
+            <div class="meta-item" *ngIf="activity.duration">
+              <ion-icon name="time-outline"></ion-icon>
+              <span>{{ formatDuration(activity.duration) }}</span>
+            </div>
+
+            <!-- Related To -->
+            <div class="meta-item" *ngIf="activity.related_to_type">
+              <ion-icon name="link-outline"></ion-icon>
+              <span>{{ activity.related_to_type | titlecase }}</span>
+            </div>
+          </div>
+
+          <!-- Participants -->
+          <div class="participants" *ngIf="activity.participants && activity.participants.length > 0">
+            <div class="participant-avatars">
+              <div class="participant-avatar" *ngFor="let p of activity.participants.slice(0, 3)">
+                {{ p.charAt(0).toUpperCase() }}
+              </div>
+              <div class="participant-more" *ngIf="activity.participants.length > 3">
+                +{{ activity.participants.length - 3 }}
+              </div>
+            </div>
+            <span class="participant-names">{{ activity.participants.join(', ') }}</span>
+          </div>
+        </div>
+
+        <!-- Completed Badge -->
+        <div class="completed-badge" *ngIf="activity.completed">
+          <ion-icon name="checkmark-circle"></ion-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

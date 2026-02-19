@@ -12,36 +12,36 @@ import { MainLayoutPage } from './features/layout/main-layout/main-layout.page';
 import { DashboardPage } from './features/dashboard/dashboard.page';
 
 // // Contacts
-// import { ContactsListPage } from './features/contacts/contacts-list/contacts-list.page';
-// import { ContactFormPage } from './features/contacts/contact-form/contact-form.page';
+import { ContactsListPage } from './features/contacts/contacts-list/contacts-list.page';
+import { ContactFormPage } from './features/contacts/contact-form/contact-form.page';
 
 // // Companies
-// import { CompaniesListPage } from './features/companies/companies-list/companies-list.page';
-// import { CompanyFormPage } from './features/companies/company-form/company-form.page';
+import { CompaniesListPage } from './features/companies/companies-list/companies-list.page';
+import { CompanyFormPage } from './features/companies/company-form/company-form.page';
 
 // // Deals
-// import { DealsListPage } from './features/deals/deals-list/deals-list.page';
-// import { DealFormPage } from './features/deals/deal-form/deal-form.page';
+import { DealsListPage } from './features/deals/deals-list/deals-list.page';
+import { DealFormPage } from './features/deals/deal-form/deal-form.page';
 
 // // Tasks
-// import { TasksListPage } from './features/tasks/tasks-list/tasks-list.page';
-// import { TaskFormPage } from './features/tasks/task-form/task-form.page';
+import { TasksListPage } from './features/tasks/tasks-list/tasks-list.page';
+import { TaskFormPage } from './features/tasks/task-form/task-form.page';
 
 // // Activities
-// import { ActivitiesListPage } from './features/activities/activities-list/activities-list.page';
-// import { ActivityFormPage } from './features/activities/activity-form/activity-form.page';
+import { ActivitiesListPage } from './features/activities/activities-list/activities-list.page';
+import { ActivityFormPage } from './features/activities/activity-form/activity-form.page';
 
 // // Products
-// import { ProductsListPage } from './features/products/products-list/products-list.page';
-// import { ProductFormPage } from './features/products/product-form/product-form.page';
+import { ProductsListPage } from './features/products/products-list/products-list.page';
+import { ProductFormPage } from './features/products/product-form/product-form.page';
 
 // // Quotes
-// import { QuotesListPage } from './features/quotes/quotes-list/quotes-list.page';
-// import { QuoteFormPage } from './features/quotes/quote-form/quote-form.page';
+import { QuotesListPage } from './features/quotes/quotes-list/quotes-list.page';
+import { QuoteFormPage } from './features/quotes/quote-form/quote-form.page';
 
 // // Invoices
-// import { InvoicesListPage } from './features/invoices/invoices-list/invoices-list.page';
-// import { InvoiceFormPage } from './features/invoices/invoice-form/invoice-form.page';
+import { InvoicesListPage } from './features/invoices/invoices-list/invoices-list.page';
+import { InvoiceFormPage } from './features/invoices/invoice-form/invoice-form.page';
 
 // export const routes: Routes = [
 //   {
@@ -88,110 +88,110 @@ export const routes: Routes = [
         path: 'dashboard',
         component: DashboardPage
       },
-      // // Contacts
-      // {
-      //   path: 'contacts',
-      //   component: ContactsListPage
-      // },
-      // {
-      //   path: 'contacts/new',
-      //   component: ContactFormPage
-      // },
-      // {
-      //   path: 'contacts/:id',
-      //   component: ContactFormPage
-      // },
-      // // Companies
-      // {
-      //   path: 'companies',
-      //   component: CompaniesListPage
-      // },
-      // {
-      //   path: 'companies/new',
-      //   component: CompanyFormPage
-      // },
-      // {
-      //   path: 'companies/:id',
-      //   component: CompanyFormPage
-      // },
-      // // Deals
-      // {
-      //   path: 'deals',
-      //   component: DealsListPage
-      // },
-      // {
-      //   path: 'deals/new',
-      //   component: DealFormPage
-      // },
-      // {
-      //   path: 'deals/:id',
-      //   component: DealFormPage
-      // },
+      // Contacts
+      {
+        path: 'contacts',
+        component: ContactsListPage
+      },
+      {
+        path: 'contacts/new',
+        component: ContactFormPage
+      },
+      {
+        path: 'contacts/:id',
+        component: ContactFormPage
+      },
+      // Companies
+      {
+        path: 'companies',
+        component: CompaniesListPage
+      },
+      {
+        path: 'companies/new',
+        component: CompanyFormPage
+      },
+      {
+        path: 'companies/:id',
+        component: CompanyFormPage
+      },
+      // Deals
+      {
+        path: 'deals',
+        component: DealsListPage
+      },
+      {
+        path: 'deals/new',
+        component: DealFormPage
+      },
+      {
+        path: 'deals/:id',
+        component: DealFormPage
+      },
       // // Tasks
-      // {
-      //   path: 'tasks',
-      //   component: TasksListPage
-      // },
-      // {
-      //   path: 'tasks/new',
-      //   component: TaskFormPage
-      // },
-      // {
-      //   path: 'tasks/:id',
-      //   component: TaskFormPage
-      // },
+      {
+        path: 'tasks',
+        component: TasksListPage
+      },
+      {
+        path: 'tasks/new',
+        component: TaskFormPage
+      },
+      {
+        path: 'tasks/:id',
+        component: TaskFormPage
+      },
       // // Activities
-      // {
-      //   path: 'activities',
-      //   component: ActivitiesListPage
-      // },
-      // {
-      //   path: 'activities/new',
-      //   component: ActivityFormPage
-      // },
-      // {
-      //   path: 'activities/:id',
-      //   component: ActivityFormPage
-      // },
+      {
+        path: 'activities',
+        component: ActivitiesListPage
+      },
+      {
+        path: 'activities/new',
+        component: ActivityFormPage
+      },
+      {
+        path: 'activities/:id',
+        component: ActivityFormPage
+      },
       // // Products
-      // {
-      //   path: 'products',
-      //   component: ProductsListPage
-      // },
-      // {
-      //   path: 'products/new',
-      //   component: ProductFormPage
-      // },
-      // {
-      //   path: 'products/:id',
-      //   component: ProductFormPage
-      // },
+      {
+        path: 'products',
+        component: ProductsListPage
+      },
+      {
+        path: 'products/new',
+        component: ProductFormPage
+      },
+      {
+        path: 'products/:id',
+        component: ProductFormPage
+      },
       // // Quotes
-      // {
-      //   path: 'quotes',
-      //   component: QuotesListPage
-      // },
-      // {
-      //   path: 'quotes/new',
-      //   component: QuoteFormPage
-      // },
-      // {
-      //   path: 'quotes/:id',
-      //   component: QuoteFormPage
-      // },
-      // // Invoices
-      // {
-      //   path: 'invoices',
-      //   component: InvoicesListPage
-      // },
-      // {
-      //   path: 'invoices/new',
-      //   component: InvoiceFormPage
-      // },
-      // {
-      //   path: 'invoices/:id',
-      //   component: InvoiceFormPage
-      // }
+      {
+        path: 'quotes',
+        component: QuotesListPage
+      },
+      {
+        path: 'quotes/new',
+        component: QuoteFormPage
+      },
+      {
+        path: 'quotes/:id',
+        component: QuoteFormPage
+      },
+      // Invoices
+      {
+        path: 'invoices',
+        component: InvoicesListPage
+      },
+      {
+        path: 'invoices/new',
+        component: InvoiceFormPage
+      },
+      {
+        path: 'invoices/:id',
+        component: InvoiceFormPage
+      }
     ]
   },
   
@@ -199,5 +199,33 @@ export const routes: Routes = [
   {
     path: '**',
     redirectTo: 'login'
+  },
+  {
+    path: 'contacts',
+    loadComponent: () => import('./features/contacts/contacts.page').then( m => m.ContactsPage)
+  },
+  {
+    path: 'companies',
+    loadComponent: () => import('./features/companies/companies.page').then( m => m.CompaniesPage)
+  },
+  {
+    path: 'deals',
+    loadComponent: () => import('./features/deals/deals.page').then( m => m.DealsPage)
+  },
+  {
+    path: 'invoices',
+    loadComponent: () => import('./features/invoices/invoices.page').then( m => m.InvoicesPage)
+  },
+  {
+    path: 'products',
+    loadComponent: () => import('./features/products/products.page').then( m => m.ProductsPage)
+  },
+  {
+    path: 'quotes',
+    loadComponent: () => import('./features/quotes/quotes.page').then( m => m.QuotesPage)
+  },
+  {
+    path: 'tasks',
+    loadComponent: () => import('./features/tasks/tasks.page').then( m => m.TasksPage)
   }
 ];

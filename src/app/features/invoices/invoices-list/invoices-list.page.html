@@ -1,0 +1,116 @@
+<ion-header class="bigin-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Invoices</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/invoices/new" class="add-btn">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment class="bigin-segment" (ionChange)="onStatusChange()" [(ngModel)]="statusFilter">
+      <ion-segment-button value="">
+        <ion-label>All</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="draft">
+        <ion-label>Draft</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="sent">
+        <ion-label>Sent</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="paid">
+        <ion-label>Paid</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="overdue">
+        <ion-label>Overdue</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="invoices-container">
+    <!-- Stats Bar -->
+    <div class="stats-bar" *ngIf="invoices.length > 0">
+      <div class="stat-item">
+        <span class="stat-value">{{ getTotalValue() | currency }}</span>
+        <span class="stat-label">Total Value</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">{{ getPaidValue() | currency }}</span>
+        <span class="stat-label">Paid</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value overdue">{{ getOutstandingValue() | currency }}</span>
+        <span class="stat-label">Outstanding</span>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="invoices.length === 0 && !isLoading">
+      <div class="empty-illustration">
+        <ion-icon name="receipt-outline"></ion-icon>
+      </div>
+      <h3>No invoices found</h3>
+      <p>Create invoices for your contacts</p>
+      <ion-button routerLink="/invoices/new" class="primary-btn">Create Invoice</ion-button>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="isLoading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading invoices...</p>
+    </div>
+
+    <!-- Invoices List -->
+    <div class="invoices-list" *ngIf="invoices.length > 0">
+      <div class="invoice-card" *ngFor="let invoice of invoices" [routerLink]="['/invoices', invoice.id]">
+        <div class="invoice-header">
+          <div class="invoice-info">
+            <h3>{{ invoice.subject }}</h3>
+            <p class="invoice-number">{{ invoice.invoice_number }}</p>
+          </div>
+          <ion-badge [class]="'status-badge ' + invoice.status">
+            {{ invoice.status | titlecase }}
+          </ion-badge>
+        </div>
+
+        <div class="invoice-contact" *ngIf="invoice.contact">
+          <ion-icon name="person-outline"></ion-icon>
+          <span>{{ invoice.contact?.first_name }} {{ invoice.contact?.last_name }}</span>
+        </div>
+
+        <div class="invoice-amounts">
+          <div class="amount-row">
+            <span class="label">Total</span>
+            <span class="value total">{{ invoice.total | currency:invoice.currency }}</span>
+          </div>
+          <div class="amount-row">
+            <span class="label">Paid</span>
+            <span class="value paid">{{ invoice.paid_amount | currency:invoice.currency }}</span>
+          </div>
+          <div class="amount-row">
+            <span class="label">Balance Due</span>
+            <span class="value balance">{{ invoice.balance_due | currency:invoice.currency }}</span>
+          </div>
+        </div>
+
+        <div class="invoice-footer">
+          <div class="invoice-date">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>Due: {{ invoice.due_date | date:'MMM d, y' }}</span>
+          </div>
+          <div class="payment-status">
+            <div class="payment-bar">
+              <div class="payment-fill" [style.width.%]="getPaymentPercent(invoice)"></div>
+            </div>
+            <span class="percent">{{ getPaymentPercent(invoice) }}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

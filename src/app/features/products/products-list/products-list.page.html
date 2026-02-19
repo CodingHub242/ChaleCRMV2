@@ -1,0 +1,80 @@
+<ion-header class="bigin-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Products</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/products/new" class="add-btn">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar 
+      class="bigin-search"
+      placeholder="Search products..." 
+      (ionChange)="onSearch($event)"
+      [value]="searchQuery">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="products-container">
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="products.length === 0 && !isLoading">
+      <div class="empty-illustration">
+        <ion-icon name="cube-outline"></ion-icon>
+      </div>
+      <h3>No products found</h3>
+      <p>Add your first product to get started</p>
+      <ion-button routerLink="/products/new" class="primary-btn">Add Product</ion-button>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="isLoading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading products...</p>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="products-grid" *ngIf="products.length > 0">
+      <div class="product-card" *ngFor="let product of products">
+        <div class="product-header">
+          <div class="product-icon">
+            <ion-icon name="cube-outline"></ion-icon>
+          </div>
+          <ion-badge [class]="product.active ? 'active' : 'inactive'">
+            {{ product.active ? 'Active' : 'Inactive' }}
+          </ion-badge>
+        </div>
+        
+        <div class="product-info">
+          <h3>{{ product.name }}</h3>
+          <p class="product-code">{{ product.code }}</p>
+        </div>
+
+        <div class="product-price">
+          <span class="currency">{{ product.currency }}</span>
+          <span class="amount">{{ product.unit_price | number:'1.2-2' }}</span>
+        </div>
+
+        <div class="product-meta">
+          <div class="meta-item" *ngIf="product.unit">
+            <ion-icon name="resize-outline"></ion-icon>
+            <span>{{ product.unit }}</span>
+          </div>
+          <div class="meta-item" *ngIf="product.quantity !== undefined">
+            <ion-icon name="inventory-outline"></ion-icon>
+            <span>{{ product.quantity }} in stock</span>
+          </div>
+        </div>
+
+        <div class="product-actions" [routerLink]="['/products', product.id]">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

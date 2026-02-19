@@ -1,0 +1,200 @@
+<ion-header class="bigin-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="router.navigate(['/activities'])">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ isEditing ? 'Edit Activity' : 'New Activity' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" [strong]="true">Save</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="form-container" *ngIf="!isLoading; else loadingTpl">
+    <!-- Activity Type Selector -->
+    <div class="type-selector">
+      <span class="label">Activity Type</span>
+      <div class="type-chips">
+        <div 
+          *ngFor="let type of activityTypes" 
+          class="type-chip"
+          [class.active]="activity.type === type.value"
+          [ngClass]="type.value"
+          (click)="setActivityType(type.value)"
+        >
+          <ion-icon [name]="type.icon"></ion-icon>
+          <span>{{ type.label }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity Information -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="clipboard-outline"></ion-icon>
+        <h3>Activity Details</h3>
+      </div>
+      
+      <div class="form-grid">
+        <div class="form-field full-width">
+          <label>Title <span class="required">*</span></label>
+          <ion-item lines="none">
+            <ion-input 
+              [(ngModel)]="activity.title" 
+              name="title" 
+              placeholder="Enter activity title"
+              required
+            ></ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-field full-width">
+          <label>Due Date & Time</label>
+          <ion-item lines="none">
+            <ion-datetime style="max-width: 100%;"
+              [(ngModel)]="activity.due_date" 
+              name="due_date"
+              presentation="date"
+              placeholder="Select date"
+            ></ion-datetime>
+          </ion-item>
+        </div>
+
+        <!-- Call-specific fields -->
+        <div class="form-field" *ngIf="activity.type === 'call'">
+          <label>Call Type</label>
+          <ion-item lines="none">
+            <ion-select 
+              [(ngModel)]="activity['call_type']" 
+              name="call_type" 
+              interface="popover"
+              placeholder="Select type"
+            >
+              <ion-select-option *ngFor="let callType of callTypes" [value]="callType.value">
+                {{ callType.label }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+
+        <div class="form-field" *ngIf="activity.type === 'call'">
+          <label>Duration (minutes)</label>
+          <ion-item lines="none">
+            <ion-input 
+              type="number"
+              [(ngModel)]="activity.duration" 
+              name="duration" 
+              placeholder="Enter duration"
+            ></ion-input>
+          </ion-item>
+        </div>
+
+        <!-- Meeting-specific fields -->
+        <div class="form-field" *ngIf="activity.type === 'meeting'">
+          <label>Location</label>
+          <ion-item lines="none">
+            <ion-input 
+              [(ngModel)]="activity['location']" 
+              name="location" 
+              placeholder="Enter location"
+            ></ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-field" *ngIf="activity.type === 'meeting'">
+          <label>Duration (minutes)</label>
+          <ion-item lines="none">
+            <ion-input 
+              type="number"
+              [(ngModel)]="activity.duration" 
+              name="duration" 
+              placeholder="Enter duration"
+            ></ion-input>
+          </ion-item>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related To -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="link-outline"></ion-icon>
+        <h3>Related To</h3>
+      </div>
+      
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Related Type</label>
+          <ion-item lines="none">
+            <ion-select 
+              [(ngModel)]="activity.related_to_type" 
+              name="related_to_type" 
+              interface="popover"
+              placeholder="Select type"
+              (ionChange)="onRelatedTypeChange()"
+            >
+              <ion-select-option *ngFor="let type of relatedTypes" [value]="type.value">
+                {{ type.label }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+
+        <div class="form-field" *ngIf="activity.related_to_type">
+          <label>{{ getRelatedTypeLabel() }}</label>
+          <ion-item lines="none">
+            <ion-select 
+              [(ngModel)]="activity.related_to_id" 
+              name="related_to_id" 
+              interface="popover"
+              placeholder="Select record"
+            >
+              <ion-select-option *ngFor="let item of getRelatedItems()" [value]="item.id">
+                {{ getRelatedItemName(item) }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="document-text-outline"></ion-icon>
+        <h3>Description</h3>
+      </div>
+      
+      <div class="description-field">
+        <ion-item lines="none">
+          <ion-textarea 
+            [(ngModel)]="activity.description" 
+            name="description" 
+            rows="4"
+            placeholder="Add notes about this activity..."
+          ></ion-textarea>
+        </ion-item>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+      <div class="form-actions">
+        <ion-button expand="block" class="cancel-btn" fill="outline" (click)="router.navigate(['/activities'])">
+          Cancel
+        </ion-button>
+        <ion-button expand="block" class="save-btn-full" (click)="save()">
+          {{ isEditing ? 'Update Activity' : 'Save Activity' }}
+        </ion-button>
+      </div>
+  </div>
+
+  <ng-template #loadingTpl>
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading activity...</p>
+    </div>
+  </ng-template>
+</ion-content>

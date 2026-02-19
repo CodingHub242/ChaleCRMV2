@@ -1,0 +1,107 @@
+<ion-header>
+  <ion-toolbar class="bigin-header">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Contacts</ion-title>
+    <ion-buttons slot="end">
+      <ion-button class="add-btn" routerLink="/contacts/new">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar class="search-toolbar">
+    <ion-searchbar 
+      placeholder="Search by name, email, company..." 
+      (ionChange)="onSearch($event)"
+      [value]="searchQuery"
+      class="bigin-search">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="contacts-container">
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <span class="stat-value">{{ contacts.length }}</span>
+        <span class="stat-label">Total Contacts</span>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading && contacts.length === 0" class="loading-state">
+      <ion-spinner name="lines"></ion-spinner>
+      <p>Loading contacts...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && contacts.length === 0" class="empty-state">
+      <div class="empty-illustration">
+        <ion-icon name="people-outline"></ion-icon>
+      </div>
+      <h3>No contacts found</h3>
+      <p>Get started by adding your first contact</p>
+      <ion-button class="primary-btn" routerLink="/contacts/new">
+        <ion-icon slot="start" name="add"></ion-icon>
+        Add Contact
+      </ion-button>
+    </div>
+
+    <!-- Contacts Grid - Bigin Style -->
+    <div *ngIf="contacts.length > 0" class="contacts-grid">
+      <div class="contact-card" *ngFor="let contact of contacts" [routerLink]="['/contacts', contact.id]">
+        <div class="card-header">
+          <div class="contact-avatar" [style.background]="getAvatarColor(contact)">
+            {{ getInitials(contact) }}
+          </div>
+          <div class="contact-info">
+            <h3 class="contact-name">{{ getFullName(contact) }}</h3>
+            <p class="contact-email">{{ contact.email }}</p>
+          </div>
+          <ion-button fill="clear" class="more-btn" (click)="$event.stopPropagation()">
+            <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+          </ion-button>
+        </div>
+        
+        <div class="card-body">
+          <div class="info-row" *ngIf="contact.company">
+            <ion-icon name="business-outline"></ion-icon>
+            <span>{{ contact.company.name }}</span>
+          </div>
+          <div class="info-row" *ngIf="contact.phone">
+            <ion-icon name="call-outline"></ion-icon>
+            <span>{{ contact.phone }}</span>
+          </div>
+          <div class="info-row" *ngIf="contact.mobile">
+            <ion-icon name="mobile-portrait-outline"></ion-icon>
+            <span>{{ contact.mobile }}</span>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <ion-badge *ngIf="contact.lead_status" class="status-badge" [class]="getStatusClass(contact.lead_status)">
+            {{ contact.lead_status }}
+          </ion-badge>
+          <span class="created-date">Created {{ contact.created_at | date:'mediumDate' }}</span>
+        </div>
+
+        <!-- Swipe Actions -->
+        <div class="card-actions">
+          <ion-button fill="clear" color="danger" (click)="deleteContact(contact); $event.stopPropagation()">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Infinite Scroll -->
+    <ion-infinite-scroll (ionInfinite)="loadMore($event)" *ngIf="contacts.length > 0">
+      <ion-infinite-scroll-content
+        loading-spinner="lines-small"
+        loading-text="Loading more...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </div>
+</ion-content>

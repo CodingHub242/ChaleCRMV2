@@ -1,0 +1,84 @@
+.bigin-header { --background: #ffffff; --border-color: #e0e0e0; }
+.bigin-header ion-toolbar { --background: #073336;
+    --border-color: #e0e0e0;
+    --color: #e3e3e3; }
+.bigin-header ion-title { font-weight: 600; }
+.bigin-header ion-button { --color: #fff; font-weight: 600; }
+.bigin-content { --background: #f5f7fa; }
+
+.form-container { padding: 16px; max-width: 800px; margin: 0 auto; }
+
+.form-section {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.form-section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.form-section-header ion-icon { font-size: 20px; color: #0a657c; }
+.form-section-header h3 { margin: 0; font-size: 16px; font-weight: 600; color: #1a1a2e; flex: 1; }
+
+.form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.form-grid .full-width { grid-column: 1 / -1; }
+
+.form-field { display: flex; flex-direction: column; }
+.form-field label { font-size: 13px; font-weight: 500; color: #666; margin-bottom: 8px; }
+.form-field .required { color: #e53935; }
+
+.form-field ion-item {
+  --padding-start: 12px; --padding-end: 12px;
+  --background: #f8f9fa; --border-radius: 10px;
+  --border-width: 0; --inner-border-width: 0;
+  --min-height: 46px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.form-field ion-input, .form-field ion-select, .form-field ion-textarea { --color: #1a1a2e; font-size: 14px; }
+
+.items-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+
+.item-row { display: flex; gap: 8px; align-items: center; }
+.item-row ion-select, .item-row ion-input { --background: #f8f9fa; --border-radius: 8px; --min-height: 40px; font-size: 13px; }
+.item-row ion-input[type="number"] { width: 70px; text-align: center; }
+.item-amount { min-width: 80px; text-align: right; font-weight: 600; color: #0a657c; }
+
+.invoice-total { display: flex; justify-content: flex-end; gap: 16px; padding-top: 16px; border-top: 1px solid #f0f0f0; font-size: 16px; }
+.invoice-total strong { color: #0a657c; font-size: 20px; }
+
+@media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } .item-row { flex-wrap: wrap; } }
+
+// Form Actions
+.form-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 2px;
+  padding-top: 4px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.cancel-btn {
+  --border-color: #e0e0e0;
+  --color: #666;
+  --border-radius: 10px;
+  height: 48px;
+  font-weight: 500;
+}
+
+.save-btn-full {
+  --background: #013438;
+  --background-hover: #e04560;
+  --border-radius: 10px;
+  height: 48px;
+  font-weight: 500;
+}

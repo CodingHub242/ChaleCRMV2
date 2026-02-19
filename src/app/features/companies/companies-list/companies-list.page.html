@@ -1,0 +1,85 @@
+<ion-header>
+  <ion-toolbar class="bigin-header">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Companies</ion-title>
+    <ion-buttons slot="end">
+      <ion-button class="add-btn" routerLink="/companies/new">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar class="search-toolbar">
+    <ion-searchbar 
+      placeholder="Search by name, industry, city..." 
+      class="bigin-search">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="companies-container">
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <span class="stat-value">{{ companies.length }}</span>
+        <span class="stat-label">Total Companies</span>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="companies.length === 0" class="empty-state">
+      <div class="empty-illustration">
+        <ion-icon name="business-outline"></ion-icon>
+      </div>
+      <h3>No companies found</h3>
+      <p>Get started by adding your first company</p>
+      <ion-button class="primary-btn" routerLink="/companies/new">
+        <ion-icon slot="start" name="add"></ion-icon>
+        Add Company
+      </ion-button>
+    </div>
+
+    <!-- Companies Grid -->
+    <div *ngIf="companies.length > 0" class="companies-grid">
+      <div class="company-card" *ngFor="let company of companies" [routerLink]="['/companies', company.id]">
+        <div class="card-header">
+          <div class="company-avatar" [style.background]="getAvatarColor(company)">
+            {{ getInitials(company) }}
+          </div>
+          <div class="company-info">
+            <h3 class="company-name">{{ company.name }}</h3>
+            <p class="company-industry">{{ company.industry || 'No industry' }}</p>
+          </div>
+          <ion-button fill="clear" class="more-btn">
+            <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+          </ion-button>
+        </div>
+
+        <div class="card-body">
+          <div class="info-row" *ngIf="company.email">
+            <ion-icon name="mail-outline"></ion-icon>
+            <span>{{ company.email }}</span>
+          </div>
+          <div class="info-row" *ngIf="company.phone">
+            <ion-icon name="call-outline"></ion-icon>
+            <span>{{ company.phone }}</span>
+          </div>
+          <div class="info-row" *ngIf="company.website">
+            <ion-icon name="globe-outline"></ion-icon>
+            <span>{{ company.website }}</span>
+          </div>
+          <div class="info-row" *ngIf="company.city || company.country">
+            <ion-icon name="location-outline"></ion-icon>
+            <span>{{ company.city }}{{ company.city && company.country ? ', ' : '' }}{{ company.country }}</span>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <span class="created-date">Created {{ company.created_at | date:'mediumDate' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

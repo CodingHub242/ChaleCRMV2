@@ -1,0 +1,114 @@
+<ion-header class="bigin-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="router.navigate(['/invoices'])">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ isEditing ? 'Edit Invoice' : 'New Invoice' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" [strong]="true">Save</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="form-container">
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="receipt-outline"></ion-icon>
+        <h3>Invoice Details</h3>
+      </div>
+      <div class="form-grid">
+        <div class="form-field full-width">
+          <label>Subject <span class="required">*</span></label>
+          <ion-item lines="none">
+            <ion-input [(ngModel)]="invoice.subject" placeholder="Invoice subject"></ion-input>
+          </ion-item>
+        </div>
+        <div class="form-field">
+          <label>Contact <span class="required">*</span></label>
+          <ion-item lines="none">
+            <ion-select [(ngModel)]="invoice.contact_id" placeholder="Select contact" interface="popover">
+              <ion-select-option *ngFor="let c of contacts" [value]="c.id">{{ c.first_name }} {{ c.last_name }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+        <div class="form-field">
+          <label>Company</label>
+          <ion-item lines="none">
+            <ion-select [(ngModel)]="invoice.company_id" placeholder="Select company" interface="popover">
+              <ion-select-option *ngFor="let c of companies" [value]="c.id">{{ c.name }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+        <div class="form-field">
+          <label>Status</label>
+          <ion-item lines="none">
+            <ion-select [(ngModel)]="invoice.status" interface="popover">
+              <ion-select-option *ngFor="let s of statuses" [value]="s">{{ s | titlecase }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+        <div class="form-field">
+          <label>Invoice Date</label>
+          <ion-item lines="none">
+            <ion-datetime [(ngModel)]="invoice.invoice_date" presentation="date"></ion-datetime>
+          </ion-item>
+        </div>
+        <div class="form-field">
+          <label>Due Date</label>
+          <ion-item lines="none">
+            <ion-datetime [(ngModel)]="invoice.due_date" presentation="date"></ion-datetime>
+          </ion-item>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="list-outline"></ion-icon>
+        <h3>Invoice Items</h3>
+        <ion-button size="small" (click)="addItem()" style="--background:#073336;color:#fff;">Add Item</ion-button>
+      </div>
+      <div class="items-list">
+        <div class="item-row" *ngFor="let item of invoice.items; let i = index">
+          <ion-select [(ngModel)]="item.product_id" placeholder="Select product" interface="popover" (ionChange)="updateItemAmount(item)">
+            <ion-select-option *ngFor="let p of products" [value]="p.id">{{ p.name }}</ion-select-option>
+          </ion-select>
+          <ion-input type="number" [(ngModel)]="item.quantity" placeholder="Qty" (ionChange)="updateItemAmount(item)"></ion-input>
+          <ion-input type="number" [(ngModel)]="item.unit_price" placeholder="Price" (ionChange)="updateItemAmount(item)"></ion-input>
+          <ion-input type="number" [(ngModel)]="item.discount" placeholder="Disc %" (ionChange)="updateItemAmount(item)"></ion-input>
+          <span class="item-amount">{{ item.amount | currency : invoice.currency }}</span>
+          <ion-button color="danger" (click)="removeItem(i)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+      <div class="invoice-total">
+        <span>Subtotal:</span>
+        <strong>{{ subtotal | currency:invoice.currency }}</strong>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="document-outline"></ion-icon>
+        <h3>Terms</h3>
+      </div>
+      <ion-item lines="none">
+        <ion-textarea [(ngModel)]="invoice.terms" rows="4" placeholder="Payment terms..."></ion-textarea>
+      </ion-item>
+    </div>
+
+     <!-- Action Buttons -->
+      <div class="form-actions">
+        <ion-button expand="block" class="cancel-btn" fill="outline" (click)="router.navigate(['/invoices'])">
+          Cancel
+        </ion-button>
+        <ion-button expand="block" class="save-btn-full" (click)="save()">
+          {{ isEditing ? 'Update Invoice' : 'Save Invoice' }}
+        </ion-button>
+      </div>
+  </div>
+</ion-content>

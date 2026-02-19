@@ -1,0 +1,114 @@
+<ion-header>
+  <ion-toolbar class="bigin-header">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Deals</ion-title>
+    <ion-buttons slot="end">
+      <ion-button class="add-btn" routerLink="/deals/new">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar class="search-toolbar">
+    <ion-searchbar 
+      placeholder="Search by deal name, company..." 
+      (ionChange)="onSearch($event)"
+      [value]="searchQuery"
+      class="bigin-search">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="deals-container">
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <span class="stat-value">{{ deals.length }}</span>
+        <span class="stat-label">Total Deals</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">{{ formatCurrency(totalValue) }}</span>
+        <span class="stat-label">Total Value</span>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading && deals.length === 0" class="loading-state">
+      <ion-spinner name="lines"></ion-spinner>
+      <p>Loading deals...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && deals.length === 0" class="empty-state">
+      <div class="empty-illustration">
+        <ion-icon name="trending-up-outline"></ion-icon>
+      </div>
+      <h3>No deals found</h3>
+      <p>Get started by creating your first deal</p>
+      <ion-button class="primary-btn" routerLink="/deals/new">
+        <ion-icon slot="start" name="add"></ion-icon>
+        Create Deal
+      </ion-button>
+    </div>
+
+    <!-- Deals Grid -->
+    <div *ngIf="deals.length > 0" class="deals-grid">
+      <div class="deal-card" *ngFor="let deal of deals" [routerLink]="['/deals', deal.id]">
+        <div class="card-header">
+          <div class="deal-info">
+            <h3 class="deal-name">{{ deal.name }}</h3>
+            <ion-badge class="stage-badge" [class]="getStageClass(deal.stage)">
+              {{ deal.stage }}
+            </ion-badge>
+          </div>
+          <ion-button fill="clear" class="more-btn">
+            <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+          </ion-button>
+        </div>
+
+        <div class="card-amount">
+          <span class="amount">{{ formatCurrency(deal.amount) }}</span>
+          <span class="currency">{{ deal.currency || 'USD' }}</span>
+        </div>
+
+        <div class="card-body">
+          <div class="info-row" *ngIf="deal.contact">
+            <ion-icon name="person-outline"></ion-icon>
+            <span>{{ deal.contact.first_name }} {{ deal.contact.last_name }}</span>
+          </div>
+          <div class="info-row" *ngIf="deal.company">
+            <ion-icon name="business-outline"></ion-icon>
+            <span>{{ deal.company.name }}</span>
+          </div>
+          <div class="info-row" *ngIf="deal.expected_close_date">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>Expected: {{ deal.expected_close_date | date:'mediumDate' }}</span>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <div class="progress-section">
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="deal.probability" [class]="getStageClass(deal.stage)"></div>
+            </div>
+            <span class="probability">{{ deal.probability }}%</span>
+          </div>
+          <span class="owner" *ngIf="deal.owner">
+            <ion-icon name="person-circle-outline"></ion-icon>
+            {{ deal.owner.name }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Infinite Scroll -->
+    <ion-infinite-scroll (ionInfinite)="loadMore($event)" *ngIf="deals.length > 0">
+      <ion-infinite-scroll-content
+        loading-spinner="lines-small"
+        loading-text="Loading more...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </div>
+</ion-content>

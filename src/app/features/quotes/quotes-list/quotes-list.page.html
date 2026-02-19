@@ -1,0 +1,95 @@
+<ion-header class="bigin-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Quotes</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/quotes/new" class="add-btn">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment class="bigin-segment" (ionChange)="onStatusChange()" [(ngModel)]="statusFilter">
+      <ion-segment-button value="">
+        <ion-label>All</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="draft">
+        <ion-label>Draft</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="sent">
+        <ion-label>Sent</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="accepted">
+        <ion-label>Accepted</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="declined">
+        <ion-label>Declined</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="quotes-container">
+    <!-- Stats Bar -->
+    <div class="stats-bar" *ngIf="quotes.length > 0">
+      <div class="stat-item">
+        <span class="stat-value">{{ getTotalValue() | currency }}</span>
+        <span class="stat-label">Total Value</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">{{ quotes.length }}</span>
+        <span class="stat-label">Total Quotes</span>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="quotes.length === 0 && !isLoading">
+      <div class="empty-illustration">
+        <ion-icon name="document-text-outline"></ion-icon>
+      </div>
+      <h3>No quotes found</h3>
+      <p>Create quotes for your contacts</p>
+      <ion-button routerLink="/quotes/new" class="primary-btn">Create Quote</ion-button>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="isLoading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading quotes...</p>
+    </div>
+
+    <!-- Quotes List -->
+    <div class="quotes-list" *ngIf="quotes.length > 0">
+      <div class="quote-card" *ngFor="let quote of quotes" [routerLink]="['/quotes', quote.id]">
+        <div class="quote-header">
+          <div class="quote-info">
+            <h3>{{ quote.subject }}</h3>
+            <p class="quote-number">{{ quote.quote_number }}</p>
+          </div>
+          <ion-badge [class]="'status-badge ' + quote.status">
+            {{ quote.status | titlecase }}
+          </ion-badge>
+        </div>
+
+        <div class="quote-contact" *ngIf="quote.contact">
+          <ion-icon name="person-outline"></ion-icon>
+          <span>{{ quote.contact?.first_name }} {{ quote.contact?.last_name }}</span>
+        </div>
+
+        <div class="quote-footer">
+          <div class="quote-amount">
+            <span class="currency">{{ quote.currency }}</span>
+            <span class="amount">{{ quote.total | number:'1.2-2' }}</span>
+          </div>
+          <div class="quote-date">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>Expires: {{ quote.expiration_date | date:'MMM d, y' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
