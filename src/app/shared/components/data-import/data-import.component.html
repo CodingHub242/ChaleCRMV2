@@ -192,7 +192,7 @@
           </div>
         </div>
 
-        <div class="error-list" *ngIf="importResult?.errors?.length">
+        <div class="error-list" *ngIf="importResult && importResult.errors && importResult.errors.length">
           <h4>Errors:</h4>
           <ul>
             <li *ngFor="let error of importResult.errors">{{ error }}</li>

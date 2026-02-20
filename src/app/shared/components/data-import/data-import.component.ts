@@ -265,51 +265,37 @@ export class DataImportComponent implements OnInit {
     let failed = 0;
     const errors: string[] = [];
 
-    // Process in batches
-    const batchSize = 10;
-    const totalBatches = Math.ceil(this.rawData.length / batchSize);
-
-    for (let batch = 0; batch < totalBatches; batch++) {
-      const start = batch * batchSize;
-      const end = Math.min(start + batchSize, this.rawData.length);
-      const batchData = this.rawData.slice(start, end);
-
-      const requests = batchData.map(row => {
-        const record: any = {};
-        mappedFields.forEach(mapping => {
-          let value = row[mapping.excelColumn] || '';
-          
-          // Type conversions
-          const fieldDef = this.fieldDefinitions[this.entityType].find(f => f.key === mapping.appField);
-          if (fieldDef?.type === 'number') {
-            value = parseFloat(value) || 0;
-          }
-          
-          record[mapping.appField] = value;
-        });
-
-        return this.createRecord(record);
+    // Process one by one to avoid Promise.allSettled compatibility issues
+    for (let i = 0; i < this.rawData.length; i++) {
+      const row = this.rawData[i];
+      const record: any = {};
+      
+      mappedFields.forEach(mapping => {
+        let value = row[mapping.excelColumn] || '';
+        
+        // Type conversions
+        const fieldDef = this.fieldDefinitions[this.entityType].find(f => f.key === mapping.appField);
+        if (fieldDef?.type === 'number') {
+          value = parseFloat(value) || 0;
+        }
+        
+        record[mapping.appField] = value;
       });
 
       try {
-        const results = await Promise.allSettled(requests);
-        results.forEach((result: any) => {
-          if (result.status === 'fulfilled' && result.value?.success) {
-            success++;
-          } else {
-            failed++;
-            errors.push(result.reason?.message || 'Failed to create record');
-          }
-        });
+        await this.createRecord(record);
+        success++;
       } catch (error: any) {
-        failed += batchData.length;
-        errors.push(error.message);
+        failed++;
+        if (errors.length < 10) {
+          errors.push(error.message || 'Failed to create record');
+        }
       }
 
-      this.importProgress = Math.round(((batch + 1) / totalBatches) * 100);
+      this.importProgress = Math.round(((i + 1) / this.rawData.length) * 100);
     }
 
-    this.importResult = { success, failed, errors: errors.slice(0, 10) }; // Limit errors
+    this.importResult = { success, failed, errors };
     this.currentStep = 'complete';
     this.isImporting = false;
     this.importComplete.emit(this.importResult);
