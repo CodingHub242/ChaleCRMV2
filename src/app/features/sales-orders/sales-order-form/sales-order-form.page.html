@@ -1,0 +1,177 @@
+<ion-header class="bigin-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="router.navigate(['/sales-orders'])">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ isEditing ? 'Edit Sales Order' : 'New Sales Order' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" [strong]="true">Save</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="form-container">
+    <!-- Order Details Section -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="document-text-outline"></ion-icon>
+        <h3>Order Details</h3>
+      </div>
+      <div class="form-grid">
+        <div class="form-field full-width">
+          <label>Order Number <span class="required">*</span></label>
+          <ion-item lines="none">
+            <ion-input [(ngModel)]="order.order_number" placeholder="e.g., SO-001"></ion-input>
+          </ion-item>
+        </div>
+        <div class="form-field">
+          <label>Customer <span class="required">*</span></label>
+          <ion-item lines="none">
+            <ion-select [(ngModel)]="order.customer_id" placeholder="Select customer" interface="popover" (ionChange)="onCustomerChange()">
+              <ion-select-option *ngFor="let c of customers" [value]="c.id">{{ c.first_name }} {{ c.last_name }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+        <div class="form-field">
+          <label>Company</label>
+          <ion-item lines="none">
+            <ion-select [(ngModel)]="order.company_id" placeholder="Select company" interface="popover">
+              <ion-select-option *ngFor="let c of companies" [value]="c.id">{{ c.name }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+        <div class="form-field">
+          <label>Order Date <span class="required">*</span></label>
+          <ion-item lines="none">
+            <ion-datetime [(ngModel)]="order.order_date" presentation="date"></ion-datetime>
+          </ion-item>
+        </div>
+        <div class="form-field">
+          <label>Due Date</label>
+          <ion-item lines="none">
+            <ion-datetime [(ngModel)]="order.due_date" presentation="date"></ion-datetime>
+          </ion-item>
+        </div>
+        <div class="form-field">
+          <label>Status</label>
+          <ion-item lines="none">
+            <ion-select [(ngModel)]="order.status" interface="popover">
+              <ion-select-option *ngFor="let s of statuses" [value]="s">{{ s | titlecase }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+        <div class="form-field">
+          <label>Currency</label>
+          <ion-item lines="none">
+            <ion-select [(ngModel)]="order.currency" interface="popover">
+              <ion-select-option *ngFor="let c of currencies" [value]="c">{{ c }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+      </div>
+    </div>
+
+    <!-- Billing & Shipping Section -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="location-outline"></ion-icon>
+        <h3>Billing & Shipping</h3>
+      </div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Billing Address</label>
+          <ion-item lines="none">
+            <ion-textarea [(ngModel)]="order.billing_address" rows="3" placeholder="Billing address..."></ion-textarea>
+          </ion-item>
+        </div>
+        <div class="form-field">
+          <label>Shipping Address</label>
+          <ion-item lines="none">
+            <ion-textarea [(ngModel)]="order.shipping_address" rows="3" placeholder="Shipping address..."></ion-textarea>
+          </ion-item>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Items Section -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="list-outline"></ion-icon>
+        <h3>Order Items</h3>
+        <ion-button size="small" (click)="addItem()" style="--background:#073336;color:#fff;">
+          <ion-icon name="add" slot="start"></ion-icon>
+          Add Item
+        </ion-button>
+      </div>
+      <div class="items-list">
+        <div class="item-header">
+          <span>Product</span>
+          <span>Qty</span>
+          <span>Unit Price</span>
+          <span>Discount %</span>
+          <span>Amount</span>
+          <span></span>
+        </div>
+        <div class="item-row" *ngFor="let item of order.items; let i = index">
+          <ion-select [(ngModel)]="item.product_id" placeholder="Select product" interface="popover" (ionChange)="updateItemAmount(item)">
+            <ion-select-option *ngFor="let p of products" [value]="p.id">{{ p.name }}</ion-select-option>
+          </ion-select>
+          <ion-input type="number" [(ngModel)]="item.quantity" placeholder="1" (ionChange)="updateItemAmount(item)"></ion-input>
+          <ion-input type="number" [(ngModel)]="item.unit_price" placeholder="0.00" (ionChange)="updateItemAmount(item)"></ion-input>
+          <ion-input type="number" [(ngModel)]="item.discount" placeholder="0" (ionChange)="updateItemAmount(item)"></ion-input>
+          <span class="item-amount">{{ item.amount | currency:order.currency }}</span>
+          <ion-button color="danger" fill="clear" (click)="removeItem(i)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-button>
+        </div>
+        <div *ngIf="order.items.length === 0" class="no-items">
+          <p>No items added. Click "Add Item" to add products.</p>
+        </div>
+      </div>
+      
+      <!-- Order Summary -->
+      <div class="order-summary">
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span>{{ subtotal | currency:order.currency }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Tax ({{ order.tax_rate || 0 }}%)</span>
+          <span>{{ taxAmount | currency:order.currency }}</span>
+        </div>
+        <div class="summary-row discount-row" *ngIf="order.discount_amount > 0">
+          <span>Discount</span>
+          <span>-{{ order.discount_amount | currency:order.currency }}</span>
+        </div>
+        <div class="summary-row total-row">
+          <span>Total</span>
+          <span class="total-amount">{{ order.total | currency:order.currency }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notes Section -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="document-outline"></ion-icon>
+        <h3>Notes</h3>
+      </div>
+      <ion-item lines="none">
+        <ion-textarea [(ngModel)]="order.notes" rows="4" placeholder="Additional notes..."></ion-textarea>
+      </ion-item>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="form-actions">
+      <ion-button expand="block" class="cancel-btn" fill="outline" (click)="router.navigate(['/sales-orders'])">
+        Cancel
+      </ion-button>
+      <ion-button expand="block" class="save-btn-full" (click)="save()">
+        {{ isEditing ? 'Update Order' : 'Save Order' }}
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

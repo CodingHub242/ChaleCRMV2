@@ -44,6 +44,7 @@ import { InvoicesListPage } from './features/invoices/invoices-list/invoices-lis
 import { InvoiceFormPage } from './features/invoices/invoice-form/invoice-form.page';
 
 import { ForecastingPage } from './features/forecasting/forecasting.page';
+import { SalesOrderFormPage } from './features/sales-orders/sales-order-form/sales-order-form.page';
 
 // export const routes: Routes = [
 //   {
@@ -203,6 +204,14 @@ export const routes: Routes = [
       {
         path: 'sales-orders',
         loadComponent: () => import('./features/sales-orders/sales-orders.page').then(m => m.SalesOrdersPage)
+      },
+      {
+        path: 'sales-orders/new',
+        component: SalesOrderFormPage
+      },
+      {
+        path: 'sales-orders/:id',
+        component: SalesOrderFormPage
       },
       // Contracts
       {
