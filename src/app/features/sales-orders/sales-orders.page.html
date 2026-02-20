@@ -1,67 +1,130 @@
-<ion-header [translucent]="true">
+<ion-header [translucent]="true" class="bigin-header">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Sales Orders</ion-title>
     <ion-buttons slot="end">
-      <ion-button routerLink="/sales-orders/new">
+      <ion-button routerLink="/sales-orders/new" class="add-btn">
         <ion-icon slot="icon-only" name="add"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <div class="ion-padding">
-    <ion-segment (ionChange)="filterChanged($event)" value="all">
-      <ion-segment-button value="all">
-        <ion-label>All</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="draft">
-        <ion-label>Draft</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="confirmed">
-        <ion-label>Confirmed</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="delivered">
-        <ion-label>Delivered</ion-label>
-      </ion-segment-button>
-    </ion-segment>
-
-    <ion-searchbar placeholder="Search orders..." (ionInput)="searchChanged($event)" [debounce]="500"></ion-searchbar>
-
-    <ion-list>
-      <ion-item-sliding *ngFor="let order of orders">
-        <ion-item button (click)="viewOrder(order)">
-          <ion-icon slot="start" name="document-text" color="primary"></ion-icon>
-          <ion-label>
-            <h2>{{ order.order_number }}</h2>
-            <p>{{ order.customer?.first_name + ' ' + order.customer?.last_name || 'No customer' }}</p>
-            <p>{{ order.order_date | date:'mediumDate' }}</p>
-          </ion-label>
-          <ion-badge slot="end" [color]="getStatusColor(order.status)">
-            {{ order.status }}
-          </ion-badge>
-          <ion-text slot="end" class="total">{{ order.total | currency }}</ion-text>
-        </ion-item>
-        <ion-item-options side="end">
-          <ion-item-option color="primary" (click)="editOrder(order)">Edit</ion-item-option>
-          <ion-item-option color="success" (click)="convertToInvoice(order)">To Invoice</ion-item-option>
-          <ion-item-option color="danger" (click)="deleteOrder(order)">Delete</ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
-
-    <div *ngIf="orders.length === 0 && !loading" class="empty-state">
-      <ion-icon name="document-text-outline" size="large"></ion-icon>
-      <h3>No Sales Orders</h3>
-      <p>Create your first sales order</p>
-      <ion-button routerLink="/sales-orders/new">Create Order</ion-button>
+<ion-content [fullscreen]="true" class="bigin-content">
+  <div class="orders-container">
+    <!-- Search Bar -->
+    <div class="search-toolbar">
+      <ion-searchbar 
+        class="bigin-search"
+        placeholder="Search orders..." 
+        (ionInput)="searchChanged($event)" 
+        [debounce]="500">
+      </ion-searchbar>
     </div>
 
-    <div *ngIf="loading" class="loading">
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+      <ion-segment (ionChange)="filterChanged($event)" value="all" scrollable>
+        <ion-segment-button value="all">
+          <ion-label>All</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="draft">
+          <ion-label>Draft</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="confirmed">
+          <ion-label>Confirmed</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="processing">
+          <ion-label>Processing</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="shipped">
+          <ion-label>Shipped</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="delivered">
+          <ion-label>Delivered</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="cancelled">
+          <ion-label>Cancelled</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar" *ngIf="orders.length > 0">
+      <div class="stat-item">
+        <span class="stat-value">{{ orders.length }}</span>
+        <span class="stat-label">Total Orders</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">{{ getTotalAmount() | currency }}</span>
+        <span class="stat-label">Total Value</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">{{ getPendingCount() }}</span>
+        <span class="stat-label">Pending</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">{{ getCompletedCount() }}</span>
+        <span class="stat-label">Completed</span>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
       <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading orders...</p>
+    </div>
+
+    <!-- Orders Grid -->
+    <div class="orders-grid" *ngIf="!loading && orders.length > 0">
+      <div class="order-card" *ngFor="let order of orders" (click)="viewOrder(order)">
+        <div class="card-header">
+          <div class="order-info">
+            <h3 class="order-number">{{ order.order_number }}</h3>
+            <span class="status-badge" [ngClass]="order.status">{{ order.status | titlecase }}</span>
+          </div>
+          <ion-button fill="clear" class="more-btn" (click)="$event.stopPropagation(); presentActionSheet(order)">
+            <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+          </ion-button>
+        </div>
+
+        <div class="card-body">
+          <div class="info-row">
+            <ion-icon name="person-outline"></ion-icon>
+            <span>{{ order.customer?.first_name + ' ' + order.customer?.last_name || 'No customer' }}</span>
+          </div>
+          <div class="info-row">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>{{ order.order_date | date:'mediumDate' }}</span>
+          </div>
+          <div class="info-row" *ngIf="order.due_date">
+            <ion-icon name="time-outline"></ion-icon>
+            <span>Due: {{ order.due_date | date:'mediumDate' }}</span>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <div class="order-amount">
+            <span class="amount">{{ order.total | currency }}</span>
+          </div>
+          <div class="item-count" *ngIf="order.items?.length">
+            <ion-icon name="list-outline"></ion-icon>
+            <span>{{ order.items.length }} items</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && orders.length === 0" class="empty-state">
+      <div class="empty-illustration">
+        <ion-icon name="document-text-outline"></ion-icon>
+      </div>
+      <h3>No Sales Orders</h3>
+      <p>Create your first sales order to get started</p>
+      <ion-button routerLink="/sales-orders/new" class="primary-btn">Create Order</ion-button>
     </div>
   </div>
 </ion-content>

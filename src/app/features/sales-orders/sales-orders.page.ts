@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, AlertController, ActionSheetController } from '@ionic/angular';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
 import { ApiService } from '../../core/services/api.service';
 import { SalesOrder } from '../../models';
 
@@ -22,6 +21,7 @@ export class SalesOrdersPage implements OnInit {
   constructor(
     private router: Router,
     private alertController: AlertController,
+    private actionSheetController: ActionSheetController,
     private apiService: ApiService
   ) {}
 
@@ -134,5 +134,64 @@ export class SalesOrdersPage implements OnInit {
       cancelled: 'danger'
     };
     return colors[status] || 'medium';
+  }
+
+  // Stats calculations
+  getTotalAmount(): number {
+    return this.orders.reduce((sum, order) => sum + (order.total || 0), 0);
+  }
+
+  getPendingCount(): number {
+    return this.orders.filter(o => 
+      ['draft', 'confirmed', 'processing', 'shipped'].includes(o.status)
+    ).length;
+  }
+
+  getCompletedCount(): number {
+    return this.orders.filter(o => o.status === 'delivered').length;
+  }
+
+  // Action sheet for order options
+  async presentActionSheet(order: SalesOrder) {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Order Actions',
+      buttons: [
+        {
+          text: 'View Details',
+          icon: 'eye-outline',
+          handler: () => {
+            this.viewOrder(order);
+          }
+        },
+        {
+          text: 'Edit Order',
+          icon: 'create-outline',
+          handler: () => {
+            this.editOrder(order);
+          }
+        },
+        {
+          text: 'Convert to Invoice',
+          icon: 'document-text-outline',
+          handler: () => {
+            this.convertToInvoice(order);
+          }
+        },
+        {
+          text: 'Delete Order',
+          role: 'destructive',
+          icon: 'trash-outline',
+          handler: () => {
+            this.deleteOrder(order);
+          }
+        },
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          icon: 'close-outline'
+        }
+      ]
+    });
+    await actionSheet.present();
   }
 }
