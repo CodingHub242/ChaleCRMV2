@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, SearchbarCustomEvent, AlertController } from '@ionic/angular';
+import { IonicModule, SearchbarCustomEvent, AlertController, ModalController } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { Contact } from '../../../models';
+import { DataImportComponent } from '../../../shared/components/data-import/data-import.component';
 
 @Component({
   selector: 'app-contacts-list',
@@ -31,7 +32,11 @@ export class ContactsListPage implements OnInit {
     'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)'
   ];
 
-  constructor(private api: ApiService, private alertController: AlertController) {}
+  constructor(
+    private api: ApiService, 
+    private alertController: AlertController,
+    private modalController: ModalController
+  ) {}
 
   ngOnInit(): void {
     this.loadContacts();
@@ -139,5 +144,22 @@ export class ContactsListPage implements OnInit {
       ]
     });
     await alert.present();
+  }
+
+  async presentImportModal() {
+    const modal = await this.modalController.create({
+      component: DataImportComponent,
+      componentProps: {
+        entityType: 'contact'
+      },
+      cssClass: 'import-modal'
+    });
+    
+    await modal.present();
+    
+    const { data } = await modal.onWillDismiss();
+    if (data?.success) {
+      this.loadContacts();
+    }
   }
 }

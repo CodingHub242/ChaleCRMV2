@@ -5,6 +5,9 @@
     </ion-buttons>
     <ion-title>Deals</ion-title>
     <ion-buttons slot="end">
+      <ion-button class="import-btn" (click)="presentImportModal()">
+        <ion-icon slot="icon-only" name="cloud-upload-outline"></ion-icon>
+      </ion-button>
       <ion-button class="add-btn" routerLink="/deals/new">
         <ion-icon slot="icon-only" name="add"></ion-icon>
       </ion-button>

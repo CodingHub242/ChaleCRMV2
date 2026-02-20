@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, SearchbarCustomEvent } from '@ionic/angular';
+import { IonicModule, SearchbarCustomEvent, ModalController } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { Deal } from '../../../models';
+import { DataImportComponent } from '../../../shared/components/data-import/data-import.component';
 
 @Component({
   selector: 'app-deals-list',
@@ -23,7 +24,10 @@ export class DealsListPage implements OnInit {
 
   stages = ['New', 'Qualification', 'Needs Analysis', 'Proposal', 'Negotiation', 'Closed Won', 'Closed Lost'];
 
-  constructor(private api: ApiService) {}
+  constructor(
+    private api: ApiService,
+    private modalController: ModalController
+  ) {}
 
   ngOnInit(): void {
     this.loadDeals();
@@ -102,5 +106,22 @@ export class DealsListPage implements OnInit {
 
   getStageClass(stage: string): string {
     return stage?.toLowerCase().replace(/\s+/g, '-') || 'new';
+  }
+
+  async presentImportModal() {
+    const modal = await this.modalController.create({
+      component: DataImportComponent,
+      componentProps: {
+        entityType: 'deal'
+      },
+      cssClass: 'import-modal'
+    });
+    
+    await modal.present();
+    
+    const { data } = await modal.onWillDismiss();
+    if (data?.success) {
+      this.loadDeals();
+    }
   }
 }

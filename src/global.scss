@@ -40,3 +40,26 @@
     border: 1px solid #013a3d !important;
     background: #013a3d !important;
 }
+
+/* Import Modal Styles */
+.import-modal {
+  --width: 90%;
+  --max-width: 800px;
+  --height: 85%;
+  --border-radius: 16px;
+}
+
+.import-modal .modal-wrapper {
+  overflow: hidden;
+}
+
+/* Import Button Styles */
+.import-btn {
+  --color: #fff;
+  margin-right: 8px;
+}
+
+/* Add Button Styles */
+.add-btn {
+  --color: #fff;
+}

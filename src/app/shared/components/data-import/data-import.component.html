@@ -1,0 +1,209 @@
+<ion-header class="bigin-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="onCancel()" *ngIf="currentStep !== 'importing'">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      Import {{ entityType | titlecase }}s
+    </ion-title>
+    <ion-buttons slot="end" *ngIf="currentStep !== 'importing'">
+      <ion-button (click)="onCancel()">Cancel</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="import-container">
+    
+    <!-- Progress Steps -->
+    <div class="steps-indicator">
+      <div class="step" [class.active]="currentStep === 'upload'" [class.completed]="['mapping', 'preview', 'importing', 'complete'].includes(currentStep)">
+        <div class="step-number">1</div>
+        <div class="step-label">Upload</div>
+      </div>
+      <div class="step-line" [class.completed]="['mapping', 'preview', 'importing', 'complete'].includes(currentStep)"></div>
+      <div class="step" [class.active]="currentStep === 'mapping'" [class.completed]="['preview', 'importing', 'complete'].includes(currentStep)">
+        <div class="step-number">2</div>
+        <div class="step-label">Map Fields</div>
+      </div>
+      <div class="step-line" [class.completed]="['preview', 'importing', 'complete'].includes(currentStep)"></div>
+      <div class="step" [class.active]="currentStep === 'preview'" [class.completed]="['importing', 'complete'].includes(currentStep)">
+        <div class="step-number">3</div>
+        <div class="step-label">Preview</div>
+      </div>
+      <div class="step-line" [class.completed]="currentStep === 'complete'"></div>
+      <div class="step" [class.active]="currentStep === 'importing' || currentStep === 'complete'">
+        <div class="step-number">4</div>
+        <div class="step-label">Import</div>
+      </div>
+    </div>
+
+    <!-- Step 1: Upload -->
+    <div class="step-content" *ngIf="currentStep === 'upload'">
+      <div class="upload-section">
+        <div class="upload-icon">
+          <ion-icon name="cloud-upload-outline"></ion-icon>
+        </div>
+        <h3>Upload File</h3>
+        <p>Upload a CSV or Excel file with your {{ entityType }} data</p>
+        
+        <div class="file-input-wrapper">
+          <input type="file" accept=".csv,.xlsx,.xls" (change)="onFileSelected($event)" #fileInput hidden>
+          <ion-button expand="block" (click)="fileInput.click()" class="upload-btn">
+            <ion-icon name="document-attach-outline" slot="start"></ion-icon>
+            Choose File
+          </ion-button>
+        </div>
+        
+        <div class="file-info" *ngIf="fileName">
+          <ion-icon name="document-text-outline"></ion-icon>
+          <span>{{ fileName }}</span>
+          <span class="record-count">({{ rawData.length }} records)</span>
+        </div>
+
+        <div class="template-download">
+          <h4>Download Template</h4>
+          <p>Use our template to ensure proper data format</p>
+          <ion-button fill="outline" (click)="downloadTemplate()">
+            <ion-icon name="download-outline" slot="start"></ion-icon>
+            Download CSV Template
+          </ion-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Map Fields -->
+    <div class="step-content" *ngIf="currentStep === 'mapping'">
+      <div class="mapping-section">
+        <h3>Map Your Data</h3>
+        <p>Match your file columns to {{ entityType }} fields</p>
+        
+        <div class="mapping-table">
+          <div class="mapping-header">
+            <span>Your Column</span>
+            <span></span>
+            <span>{{ entityType | titlecase }} Field</span>
+          </div>
+          <div class="mapping-row" *ngFor="let mapping of fieldMappings">
+            <ion-select 
+              [(ngModel)]="mapping.excelColumn" 
+              placeholder="Select column"
+              interface="popover"
+              (ionChange)="updateSampleValue(mapping)">
+              <ion-select-option value="">-- Skip --</ion-select-option>
+              <ion-select-option *ngFor="let header of headers" [value]="header">
+                {{ header }}
+              </ion-select-option>
+            </ion-select>
+            <ion-icon name="arrow-forward"></ion-icon>
+            <div class="field-label">
+              <span class="field-name">{{ getFieldLabel(mapping.appField) }}</span>
+              <span class="sample-value" *ngIf="mapping.sampleValue">
+                Sample: "{{ mapping.sampleValue | slice:0:30 }}{{ mapping.sampleValue.length > 30 ? '...' : '' }}"
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <ion-button fill="outline" (click)="goBack()">Back</ion-button>
+          <ion-button (click)="goToPreview()" class="next-btn">Continue</ion-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Preview -->
+    <div class="step-content" *ngIf="currentStep === 'preview'">
+      <div class="preview-section">
+        <h3>Preview Import</h3>
+        <p>Review your data before importing ({{ rawData.length }} records)</p>
+        
+        <div class="preview-table-wrapper">
+          <table class="preview-table">
+            <thead>
+              <tr>
+                <th *ngFor="let mapping of fieldMappings">
+                  {{ getFieldLabel(mapping.appField) }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of previewData">
+                <td *ngFor="let mapping of fieldMappings">
+                  {{ row[mapping.appField] || '-' }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="step-actions">
+          <ion-button fill="outline" (click)="goBack()">Back</ion-button>
+          <ion-button (click)="startImport()" class="next-btn">
+            <ion-icon name="cloud-upload-outline" slot="start"></ion-icon>
+            Start Import
+          </ion-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Importing -->
+    <div class="step-content" *ngIf="currentStep === 'importing'">
+      <div class="importing-section">
+        <div class="import-progress">
+          <ion-spinner name="circles"></ion-spinner>
+          <h3>Importing...</h3>
+          <p>Please wait while we import your data</p>
+          
+          <div class="progress-bar-wrapper">
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="importProgress"></div>
+            </div>
+            <span class="progress-text">{{ importProgress }}%</span>
+          </div>
+          
+          <p class="progress-detail">{{ rawData.length }} records total</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 5: Complete -->
+    <div class="step-content" *ngIf="currentStep === 'complete'">
+      <div class="complete-section">
+        <div class="complete-icon" *ngIf="importResult && importResult.success > 0">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+        </div>
+        <div class="complete-icon error" *ngIf="importResult && importResult.failed > 0 && importResult.success === 0">
+          <ion-icon name="close-circle-outline"></ion-icon>
+        </div>
+        
+        <h3>Import Complete!</h3>
+        
+        <div class="result-stats" *ngIf="importResult">
+          <div class="stat success">
+            <span class="stat-value">{{ importResult.success }}</span>
+            <span class="stat-label">Successful</span>
+          </div>
+          <div class="stat failed" *ngIf="importResult.failed > 0">
+            <span class="stat-value">{{ importResult.failed }}</span>
+            <span class="stat-label">Failed</span>
+          </div>
+        </div>
+
+        <div class="error-list" *ngIf="importResult?.errors?.length">
+          <h4>Errors:</h4>
+          <ul>
+            <li *ngFor="let error of importResult.errors">{{ error }}</li>
+          </ul>
+        </div>
+
+        <div class="complete-actions">
+          <ion-button (click)="onCancel()">Done</ion-button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</ion-content>

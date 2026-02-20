@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, SearchbarCustomEvent } from '@ionic/angular';
+import { IonicModule, SearchbarCustomEvent, ModalController } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { Company } from '../../../models';
+import { DataImportComponent } from '../../../shared/components/data-import/data-import.component';
 
 @Component({
   selector: 'app-companies-list',
@@ -28,7 +29,10 @@ export class CompaniesListPage implements OnInit {
     'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)'
   ];
 
-  constructor(private api: ApiService) {}
+  constructor(
+    private api: ApiService,
+    private modalController: ModalController
+  ) {}
 
   ngOnInit(): void {
     this.loadCompanies();
@@ -60,5 +64,22 @@ export class CompaniesListPage implements OnInit {
   getAvatarColor(company: Company): string {
     const index = company.id % this.avatarColors.length;
     return this.avatarColors[index];
+  }
+
+  async presentImportModal() {
+    const modal = await this.modalController.create({
+      component: DataImportComponent,
+      componentProps: {
+        entityType: 'company'
+      },
+      cssClass: 'import-modal'
+    });
+    
+    await modal.present();
+    
+    const { data } = await modal.onWillDismiss();
+    if (data?.success) {
+      this.loadCompanies();
+    }
   }
 }
