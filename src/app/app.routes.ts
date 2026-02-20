@@ -213,6 +213,10 @@ export const routes: Routes = [
         path: 'sales-orders/:id',
         component: SalesOrderFormPage
       },
+      {
+        path: 'sales-orders/:id/edit',
+        component: SalesOrderFormPage
+      },
       // Contracts
       {
         path: 'contracts',

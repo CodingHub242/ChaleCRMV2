@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, AlertController, ActionSheetController } from '@ionic/angular';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { SalesOrder } from '../../models';
 
@@ -10,7 +10,7 @@ import { SalesOrder } from '../../models';
   templateUrl: './sales-orders.page.html',
   styleUrls: ['./sales-orders.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule],
+  imports: [CommonModule, IonicModule, RouterLink],
 })
 export class SalesOrdersPage implements OnInit {
   orders: SalesOrder[] = [];
@@ -72,7 +72,7 @@ export class SalesOrdersPage implements OnInit {
   }
 
   editOrder(order: SalesOrder) {
-    this.router.navigate(['/sales-orders', order.id, 'edit']);
+    this.router.navigate(['/sales-orders', order.id]);
   }
 
   async convertToInvoice(order: SalesOrder) {
