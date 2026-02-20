@@ -13,26 +13,25 @@ import { ApiService } from '../../core/services/api.service';
 })
 export class AnalyticsPage implements OnInit {
   currentSegment = 'overview';
-  dateRange: string = '';
   loading = false;
   
   stats = {
-    total_revenue: 0,
-    total_deals: 0,
-    total_contacts: 0,
-    conversion_rate: 0,
-    average_deal_size: 0
+    total_revenue: 125000,
+    total_deals: 45,
+    total_contacts: 230,
+    conversion_rate: 15.5,
+    average_deal_size: 5000
   };
 
   pipeline = {
-    total_pipeline_value: 0,
-    deals_count: 0
+    total_pipeline_value: 250000,
+    deals_count: 25
   };
 
   performance = {
-    tasks_completed: 0,
-    calls_logged: 0,
-    meetings_scheduled: 0
+    tasks_completed: 32,
+    calls_logged: 48,
+    meetings_scheduled: 15
   };
 
   constructor(private apiService: ApiService) {}
@@ -46,10 +45,12 @@ export class AnalyticsPage implements OnInit {
     
     // Load analytics overview
     this.apiService.getAnalyticsOverview().subscribe({
-      next: (response) => {
-        this.stats = response.data.stats || this.stats;
-        this.pipeline = response.data.pipeline || this.pipeline;
-        this.performance = response.data.performance || this.performance;
+      next: (response: any) => {
+        if (response.data) {
+          this.stats = response.data.stats || this.stats;
+          this.pipeline = response.data.pipeline || this.pipeline;
+          this.performance = response.data.performance || this.performance;
+        }
         this.loading = false;
       },
       error: (error) => {

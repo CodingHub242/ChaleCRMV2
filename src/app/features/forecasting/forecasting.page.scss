@@ -1,45 +1,369 @@
-/* Forecasting Page Styles */
-ion-card {
-  margin-bottom: 16px;
-  
-  ion-card-header {
-    padding-bottom: 0;
+/* Forecasting Page - Zoho Bigin Style */
+
+.forecasting-content {
+  --background: #f5f7fa;
+}
+
+.forecast-container {
+  padding: 16px;
+}
+
+// Period Selector
+.forecast-period-selector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+
+  .period-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+    white-space: nowrap;
   }
-  
-  ion-card-content {
-    padding-top: 8px;
+
+  ion-segment {
+    width: 100%;
+    --background: transparent;
   }
-  
-  h1 {
-    font-size: 2rem;
-    font-weight: bold;
-    margin: 0 0 8px;
-    color: var(--ion-color-primary);
+
+  ion-segment-button {
+    --background-checked: #073336;
+    --color-checked: white;
+    --border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
   }
-  
-  h2 {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin: 0 0 4px;
+}
+
+// Loading Overlay
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+
+  ion-spinner {
+    width: 48px;
+    height: 48px;
+    color: #c07015;
   }
-  
-  h3 {
-    font-weight: 600;
-    margin: 0;
-  }
-  
+
   p {
-    color: var(--ion-color-medium);
-    margin: 0;
+    margin-top: 16px;
+    color: #666;
+    font-size: 14px;
   }
 }
 
-ion-list {
-  ion-item {
-    --padding-start: 0;
+// Forecast Stats Cards
+.forecast-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
   }
 }
 
-ion-badge {
-  font-weight: 600;
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    ion-icon {
+      font-size: 22px;
+      color: white;
+    }
+  }
+
+  &.revenue-card .stat-icon {
+    background: linear-gradient(135deg, #4caf50, #2e7d32);
+  }
+
+  &.pipeline-card .stat-icon {
+    background: linear-gradient(135deg, #073336, #c07015);
+  }
+
+  &.weighted-card .stat-icon {
+    background: linear-gradient(135deg, #ff9800, #ef6c00);
+  }
+
+  .stat-content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: #777;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #222;
+    margin: 4px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .stat-subtitle {
+    font-size: 11px;
+    color: #999;
+  }
+}
+
+// Forecast Sections
+.forecast-section {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  .section-header {
+    margin-bottom: 16px;
+
+    h2 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #222;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+
+      ion-icon {
+        color: var(--ion-color-primary);
+        font-size: 18px;
+      }
+    }
+  }
+}
+
+// Pipeline Funnel
+.pipeline-funnel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.funnel-stage {
+  .stage-bar {
+    padding: 12px 16px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 44px;
+    transition: width 0.5s ease;
+
+    &.total {
+      background: linear-gradient(90deg, #e3f2fd, #bbdefb);
+      color: #1565c0;
+    }
+
+    &.weighted {
+      background: linear-gradient(90deg, #e8f5e9, #c8e6c9);
+      color: #2e7d32;
+    }
+
+    &.probability {
+      background: linear-gradient(90deg, #fff3e0, #ffe0b2);
+      color: #ef6c00;
+    }
+
+    .stage-label {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .stage-value {
+      font-size: 14px;
+      font-weight: 700;
+    }
+  }
+}
+
+// Predictions Grid
+.predictions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.prediction-card {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 14px;
+  border: 1px solid #eee;
+
+  .prediction-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+
+    .month-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #444;
+    }
+
+    .confidence-badge {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+
+      &.high {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      &.medium {
+        background: #fff3e0;
+        color: #ef6c00;
+      }
+
+      &.low {
+        background: #ffebee;
+        color: #c62828;
+      }
+    }
+  }
+
+  .prediction-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #c07015;
+    margin-bottom: 6px;
+  }
+
+  .prediction-range {
+    font-size: 11px;
+    color: #777;
+    margin-bottom: 10px;
+
+    .range-values {
+      color: #444;
+      font-weight: 500;
+    }
+  }
+
+  .prediction-progress {
+    height: 4px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    overflow: hidden;
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #c07015, var(--ion-color-primary-shade));
+      border-radius: 2px;
+      transition: width 0.5s ease;
+    }
+  }
+}
+
+// Summary Table
+.summary-table {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.summary-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 100px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  font-size: 13px;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &.header {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #555;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &.highlight {
+    background: linear-gradient(90deg, rgba(var(--ion-color-primary-rgb), 0.1), transparent);
+    font-weight: 600;
+
+    .summary-value {
+      color: #c07015;
+    }
+  }
+
+  .summary-label {
+    color: #555;
+  }
+
+  .summary-value {
+    color: #222;
+    font-weight: 600;
+    text-align: right;
+    padding-right: 16px;
+  }
+
+  .summary-percent {
+    color: #777;
+    text-align: right;
+    font-weight: 500;
+  }
+}
+
+// Refresh Button
+.refresh-btn {
+  --color: var(--ion-color-primary);
+}
+
+// Header styling
+::ng-ion-toolbar {
+  --background: white;
+  --border-width: 0;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
 }

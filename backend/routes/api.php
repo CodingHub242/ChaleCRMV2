@@ -25,6 +25,9 @@ Route::apiResource('contracts', App\Http\Controllers\Api\ContractController::cla
 Route::post('contracts/{contract}/send-for-signature', [App\Http\Controllers\Api\ContractController::class, 'sendForSignature']);
 Route::post('contracts/{contract}/sign', [App\Http\Controllers\Api\ContractController::class, 'sign']);
 
+// Products
+Route::apiResource('products', App\Http\Controllers\Api\ProductController::class);
+
 // Workflow Automation
 Route::apiResource('workflows', App\Http\Controllers\Api\WorkflowController::class);
 Route::post('workflows/{workflow}/activate', [App\Http\Controllers\Api\WorkflowController::class, 'activate']);

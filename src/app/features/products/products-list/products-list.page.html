@@ -45,25 +45,24 @@
           <div class="product-icon">
             <ion-icon name="cube-outline"></ion-icon>
           </div>
-          <ion-badge [class]="product.active ? 'active' : 'inactive'">
-            {{ product.active ? 'Active' : 'Inactive' }}
+          <ion-badge [class]="product.is_active ? 'active' : 'inactive'">
+            {{ product.is_active ? 'Active' : 'Inactive' }}
           </ion-badge>
         </div>
         
         <div class="product-info">
           <h3>{{ product.name }}</h3>
-          <p class="product-code">{{ product.code }}</p>
+          <p class="product-code">{{ product.sku }}</p>
         </div>
 
         <div class="product-price">
-          <span class="currency">{{ product.currency }}</span>
           <span class="amount">{{ product.unit_price | number:'1.2-2' }}</span>
         </div>
 
         <div class="product-meta">
-          <div class="meta-item" *ngIf="product.unit">
-            <ion-icon name="resize-outline"></ion-icon>
-            <span>{{ product.unit }}</span>
+          <div class="meta-item" *ngIf="product.category">
+            <ion-icon name="folder-outline"></ion-icon>
+            <span>{{ product.category }}</span>
           </div>
           <div class="meta-item" *ngIf="product.quantity !== undefined">
             <ion-icon name="inventory-outline"></ion-icon>

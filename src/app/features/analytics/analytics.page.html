@@ -3,129 +3,282 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Analytics & Reports</ion-title>
+    <ion-title>Analytics</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="generateReport()">
+        <ion-icon slot="icon-only" name="download-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="ion-padding">
-    <ion-segment (ionChange)="segmentChanged($event)" value="overview">
-      <ion-segment-button value="overview"><ion-label>Overview</ion-label></ion-segment-button>
-      <ion-segment-button value="sales"><ion-label>Sales</ion-label></ion-segment-button>
-      <ion-segment-button value="pipeline"><ion-label>Pipeline</ion-label></ion-segment-button>
-      <ion-segment-button value="performance"><ion-label>Performance</ion-label></ion-segment-button>
-    </ion-segment>
+  <div class="analytics-container">
+    <!-- Header Stats Row -->
+    <div class="stats-grid">
+      <div class="stat-card revenue">
+        <div class="stat-icon">
+          <ion-icon name="wallet-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Total Revenue</span>
+          <span class="stat-value">{{ stats.total_revenue | currency }}</span>
+          <span class="stat-trend positive">
+            <ion-icon name="trending-up"></ion-icon> 12% vs last period
+          </span>
+        </div>
+      </div>
 
-    <!-- Date Range Picker -->
-    <ion-item>
-      <ion-label>Date Range</ion-label>
-      <ion-datetime display-format="MMM DD, YYYY" [(ngModel)]="dateRange"></ion-datetime>
-    </ion-item>
+      <div class="stat-card deals">
+        <div class="stat-icon">
+          <ion-icon name="briefcase-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Total Deals</span>
+          <span class="stat-value">{{ stats.total_deals }}</span>
+          <span class="stat-trend positive">
+            <ion-icon name="trending-up"></ion-icon> 5% vs last period
+          </span>
+        </div>
+      </div>
 
-    <!-- Overview Stats -->
-    <div *ngIf="currentSegment === 'overview'">
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>Revenue</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <h1>{{ stats.total_revenue | currency }}</h1>
-          <p>This period</p>
-        </ion-card-content>
-      </ion-card>
+      <div class="stat-card contacts">
+        <div class="stat-icon">
+          <ion-icon name="people-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Total Contacts</span>
+          <span class="stat-value">{{ stats.total_contacts }}</span>
+          <span class="stat-trend positive">
+            <ion-icon name="trending-up"></ion-icon> 8% vs last period
+          </span>
+        </div>
+      </div>
 
-      <ion-grid>
-        <ion-row>
-          <ion-col>
-            <ion-card>
-              <ion-card-content>
-                <h2>{{ stats.total_deals }}</h2>
-                <p>Total Deals</p>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-          <ion-col>
-            <ion-card>
-              <ion-card-content>
-                <h2>{{ stats.total_contacts }}</h2>
-                <p>Contacts</p>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
-            <ion-card>
-              <ion-card-content>
-                <h2>{{ stats.conversion_rate | number:'1.1-1' }}%</h2>
-                <p>Conversion Rate</p>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-          <ion-col>
-            <ion-card>
-              <ion-card-content>
-                <h2>{{ stats.average_deal_size | currency }}</h2>
-                <p>Avg Deal Size</p>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+      <div class="stat-card conversion">
+        <div class="stat-icon">
+          <ion-icon name="pulse-outline"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Conversion Rate</span>
+          <span class="stat-value">{{ stats.conversion_rate | number:'1.1-1' }}%</span>
+          <span class="stat-trend negative">
+            <ion-icon name="trending-down"></ion-icon> 2% vs last period
+          </span>
+        </div>
+      </div>
     </div>
 
-    <!-- Sales Chart -->
-    <div *ngIf="currentSegment === 'sales'">
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>Sales by Month</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <p>Chart placeholder</p>
-        </ion-card-content>
-      </ion-card>
+    <!-- Second Row - Pipeline & Charts -->
+    <div class="charts-row">
+      <!-- Pipeline Overview -->
+      <div class="chart-card">
+        <div class="card-header">
+          <h3>Pipeline Overview</h3>
+          <ion-button fill="clear" size="small">View All</ion-button>
+        </div>
+        <div class="pipeline-stats">
+          <div class="pipeline-stat">
+            <span class="label">Total Pipeline Value</span>
+            <span class="value">{{ pipeline.total_pipeline_value | currency }}</span>
+          </div>
+          <div class="pipeline-stat">
+            <span class="label">Deals in Pipeline</span>
+            <span class="value">{{ pipeline.deals_count }}</span>
+          </div>
+        </div>
+        <div class="pipeline-bar">
+          <div class="bar-fill" [style.width.%]="65"></div>
+        </div>
+        <div class="pipeline-progress">
+          <span>65% of target achieved</span>
+        </div>
+      </div>
+
+      <!-- Sales Chart -->
+      <div class="chart-card">
+        <div class="card-header">
+          <h3>Sales Trend</h3>
+          <div class="period-selector">
+            <ion-segment (ionChange)="segmentChanged($event)" value="overview" size="small">
+              <ion-segment-button value="week">Week</ion-segment-button>
+              <ion-segment-button value="month">Month</ion-segment-button>
+              <ion-segment-button value="quarter">Quarter</ion-segment-button>
+            </ion-segment>
+          </div>
+        </div>
+        <div class="chart-placeholder">
+          <div class="chart-bars">
+            <div class="bar" style="height: 40%"></div>
+            <div class="bar" style="height: 65%"></div>
+            <div class="bar" style="height: 45%"></div>
+            <div class="bar" style="height: 80%"></div>
+            <div class="bar" style="height: 55%"></div>
+            <div class="bar" style="height: 90%"></div>
+            <div class="bar" style="height: 70%"></div>
+          </div>
+          <div class="chart-labels">
+            <span>Mon</span>
+            <span>Tue</span>
+            <span>Wed</span>
+            <span>Thu</span>
+            <span>Fri</span>
+            <span>Sat</span>
+            <span>Sun</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Pipeline -->
-    <div *ngIf="currentSegment === 'pipeline'">
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>Pipeline Overview</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <h2>{{ pipeline.total_pipeline_value | currency }}</h2>
-          <p>{{ pipeline.deals_count }} deals in pipeline</p>
-        </ion-card-content>
-      </ion-card>
+    <!-- Third Row - Performance & Activities -->
+    <div class="bottom-row">
+      <!-- Team Performance -->
+      <div class="performance-card">
+        <div class="card-header">
+          <h3>Team Performance</h3>
+        </div>
+        <div class="performance-list">
+          <div class="performance-item">
+            <div class="user-avatar">
+              <ion-icon name="person"></ion-icon>
+            </div>
+            <div class="performance-info">
+              <span class="name">John Doe</span>
+              <span class="role">Sales Manager</span>
+            </div>
+            <div class="performance-metrics">
+              <div class="metric">
+                <span class="metric-value">{{ performance.tasks_completed }}</span>
+                <span class="metric-label">Tasks</span>
+              </div>
+              <div class="metric">
+                <span class="metric-value">{{ performance.calls_logged }}</span>
+                <span class="metric-label">Calls</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="performance-item">
+            <div class="user-avatar">
+              <ion-icon name="person"></ion-icon>
+            </div>
+            <div class="performance-info">
+              <span class="name">Sarah Smith</span>
+              <span class="role">Account Executive</span>
+            </div>
+            <div class="performance-metrics">
+              <div class="metric">
+                <span class="metric-value">28</span>
+                <span class="metric-label">Tasks</span>
+              </div>
+              <div class="metric">
+                <span class="metric-value">42</span>
+                <span class="metric-label">Calls</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activities -->
+      <div class="activity-card">
+        <div class="card-header">
+          <h3>Recent Activities</h3>
+          <ion-button fill="clear" size="small">View All</ion-button>
+        </div>
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="activity-icon deal">
+              <ion-icon name="checkmark-circle"></ion-icon>
+            </div>
+            <div class="activity-content">
+              <span class="activity-text">Deal "Enterprise License" moved to Won</span>
+              <span class="activity-time">2 hours ago</span>
+            </div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-icon contact">
+              <ion-icon name="person-add"></ion-icon>
+            </div>
+            <div class="activity-content">
+              <span class="activity-text">New contact "Mike Johnson" added</span>
+              <span class="activity-time">4 hours ago</span>
+            </div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-icon task">
+              <ion-icon name="create"></ion-icon>
+            </div>
+            <div class="activity-content">
+              <span class="activity-text">Task "Follow up with client" completed</span>
+              <span class="activity-time">5 hours ago</span>
+            </div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-icon call">
+              <ion-icon name="call"></ion-icon>
+            </div>
+            <div class="activity-content">
+              <span class="activity-text">Call logged with "ABC Corp"</span>
+              <span class="activity-time">Yesterday</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Performance -->
-    <div *ngIf="currentSegment === 'performance'">
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>Team Performance</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <ion-list>
-            <ion-item>
-              <ion-label>Tasks Completed</ion-label>
-              <ion-badge slot="end" color="success">{{ performance.tasks_completed }}</ion-badge>
-            </ion-item>
-            <ion-item>
-              <ion-label>Calls Logged</ion-label>
-              <ion-badge slot="end" color="primary">{{ performance.calls_logged }}</ion-badge>
-            </ion-item>
-            <ion-item>
-              <ion-label>Meetings Scheduled</ion-label>
-              <ion-badge slot="end" color="tertiary">{{ performance.meetings_scheduled }}</ion-badge>
-            </ion-item>
-          </ion-list>
-        </ion-card-content>
-      </ion-card>
-    </div>
+    <!-- Key Metrics Grid -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-header">
+          <ion-icon name="trending-up" class="success"></ion-icon>
+          <span>Won Deals</span>
+        </div>
+        <div class="metric-value">18</div>
+        <div class="metric-footer">
+          <span class="value">$85,000</span>
+          <span class="label">Total Value</span>
+        </div>
+      </div>
 
-    <ion-button expand="block" color="secondary" (click)="generateReport()">
-      Generate Report
-    </ion-button>
+      <div class="metric-card">
+        <div class="metric-header">
+          <ion-icon name="time" class="warning"></ion-icon>
+          <span>Average Deal Size</span>
+        </div>
+        <div class="metric-value">{{ stats.average_deal_size | currency }}</div>
+        <div class="metric-footer">
+          <span class="value">15</span>
+          <span class="label">Deals closed</span>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-header">
+          <ion-icon name="calendar" class="primary"></ion-icon>
+          <span>Avg. Cycle Time</span>
+        </div>
+        <div class="metric-value">12 days</div>
+        <div class="metric-footer">
+          <span class="value">-3 days</span>
+          <span class="label">vs last month</span>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-header">
+          <ion-icon name="repeat" class="tertiary"></ion-icon>
+          <span>Lead Response Time</span>
+        </div>
+        <div class="metric-value">2.5 hrs</div>
+        <div class="metric-footer">
+          <span class="value">-1 hr</span>
+          <span class="label">vs last month</span>
+        </div>
+      </div>
+    </div>
   </div>
 </ion-content>

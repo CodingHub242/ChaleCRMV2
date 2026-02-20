@@ -165,14 +165,13 @@ export interface NoteActivity extends Activity {
 export interface Product {
   id: number;
   name: string;
-  code: string;
+  sku?: string;
+  category?: string;
   description?: string;
   unit_price: number;
-  currency: string;
-  unit?: string;
-  quantity?: number;
-  owner_id: number;
-  active: boolean;
+  quantity: number;
+  low_stock_threshold: number;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -503,6 +502,45 @@ export interface Label {
   name: string;
   entity_type: 'contact' | 'company' | 'deal' | 'lead' | 'invoice' | 'quote' | 'task';
   color?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// Call Model (Telephony)
+export interface Call {
+  id: number;
+  call_type: 'inbound' | 'outbound';
+  direction: 'incoming' | 'outgoing';
+  status: 'completed' | 'missed' | 'voicemail' | 'failed';
+  subject?: string;
+  phone_number: string;
+  duration?: number;
+  notes?: string;
+  recording_url?: string;
+  contact_id?: number;
+  contact?: Contact;
+  company_id?: number;
+  company?: Company;
+  deal_id?: number;
+  deal?: Deal;
+  owner_id: number;
+  created_at: string;
+  updated_at: string;
+}
+
+// Social Post Model
+export interface SocialPost {
+  id: number;
+  platform: 'facebook' | 'twitter' | 'linkedin' | 'instagram' | 'youtube';
+  content: string;
+  status: 'draft' | 'scheduled' | 'published' | 'failed';
+  scheduled_at?: string;
+  published_at?: string;
+  media_urls?: string[];
+  likes_count?: number;
+  comments_count?: number;
+  shares_count?: number;
+  owner_id: number;
   created_at: string;
   updated_at: string;
 }

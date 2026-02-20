@@ -1,78 +1,174 @@
-<ion-header [translucent]="true">
+<ion-header class="bigin-header">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Sales Forecasting</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="refreshForecast()" class="refresh-btn">
+        <ion-icon slot="icon-only" name="refresh"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <div class="forecast-period-selector">
+      <span class="period-label">Forecast Period:</span>
+      <ion-segment [(ngModel)]="forecastPeriod" (ionChange)="loadForecast()">
+        <ion-segment-button value="3">
+          <ion-label>3 Months</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="6">
+          <ion-label>6 Months</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="12">
+          <ion-label>12 Months</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <div class="ion-padding">
-    <ion-item>
-      <ion-label>Forecast Period (months)</ion-label>
-      <ion-select [(ngModel)]="forecastPeriod" (ionChange)="loadForecast()">
-        <ion-select-option value="3">3 Months</ion-select-option>
-        <ion-select-option value="6">6 Months</ion-select-option>
-        <ion-select-option value="12">12 Months</ion-select-option>
-      </ion-select>
-    </ion-item>
+<ion-content class="bigin-content forecasting-content">
+  <div class="forecast-container">
+    <!-- Loading State -->
+    <div class="loading-overlay" *ngIf="loading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Calculating forecasts...</p>
+    </div>
 
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Revenue Forecast</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <h1>{{ totalPredictedRevenue | currency }}</h1>
-        <p>Predicted revenue for next {{ forecastPeriod }} months</p>
-      </ion-card-content>
-    </ion-card>
+    <!-- Forecast Overview Cards -->
+    <div class="forecast-stats">
+      <div class="stat-card revenue-card">
+        <div class="stat-icon">
+          <ion-icon name="trending-up"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Predicted Revenue</span>
+          <span class="stat-value">{{ totalPredictedRevenue | currency:'GHS' }}</span>
+          <span class="stat-subtitle">Next {{ forecastPeriod }} months</span>
+        </div>
+      </div>
 
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Pipeline Analysis</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-list>
-          <ion-item>
-            <ion-label>Total Pipeline Value</ion-label>
-            <ion-badge slot="end" color="primary">{{ pipeline.total_pipeline_value | currency }}</ion-badge>
-          </ion-item>
-          <ion-item>
-            <ion-label>Weighted Forecast</ion-label>
-            <ion-badge slot="end" color="success">{{ pipeline.weighted_forecast | currency }}</ion-badge>
-          </ion-item>
-          <ion-item>
-            <ion-label>Probability Weighted</ion-label>
-            <ion-badge slot="end" color="warning">{{ pipeline.probability_weighted | currency }}</ion-badge>
-          </ion-item>
-          <ion-item>
-            <ion-label>Open Deals</ion-label>
-            <ion-badge slot="end">{{ pipeline.total_open_deals }}</ion-badge>
-          </ion-item>
-        </ion-list>
-      </ion-card-content>
-    </ion-card>
+      <div class="stat-card pipeline-card">
+        <div class="stat-icon">
+          <ion-icon name="git-network"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Pipeline Value</span>
+          <span class="stat-value">{{ pipeline.total_pipeline_value | currency:'GHS' }}</span>
+          <span class="stat-subtitle">{{ pipeline.total_open_deals }} open deals</span>
+        </div>
+      </div>
 
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Monthly Predictions</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-list>
-          <ion-item *ngFor="let prediction of predictions">
-            <ion-label>
-              <h3>{{ prediction.month }}</h3>
-              <p>Confidence: {{ prediction.confidence_interval?.low | currency }} - {{ prediction.confidence_interval?.high | currency }}</p>
-            </ion-label>
-            <ion-badge slot="end" color="success">{{ prediction.predicted_revenue | currency }}</ion-badge>
-          </ion-item>
-        </ion-list>
-      </ion-card-content>
-    </ion-card>
+      <div class="stat-card weighted-card">
+        <div class="stat-icon">
+          <ion-icon name="analytics"></ion-icon>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Weighted Forecast</span>
+          <span class="stat-value">{{ pipeline.weighted_forecast | currency:'GHS' }}</span>
+          <span class="stat-subtitle">Probability adjusted</span>
+        </div>
+      </div>
+    </div>
 
-    <ion-button expand="block" color="secondary" (click)="refreshForecast()">
-      Refresh Forecast
-    </ion-button>
+    <!-- Pipeline Funnel -->
+    <div class="forecast-section">
+      <div class="section-header">
+        <h2>
+          <ion-icon name="filter"></ion-icon>
+          Pipeline Breakdown
+        </h2>
+      </div>
+      <div class="pipeline-funnel">
+        <div class="funnel-stage">
+          <div class="stage-bar total" [style.width.%]="100">
+            <span class="stage-label">Total Pipeline</span>
+            <span class="stage-value">{{ pipeline.total_pipeline_value | currency:'GHS' }}</span>
+          </div>
+        </div>
+        <div class="funnel-stage">
+          <div class="stage-bar weighted" [style.width.%]="getWeightedPercentage()">
+            <span class="stage-label">Weighted</span>
+            <span class="stage-value">{{ pipeline.weighted_forecast | currency:'GHS' }}</span>
+          </div>
+        </div>
+        <div class="funnel-stage">
+          <div class="stage-bar probability" [style.width.%]="getProbabilityPercentage()">
+            <span class="stage-label">Probability</span>
+            <span class="stage-value">{{ pipeline.probability_weighted | currency:'GHS' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monthly Predictions -->
+    <div class="forecast-section">
+      <div class="section-header">
+        <h2>
+          <ion-icon name="calendar"></ion-icon>
+          Monthly Predictions
+        </h2>
+      </div>
+      <div class="predictions-grid">
+        <div class="prediction-card" *ngFor="let prediction of predictions; let i = index">
+          <div class="prediction-header">
+            <span class="month-name">{{ prediction.month }}</span>
+            <span class="confidence-badge" [class]="getConfidenceClass(prediction.confidence_level)">
+              {{ prediction.confidence_level || 'Medium' }}
+            </span>
+          </div>
+          <div class="prediction-value">
+            {{ prediction.predicted_revenue | currency:'GHS' }}
+          </div>
+          <div class="prediction-range" *ngIf="prediction.confidence_interval">
+            <span class="range-label">Range:</span>
+            <span class="range-values">
+              {{ prediction.confidence_interval.low | currency:'GHS' }} - {{ prediction.confidence_interval.high | currency:'GHS' }}
+            </span>
+          </div>
+          <div class="prediction-progress">
+            <div class="progress-bar" [style.width.%]="getPredictionPercentage(prediction)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Forecast Summary -->
+    <div class="forecast-section">
+      <div class="section-header">
+        <h2>
+          <ion-icon name="pie-chart"></ion-icon>
+          Forecast Summary
+        </h2>
+      </div>
+      <div class="summary-table">
+        <div class="summary-row header">
+          <span class="summary-label">Metric</span>
+          <span class="summary-value">Amount</span>
+          <span class="summary-percent">% of Total</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Total Pipeline</span>
+          <span class="summary-value">{{ pipeline.total_pipeline_value | currency:'GHS' }}</span>
+          <span class="summary-percent">100%</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Weighted Forecast</span>
+          <span class="summary-value">{{ pipeline.weighted_forecast | currency:'GHS' }}</span>
+          <span class="summary-percent">{{ getWeightedPercentage() | number:'1.0-0' }}%</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Probability Weighted</span>
+          <span class="summary-value">{{ pipeline.probability_weighted | currency:'GHS' }}</span>
+          <span class="summary-percent">{{ getProbabilityPercentage() | number:'1.0-0' }}%</span>
+        </div>
+        <div class="summary-row highlight">
+          <span class="summary-label">Predicted Revenue</span>
+          <span class="summary-value">{{ totalPredictedRevenue | currency:'GHS' }}</span>
+          <span class="summary-percent">{{ getPredictionRate() | number:'1.0-0' }}%</span>
+        </div>
+      </div>
+    </div>
   </div>
 </ion-content>

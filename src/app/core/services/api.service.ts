@@ -641,4 +641,60 @@ export class ApiService {
   getEnrichmentProviders(): Observable<ApiResponse<any>> {
     return this.http.get<ApiResponse<any>>(`${this.baseUrl}/enrichment/providers`);
   }
+
+  // ==================== CALLS (TELEPHONY) ====================
+  getCalls(params?: { page?: number; per_page?: number; call_type?: string; status?: string }): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    if (params) {
+      if (params.page) httpParams = httpParams.set('page', params.page.toString());
+      if (params.per_page) httpParams = httpParams.set('per_page', params.per_page.toString());
+      if (params.call_type) httpParams = httpParams.set('call_type', params.call_type);
+      if (params.status) httpParams = httpParams.set('status', params.status);
+    }
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/calls`, { params: httpParams });
+  }
+
+  getCall(id: number): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/calls/${id}`);
+  }
+
+  createCall(data: Partial<any>): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/calls`, data);
+  }
+
+  updateCall(id: number, data: Partial<any>): Observable<ApiResponse<any>> {
+    return this.http.put<ApiResponse<any>>(`${this.baseUrl}/calls/${id}`, data);
+  }
+
+  deleteCall(id: number): Observable<ApiResponse<null>> {
+    return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/calls/${id}`);
+  }
+
+  // ==================== SOCIAL POSTS ====================
+  getSocialPosts(params?: { page?: number; per_page?: number; platform?: string; status?: string }): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    if (params) {
+      if (params.page) httpParams = httpParams.set('page', params.page.toString());
+      if (params.per_page) httpParams = httpParams.set('per_page', params.per_page.toString());
+      if (params.platform) httpParams = httpParams.set('platform', params.platform);
+      if (params.status) httpParams = httpParams.set('status', params.status);
+    }
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/social-posts`, { params: httpParams });
+  }
+
+  getSocialPost(id: number): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/social-posts/${id}`);
+  }
+
+  createSocialPost(data: Partial<any>): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/social-posts`, data);
+  }
+
+  updateSocialPost(id: number, data: Partial<any>): Observable<ApiResponse<any>> {
+    return this.http.put<ApiResponse<any>>(`${this.baseUrl}/social-posts/${id}`, data);
+  }
+
+  deleteSocialPost(id: number): Observable<ApiResponse<null>> {
+    return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/social-posts/${id}`);
+  }
 }

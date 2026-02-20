@@ -20,17 +20,14 @@ export class ProductFormPage implements OnInit {
 
   product: Partial<Product> = {
     name: '',
-    code: '',
+    sku: '',
+    category: '',
     description: '',
     unit_price: 0,
-    currency: 'GHS',
-    unit: '',
     quantity: 0,
-    active: true
+    low_stock_threshold: 10,
+    is_active: true
   };
-
-  currencies = ['USD', 'EUR', 'GBP', 'CAD', 'AUD','GHS'];
-  units = ['piece', 'unit', 'kg', 'lb', 'box', 'pack', 'hour', 'day'];
 
   constructor(
     private api: ApiService,
@@ -68,8 +65,8 @@ export class ProductFormPage implements OnInit {
   }
 
   async save(): Promise<void> {
-    if (!this.product.name || !this.product.code) {
-      this.showAlert('Validation Error', 'Please fill in required fields');
+    if (!this.product.name || !this.product.sku) {
+      this.showAlert('Validation Error', 'Please fill in required fields (name and SKU)');
       return;
     }
 

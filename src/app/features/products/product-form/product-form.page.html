@@ -30,9 +30,16 @@
         </div>
 
         <div class="form-field">
-          <label>Product Code <span class="required">*</span></label>
+          <label>SKU <span class="required">*</span></label>
           <ion-item lines="none">
-            <ion-input [(ngModel)]="product.code" name="code" placeholder="e.g., PRD-001" required></ion-input>
+            <ion-input [(ngModel)]="product.sku" name="sku" placeholder="e.g., PRD-001" required></ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-field">
+          <label>Category</label>
+          <ion-item lines="none">
+            <ion-input [(ngModel)]="product.category" name="category" placeholder="e.g., Electronics"></ion-input>
           </ion-item>
         </div>
 
@@ -61,27 +68,16 @@
         </div>
 
         <div class="form-field">
-          <label>Currency</label>
-          <ion-item lines="none">
-            <ion-select [(ngModel)]="product.currency" name="currency" interface="popover">
-              <ion-select-option *ngFor="let currency of currencies" [value]="currency">{{ currency }}</ion-select-option>
-            </ion-select>
-          </ion-item>
-        </div>
-
-        <div class="form-field">
-          <label>Unit</label>
-          <ion-item lines="none">
-            <ion-select [(ngModel)]="product.unit" name="unit" interface="popover" placeholder="Select unit">
-              <ion-select-option *ngFor="let unit of units" [value]="unit">{{ unit | titlecase }}</ion-select-option>
-            </ion-select>
-          </ion-item>
-        </div>
-
-        <div class="form-field">
           <label>Quantity in Stock</label>
           <ion-item lines="none">
             <ion-input type="number" [(ngModel)]="product.quantity" name="quantity" placeholder="0"></ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-field">
+          <label>Low Stock Threshold</label>
+          <ion-item lines="none">
+            <ion-input type="number" [(ngModel)]="product.low_stock_threshold" name="low_stock_threshold" placeholder="10"></ion-input>
           </ion-item>
         </div>
       </div>
@@ -99,7 +95,7 @@
           <span class="toggle-label">Active</span>
           <span class="toggle-desc">Product will be available for quotes and invoices</span>
         </div>
-        <ion-toggle [(ngModel)]="product.active" name="active"></ion-toggle>
+        <ion-toggle [(ngModel)]="product.is_active" name="is_active"></ion-toggle>
       </div>
     </div>
 
