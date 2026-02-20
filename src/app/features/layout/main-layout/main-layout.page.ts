@@ -6,7 +6,7 @@ import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonIcon,
 import { MenuController } from '@ionic/angular';
 import { AuthService } from '../../../core/services/auth.service';
 import { addIcons } from 'ionicons';
-import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, businessOutline, homeOutline, peopleOutline, trendingUpOutline, checkboxOutline, calendarOutline, cubeOutline, documentTextOutline, receiptOutline, menuOutline } from 'ionicons/icons';
+import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, businessOutline, homeOutline, peopleOutline, trendingUpOutline, checkboxOutline, calendarOutline, cubeOutline, documentTextOutline, receiptOutline, menuOutline, barChartOutline, pricetagOutline, gitBranch, gitBranchOutline, mailOutline, megaphoneOutline, documentLockOutline, cartOutline } from 'ionicons/icons';
    
 @Component({
   selector: 'app-main-layout',
@@ -25,7 +25,7 @@ export class MainLayoutPage implements OnInit {
     private authService: AuthService,
     private router: Router
   ) {
-      addIcons({briefcase,notificationsOutline,settingsOutline,trendingUp,cash,chevronBack,chevronForward,chevronDown,alertCircle, add, trash, cubeOutline,documentTextOutline,receiptOutline, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, checkboxOutline,calendarOutline,checkmarkCircle,cloudUpload,layers,time,person,logOut,list,calendar,analytics,people,flag,homeOutline,peopleOutline,trendingUpOutline,ellipse,businessOutline, menuOutline});
+      addIcons({briefcase,barChartOutline,pricetagOutline,gitBranchOutline,mailOutline,documentLockOutline,cartOutline,megaphoneOutline,notificationsOutline,settingsOutline,trendingUp,cash,chevronBack,chevronForward,chevronDown,alertCircle, add, trash, cubeOutline,documentTextOutline,receiptOutline, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, checkboxOutline,calendarOutline,checkmarkCircle,cloudUpload,layers,time,person,logOut,list,calendar,analytics,people,flag,homeOutline,peopleOutline,trendingUpOutline,ellipse,businessOutline, menuOutline});
      }
 
   ngOnInit(): void {
