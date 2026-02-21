@@ -19,4 +19,25 @@ class EmailTemplate extends Model
         'variables' => 'array',
         'is_active' => 'boolean',
     ];
+
+    /**
+     * Render the template with variables
+     */
+    public function render(array $variables = []): array
+    {
+        $subject = $this->subject;
+        $body = $this->body;
+        
+        // Replace variables
+        foreach ($variables as $key => $value) {
+            $body = str_replace("{{{$key}}}", $value, $body);
+            $subject = str_replace("{{{$key}}}", $value, $subject);
+        }
+        
+        return [
+            'subject' => $subject,
+            'body' => $body,
+            'template' => $this
+        ];
+    }
 }

@@ -35,6 +35,13 @@ Route::post('workflows/{workflow}/deactivate', [App\Http\Controllers\Api\Workflo
 
 // Email Templates
 Route::apiResource('email-templates', App\Http\Controllers\Api\EmailTemplateController::class);
+Route::post('email-templates/{id}/preview', [App\Http\Controllers\Api\EmailTemplateController::class, 'preview']);
+Route::post('email-templates/{id}/duplicate', [App\Http\Controllers\Api\EmailTemplateController::class, 'duplicate']);
+
+// Email Sending
+Route::post('email/send', [App\Http\Controllers\Api\EmailController::class, 'send']);
+Route::get('email/history', [App\Http\Controllers\Api\EmailController::class, 'history']);
+Route::post('contacts/{id}/send-email', [App\Http\Controllers\Api\EmailController::class, 'sendToContact']);
 
 // Document Templates
 Route::apiResource('document-templates', App\Http\Controllers\Api\DocumentTemplateController::class);
