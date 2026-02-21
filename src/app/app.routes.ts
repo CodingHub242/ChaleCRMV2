@@ -230,6 +230,10 @@ export const routes: Routes = [
         path: 'contracts/:id',
         loadComponent: () => import('./features/contracts/contract-form/contract-form.page').then(m => m.ContractFormPage)
       },
+      {
+        path: 'contracts/:id/edit',
+        loadComponent: () => import('./features/contracts/contract-form/contract-form.page').then(m => m.ContractFormPage)
+      },
       // Workflows
       {
         path: 'workflows',

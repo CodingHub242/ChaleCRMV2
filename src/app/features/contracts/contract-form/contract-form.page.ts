@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, AlertController, PickerController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { Contract, Contact, Company, Deal, ContractSigner, ApiResponse } from '../../../models';
 
@@ -11,7 +11,7 @@ import { Contract, Contact, Company, Deal, ContractSigner, ApiResponse } from '.
   templateUrl: './contract-form.page.html',
   styleUrls: ['./contract-form.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, FormsModule],
+  imports: [CommonModule, IonicModule, FormsModule, RouterModule],
 })
 export class ContractFormPage implements OnInit {
   contract: any = {

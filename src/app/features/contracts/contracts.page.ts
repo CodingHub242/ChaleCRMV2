@@ -1,16 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, ActionSheetController, AlertController, ModalController } from '@ionic/angular';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { Contract } from '../../models';
+import { addIcons } from 'ionicons';
+import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, cloudUploadOutline } from 'ionicons/icons';
+
 
 @Component({
   selector: 'app-contracts',
   templateUrl: './contracts.page.html',
   styleUrls: ['./contracts.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule],
+  imports: [CommonModule, IonicModule, RouterModule],
 })
 export class ContractsPage implements OnInit {
   contracts: Contract[] = [];
@@ -39,7 +42,9 @@ export class ContractsPage implements OnInit {
     private alertController: AlertController,
     private modalController: ModalController,
     private apiService: ApiService
-  ) {}
+  ) {
+    addIcons({cloudUploadOutline});
+  }
 
   ngOnInit() {
     this.loadContracts();
@@ -271,10 +276,10 @@ export class ContractsPage implements OnInit {
   }
 
   formatCurrency(value: number): string {
-    if (!value) return '$0';
+    if (!value) return 'GHS0';
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'GHS',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }).format(value);
