@@ -21,7 +21,7 @@ export class ContractFormPage implements OnInit {
     start_date: '',
     end_date: '',
     value: 0,
-    currency: 'USD',
+    currency: 'GHS',
     content: '',
     signers: []
   };
@@ -40,7 +40,7 @@ export class ContractFormPage implements OnInit {
   contractStatuses = ['draft', 'pending', 'active', 'expired', 'terminated', 'cancelled'];
   
   // Currency options
-  currencies = ['USD', 'EUR', 'GBP', 'CAD', 'AUD', 'JPY', 'INR'];
+  currencies = ['GHS', 'USD', 'EUR', 'GBP', 'CAD', 'AUD', 'JPY', 'INR'];
 
   constructor(
     public router: Router,

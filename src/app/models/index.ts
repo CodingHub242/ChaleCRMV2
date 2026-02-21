@@ -410,6 +410,7 @@ export interface Contract {
   signers?: ContractSigner[];
   created_at: string;
   updated_at: string;
+  currency?: string;
 }
 
 export interface ContractSigner {
