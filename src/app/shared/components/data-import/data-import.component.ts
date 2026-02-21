@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, AlertController, LoadingController } from '@ionic/angular';
+import { IonicModule, AlertController, LoadingController,ModalController } from '@ionic/angular';
 import { ApiService } from '../../../core/services/api.service';
 import { IonContent, IonHeader, IonTitle, IonToolbar,IonSelect, IonButton, IonButtons, IonMenuButton, IonIcon, IonRow, IonCol, IonModal, IonLabel, IonItem, IonDatetime } from '@ionic/angular/standalone';
 import { firstValueFrom } from 'rxjs';
@@ -97,7 +97,8 @@ export class DataImportComponent implements OnInit {
   constructor(
     private api: ApiService,
     private alertController: AlertController,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private modcl:ModalController
   ) {}
 
   ngOnInit() {
@@ -374,6 +375,7 @@ export class DataImportComponent implements OnInit {
 
   onCancel() {
     this.cancel.emit();
+    this.modcl.dismiss();
   }
 
   private async showAlert(title: string, message: string, handler?: () => void) {
