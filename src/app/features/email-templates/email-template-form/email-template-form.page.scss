@@ -236,14 +236,25 @@
   border-radius: 12px;
   font-size: 12px;
   font-family: monospace;
-  color: #1976d2;
+  color: #073336;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .variable-chip:hover {
   background: #e3f2fd;
-  border-color: #1976d2;
+  border-color: #073336;
+}
+
+// Preview Backdrop
+.preview-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
 }
 
 // Preview Panel
@@ -251,20 +262,31 @@
   position: fixed;
   top: 0;
   right: 0;
-  width: 50%;
+  width: 55%;
+  max-width: 700px;
   height: 100vh;
   background: white;
-  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+  box-shadow: -4px 0 30px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   display: flex;
   flex-direction: column;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 .preview-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
+  padding: 16px 20px;
   background: #073336;
   color: white;
 }
@@ -283,25 +305,159 @@
   flex: 1;
   padding: 20px;
   overflow-y: auto;
+  background: #e8eaed;
 }
 
-.preview-subject {
-  padding: 12px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  font-size: 14px;
-}
-
-.preview-body {
-  padding: 16px;
+// Email Client Preview Style
+.email-client-preview {
   background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  min-height: 300px;
-  white-space: pre-wrap;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.email-header-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 13px;
+  color: #666;
+}
+
+.email-client-icon {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, #e09027, #f5a623);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.email-client-icon ion-icon {
+  color: white;
+  font-size: 16px;
+}
+
+.email-container {
+  padding: 20px;
+}
+
+.email-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.email-from, .email-to, .email-subject-preview {
+  display: flex;
+  gap: 8px;
   font-size: 14px;
-  line-height: 1.6;
+}
+
+.meta-label {
+  color: #888;
+  min-width: 60px;
+  font-weight: 500;
+}
+
+.meta-value {
+  color: #333;
+}
+
+.meta-value.subject {
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.email-divider {
+  height: 1px;
+  background: #e0e0e0;
+  margin: 16px 0;
+}
+
+.email-body-preview {
+  padding: 10px 0;
+}
+
+.email-header-section {
+  margin-bottom: 20px;
+}
+
+.deal-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #073336, #42a5f5);
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.deal-banner ion-icon {
+  font-size: 18px;
+}
+
+.email-body-content {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #333;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.email-footer {
+  margin-top: 30px;
+  padding-top: 20px;
+}
+
+.footer-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e0e0e0, transparent);
+  margin-bottom: 16px;
+}
+
+.footer-text {
+  font-size: 12px;
+  color: #888;
+  margin: 0 0 6px;
+  line-height: 1.5;
+}
+
+.footer-links {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  font-size: 12px;
+}
+
+.footer-links a {
+  color: #073336;
+  text-decoration: none;
+}
+
+.footer-links span {
+  color: #ccc;
+}
+
+.preview-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #fff3e0;
+  border-top: 1px solid #ffe0b2;
+  font-size: 12px;
+  color: #e65100;
+}
+
+.preview-info ion-icon {
+  font-size: 16px;
 }
 
 // Loading
@@ -357,6 +513,7 @@
 
   .preview-panel {
     width: 100%;
+    max-width: 100%;
   }
 
   .form-actions {

@@ -89,7 +89,7 @@
       <div class="form-section-header">
         <ion-icon name="document-text-outline"></ion-icon>
         <h3>Email Body</h3>
-        <ion-button fill="clear" size="small" (click)="showVariablesList()">
+        <ion-button style="color: #073336;--color:#073336;" fill="clear" size="small" (click)="showVariablesList()">
           <ion-icon slot="start" name="code-slash-outline"></ion-icon>
           Insert Variable
         </ion-button>
@@ -148,7 +148,8 @@
     </div>
   </div>
 
-  <!-- Preview Modal -->
+  <!-- Preview Modal - Well Designed Email -->
+  <div class="preview-backdrop" *ngIf="showPreview" (click)="togglePreview()"></div>
   <div class="preview-panel" *ngIf="showPreview">
     <div class="preview-header">
       <h3>Email Preview</h3>
@@ -157,10 +158,65 @@
       </ion-button>
     </div>
     <div class="preview-content">
-      <div class="preview-subject">
-        <strong>Subject:</strong> {{ template.subject || 'No subject' }}
+      <!-- Email Client Style -->
+      <div class="email-client-preview">
+        <div class="email-header-bar">
+          <div class="email-client-icon">
+            <ion-icon name="mail-unread-outline"></ion-icon>
+          </div>
+          <span>Recipients will see this email</span>
+        </div>
+        
+        <div class="email-container">
+          <div class="email-meta">
+            <div class="email-from">
+              <span class="meta-label">From:</span>
+              <span class="meta-value">Your Company <marketing@yourcompany.com></span>
+            </div>
+            <div class="email-to" *ngIf="template.category === 'lead' || template.category === 'contact'">
+              <span class="meta-label">To:</span>
+              <span class="meta-value">{{ getSampleEmail() }}</span>
+            </div>
+            <div class="email-subject-preview">
+              <span class="meta-label">Subject:</span>
+              <span class="meta-value subject">{{ template.subject || 'No subject' }}</span>
+            </div>
+          </div>
+          
+          <div class="email-divider"></div>
+          
+          <div class="email-body-preview">
+            <div class="email-header-section" *ngIf="template.category === 'deal'">
+              <div class="deal-banner">
+                <ion-icon name="handshake-outline"></ion-icon>
+                <span>Deal Update</span>
+              </div>
+            </div>
+            
+            <div class="email-body-content" [innerHTML]="getProcessedBody()"></div>
+            
+            <div class="email-footer">
+              <div class="footer-divider"></div>
+              <p class="footer-text">
+                You're receiving this email because you're a valued customer of Your Company.
+              </p>
+              <p class="footer-text">
+                © 2024 Your Company. All rights reserved.
+              </p>
+              <div class="footer-links">
+                <a href="#">View in Browser</a>
+                <span>•</span>
+                <a href="#">Unsubscribe</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="preview-info">
+          <ion-icon name="information-circle-outline"></ion-icon>
+          <span>This is a preview. Actual email may vary slightly based on email client.</span>
+        </div>
       </div>
-      <div class="preview-body" [innerHTML]="getProcessedBody()"></div>
     </div>
   </div>
 

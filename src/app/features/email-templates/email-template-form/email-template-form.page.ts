@@ -7,7 +7,7 @@ import { ApiService } from '../../../core/services/api.service';
 import { EmailTemplate, ApiResponse } from '../../../models';
 import { IonContent,IonTextarea, IonHeader, IonTitle, IonToolbar, IonButton, IonButtons, IonMenuButton, IonIcon, IonRow, IonCol, IonModal, IonLabel, IonItem, IonDatetime } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { briefcase,add, trash, create, mail, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, eyeOutline, personOutline, documentTextOutline, peopleOutline, businessOutline, mailOutline, codeSlashOutline } from 'ionicons/icons';
+import { briefcase,add, trash, create, mail, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, eyeOutline, personOutline, documentTextOutline, peopleOutline, businessOutline, mailOutline, codeSlashOutline, mailUnreadOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-email-template-form',
@@ -64,7 +64,7 @@ export class EmailTemplateFormPage implements OnInit {
     private alertController: AlertController,
     private apiService: ApiService
   ) {
-    addIcons({eyeOutline,personOutline,documentTextOutline,peopleOutline,businessOutline,settingsOutline,mailOutline,codeSlashOutline});
+    addIcons({eyeOutline,personOutline,documentTextOutline,peopleOutline,businessOutline,settingsOutline,mailOutline,codeSlashOutline,mailUnreadOutline});
   }
 
   ngOnInit() {
@@ -118,11 +118,11 @@ export class EmailTemplateFormPage implements OnInit {
         'company.email': 'contact@acme.com',
         'company.phone': '+1234567890',
         'deal.name': 'Enterprise Deal',
-        'deal.amount': '$10,000',
+        'deal.amount': 'GHS10,000',
         'deal.stage': 'Negotiation',
         'deal.expected_close_date': 'December 31, 2024',
         'invoice.number': 'INV-001',
-        'invoice.amount': '$1,000',
+        'invoice.amount': 'GHS1,000',
         'invoice.date': 'January 1, 2024',
         'invoice.due_date': 'January 31, 2024',
         'user.name': 'Sales Representative',
@@ -296,5 +296,18 @@ export class EmailTemplateFormPage implements OnInit {
 
   getVariableDisplay(variable: string): string {
     return `{{${variable}}}`;
+  }
+
+  getSampleEmail(): string {
+    if (this.template.category === 'lead') {
+      return 'John Doe &lt;john.doe@example.com&gt;';
+    } else if (this.template.category === 'contact') {
+      return 'Jane Smith &lt;jane.smith@example.com&gt;';
+    } else if (this.template.category === 'deal') {
+      return 'Deal Stakeholders &lt;deals@yourcompany.com&gt;';
+    } else if (this.template.category === 'invoice') {
+      return 'Billing Team &lt;billing@yourcompany.com&gt;';
+    }
+    return 'Customer &lt;customer@example.com&gt;';
   }
 }
