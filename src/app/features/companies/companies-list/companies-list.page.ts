@@ -6,6 +6,8 @@ import { RouterModule } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { Company } from '../../../models';
 import { DataImportComponent } from '../../../shared/components/data-import/data-import.component';
+import { addIcons } from 'ionicons';
+import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, cloudUploadOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-companies-list',
@@ -32,7 +34,9 @@ export class CompaniesListPage implements OnInit {
   constructor(
     private api: ApiService,
     private modalController: ModalController
-  ) {}
+  ) {
+    addIcons({cloudUploadOutline})
+  }
 
   ngOnInit(): void {
     this.loadCompanies();
