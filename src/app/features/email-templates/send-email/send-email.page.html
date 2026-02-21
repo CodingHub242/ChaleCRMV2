@@ -1,0 +1,260 @@
+<ion-header class="bigin-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="router.navigate(['/email-templates'])">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Send Email</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="togglePreview()" [strong]="true">
+        <ion-icon slot="start" name="eye-outline"></ion-icon>
+        Preview
+      </ion-button>
+      <ion-button (click)="sendEmail()" [strong]="true" [disabled]="!canSend()">
+        <ion-icon slot="start" name="paper-plane-outline"></ion-icon>
+        Send
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="form-container">
+    <!-- Recipients Section -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="people-outline"></ion-icon>
+        <h3>Recipients</h3>
+      </div>
+      
+      <!-- To Field -->
+      <div class="form-field">
+        <label>To <span class="required">*</span></label>
+        <div class="recipient-input-container">
+          <div class="selected-recipients">
+            <div class="recipient-chip" *ngFor="let contact of selectedContacts; let i = index">
+              <ion-avatar>
+                <span>{{ getInitials(contact.name) }}</span>
+              </ion-avatar>
+              <span class="recipient-name">{{ contact.name }}</span>
+              <ion-icon name="close-circle" (click)="removeContact(i)"></ion-icon>
+            </div>
+          </div>
+          <ion-button fill="clear" class="add-recipient-btn" (click)="showContactPicker()">
+            <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+            Add Recipients
+          </ion-button>
+        </div>
+      </div>
+
+      <!-- CC Field -->
+      <div class="form-field">
+        <label>CC</label>
+        <ion-item lines="none" class="cc-bcc-field">
+          <ion-input 
+            [(ngModel)]="ccEmails" 
+            name="cc" 
+            placeholder="Enter email addresses separated by commas"
+          ></ion-input>
+        </ion-item>
+      </div>
+
+      <!-- BCC Field -->
+      <div class="form-field">
+        <label>BCC</label>
+        <ion-item lines="none" class="cc-bcc-field">
+          <ion-input 
+            [(ngModel)]="bccEmails" 
+            name="bcc" 
+            placeholder="Enter email addresses separated by commas"
+          ></ion-input>
+        </ion-item>
+      </div>
+    </div>
+
+    <!-- Email Content Section -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="mail-outline"></ion-icon>
+        <h3>Email Content</h3>
+      </div>
+
+      <!-- Template Selection -->
+      <div class="form-field">
+        <label>Use Template (Optional)</label>
+        <div class="template-selector">
+          <ion-select 
+            [(ngModel)]="selectedTemplateId" 
+            (ionChange)="onTemplateChange()"
+            placeholder="Select a template"
+            interface="popover"
+          >
+            <ion-select-option [value]="null">No template</ion-select-option>
+            <ion-select-option *ngFor="let template of emailTemplates" [value]="template.id">
+              {{ template.name }}
+            </ion-select-option>
+          </ion-select>
+        </div>
+      </div>
+
+      <!-- Subject -->
+      <div class="form-field">
+        <label>Subject <span class="required">*</span></label>
+        <ion-item lines="none">
+          <ion-input 
+            [(ngModel)]="emailData.subject" 
+            name="subject" 
+            placeholder="Enter email subject"
+            required
+          ></ion-input>
+        </ion-item>
+      </div>
+
+      <!-- Body -->
+      <div class="form-field">
+        <label>Message</label>
+        <div class="editor-container">
+          <div class="editor-toolbar">
+            <ion-button fill="clear" size="small" (click)="insertTag('b')">
+              <strong>B</strong>
+            </ion-button>
+            <ion-button fill="clear" size="small" (click)="insertTag('i')">
+              <em>I</em>
+            </ion-button>
+            <ion-button fill="clear" size="small" (click)="insertTag('u')">
+              <u>U</u>
+            </ion-button>
+            <ion-button fill="clear" size="small" (click)="insertTag('br')">
+              ↵ 
+            </ion-button>
+            <ion-button fill="clear" size="small" (click)="insertTag('a')">
+              Link
+            </ion-button>
+            <ion-button fill="clear" size="small" (click)="showVariablesList()" style="margin-left: auto;">
+              <ion-icon name="code-slash-outline"></ion-icon>
+              Variables
+            </ion-button>
+          </div>
+          <div class="editor-area">
+            <textarea 
+              [(ngModel)]="emailData.body" 
+              name="body" 
+              rows="12"
+              placeholder="Enter your email message here..."
+            ></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Send Options -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="settings-outline"></ion-icon>
+        <h3>Send Options</h3>
+      </div>
+      
+      <div class="send-option">
+        <ion-checkbox [(ngModel)]="saveToHistory" color="primary"></ion-checkbox>
+        <span>Save to email history</span>
+      </div>
+      
+      <div class="send-option">
+        <ion-checkbox [(ngModel)]="sendCopyToSelf" color="primary"></ion-checkbox>
+        <span>Send a copy to myself</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Picker Modal -->
+  <div class="picker-backdrop" *ngIf="showContactPickerModal" (click)="showContactPickerModal = false"></div>
+  <div class="contact-picker-panel" *ngIf="showContactPickerModal">
+    <div class="picker-header">
+      <h3>Select Contacts</h3>
+      <ion-button fill="clear" (click)="showContactPickerModal = false">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+    </div>
+    
+    <div class="picker-search">
+      <ion-item lines="none">
+        <ion-icon slot="start" name="search-outline"></ion-icon>
+        <ion-input [(ngModel)]="contactSearch" (ionInput)="searchContacts()" placeholder="Search contacts..."></ion-input>
+      </ion-item>
+    </div>
+    
+    <div class="contact-list">
+      <div 
+        class="contact-item" 
+        *ngFor="let contact of filteredContacts"
+        [class.selected]="isContactSelected(contact.id)"
+        (click)="toggleContact(contact)"
+      >
+        <ion-avatar>
+          <span>{{ getInitials(contact.name) }}</span>
+        </ion-avatar>
+        <div class="contact-info">
+          <span class="contact-name">{{ contact.name }}</span>
+          <span class="contact-email">{{ contact.email }}</span>
+        </div>
+        <ion-checkbox [checked]="isContactSelected(contact.id)" (click)="$event.stopPropagation()"></ion-checkbox>
+      </div>
+      
+      <div class="empty-state" *ngIf="filteredContacts.length === 0">
+        <ion-icon name="people-outline"></ion-icon>
+        <p>No contacts found</p>
+      </div>
+    </div>
+    
+    <div class="picker-footer">
+      <ion-button expand="block" class="confirm-btn" (click)="confirmContactSelection()">
+        Add {{ getSelectedCount() }} Contact(s)
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Preview Panel -->
+  <div class="preview-backdrop" *ngIf="showPreview" (click)="togglePreview()"></div>
+  <div class="preview-panel" *ngIf="showPreview">
+    <div class="preview-header">
+      <h3>Email Preview</h3>
+      <ion-button fill="clear" (click)="togglePreview()">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+    </div>
+    <div class="preview-content">
+      <div class="email-client-preview">
+        <div class="email-header-bar">
+          <div class="email-client-icon">
+            <ion-icon name="paper-plane-outline"></ion-icon>
+          </div>
+          <span>Ready to send</span>
+        </div>
+        
+        <div class="email-container">
+          <div class="email-meta">
+            <div class="email-from">
+              <span class="meta-label">From:</span>
+              <span class="meta-value">Your Company <marketing@yourcompany.com></span>
+            </div>
+            <div class="email-to">
+              <span class="meta-label">To:</span>
+              <span class="meta-value">{{ getRecipientDisplay() }}</span>
+            </div>
+            <div class="email-subject-preview" *ngIf="emailData.subject">
+              <span class="meta-label">Subject:</span>
+              <span class="meta-value subject">{{ emailData.subject }}</span>
+            </div>
+          </div>
+          
+          <div class="email-divider"></div>
+          
+          <div class="email-body-preview">
+            <div class="email-body-content" [innerHTML]="getProcessedBody()"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

@@ -518,6 +518,38 @@ export class ApiService {
     return this.http.post<ApiResponse<any>>(`${this.baseUrl}/email-templates/${id}/preview`, { variables });
   }
 
+  // ==================== SEND EMAIL ====================
+  sendEmail(data: {
+    to: string[];
+    cc?: string[];
+    bcc?: string[];
+    subject: string;
+    body: string;
+    template_id?: number;
+    variables?: Record<string, any>;
+  }): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/email/send`, data);
+  }
+
+  sendEmailToContact(contactId: number, data: {
+    subject: string;
+    body: string;
+    template_id?: number;
+    variables?: Record<string, any>;
+  }): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/contacts/${contactId}/send-email`, data);
+  }
+
+  getEmailHistory(params?: { page?: number; per_page?: number; contact_id?: number }): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    if (params) {
+      if (params.page) httpParams = httpParams.set('page', params.page.toString());
+      if (params.per_page) httpParams = httpParams.set('per_page', params.per_page.toString());
+      if (params.contact_id) httpParams = httpParams.set('contact_id', params.contact_id.toString());
+    }
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/email/history`, { params: httpParams });
+  }
+
   // ==================== TAGS ====================
   getTags(params?: { entity_type?: string }): Observable<ApiResponse<Tag[]>> {
     let httpParams = new HttpParams();

@@ -268,6 +268,11 @@ export const routes: Routes = [
         path: 'email-templates/:id/edit',
         loadComponent: () => import('./features/email-templates/email-template-form/email-template-form.page').then(m => m.EmailTemplateFormPage)
       },
+      // Send Email
+      {
+        path: 'send-email',
+        loadComponent: () => import('./features/email-templates/send-email/send-email.page').then(m => m.SendEmailPage)
+      },
       // Analytics
       {
         path: 'analytics',

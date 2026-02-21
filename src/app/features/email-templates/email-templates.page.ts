@@ -118,6 +118,10 @@ export class EmailTemplatesPage implements OnInit {
     this.router.navigate(['/email-templates', template.id]);
   }
 
+  sendWithTemplate(template: EmailTemplate) {
+    this.router.navigate(['/send-email'], { queryParams: { template_id: template.id } });
+  }
+
   async presentActionSheet(event: Event, template: EmailTemplate) {
     event.stopPropagation();
     const actionSheet = await this.actionSheetController.create({
@@ -134,6 +138,13 @@ export class EmailTemplatesPage implements OnInit {
           icon: 'eye-outline',
           handler: () => {
             this.previewTemplate(template);
+          }
+        },
+        {
+          text: 'Send with this Template',
+          icon: 'paper-plane-outline',
+          handler: () => {
+            this.sendWithTemplate(template);
           }
         },
         {
