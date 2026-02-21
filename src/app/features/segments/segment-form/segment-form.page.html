@@ -1,0 +1,159 @@
+<ion-header class="bigin-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="router.navigate(['/segments'])">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ isEditing ? 'Edit Segment' : 'New Segment' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" [strong]="true">Save</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="form-container" *ngIf="!isLoading; else loadingTpl">
+    <!-- Segment Type Selection -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="git-network-outline"></ion-icon>
+        <h3>Segment Type</h3>
+      </div>
+      <div class="type-selector">
+        <div 
+          *ngFor="let type of segmentTypes" 
+          class="type-chip"
+          [class.active]="segment.type === type"
+          [ngClass]="getTypeClass(type)"
+          (click)="segment.type = type"
+        >
+          <ion-icon [name]="getTypeIcon(type)"></ion-icon>
+          <span>{{ type | titlecase }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Segment Information -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="business-outline"></ion-icon>
+        <h3>Segment Information</h3>
+      </div>
+      
+      <div class="form-grid">
+        <div class="form-field full-width">
+          <label>Segment Name <span class="required">*</span></label>
+          <ion-item lines="none">
+            <ion-input 
+              [(ngModel)]="segment.name" 
+              name="name" 
+              placeholder="Enter segment name"
+              required
+            ></ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-field full-width">
+          <label>Description</label>
+          <ion-item lines="none">
+            <ion-input 
+              [(ngModel)]="segment.description" 
+              name="description" 
+              placeholder="Describe this segment"
+            ></ion-input>
+          </ion-item>
+        </div>
+      </div>
+    </div>
+
+    <!-- Segment Conditions -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="filter-outline"></ion-icon>
+        <h3>Conditions</h3>
+        <ion-button fill="clear" size="small" (click)="addCondition()">
+          <ion-icon slot="start" name="add"></ion-icon>
+          Add Condition
+        </ion-button>
+      </div>
+      
+      <div class="logic-selector">
+        <span class="logic-label">Match</span>
+        <div 
+          class="logic-chip"
+          [class.active]="segment.logic === 'and'"
+          (click)="segment.logic = 'and'"
+        >
+          All conditions (AND)
+        </div>
+        <div 
+          class="logic-chip"
+          [class.active]="segment.logic === 'or'"
+          (click)="segment.logic = 'or'"
+        >
+          Any condition (OR)
+        </div>
+      </div>
+
+      <div class="conditions-list" *ngIf="segment.conditions && segment.conditions.length > 0">
+        <div class="condition-item" *ngFor="let condition of segment.conditions; let i = index">
+          <div class="condition-field">
+            <ion-select 
+              [(ngModel)]="condition.field" 
+              interface="popover"
+              placeholder="Select field"
+            >
+              <ion-select-option *ngFor="let field of getAvailableFields()" [value]="field">
+                {{ field | titlecase }}
+              </ion-select-option>
+            </ion-select>
+          </div>
+          <div class="condition-operator">
+            <ion-select 
+              [(ngModel)]="condition.operator" 
+              interface="popover"
+              placeholder="Operator"
+            >
+              <ion-select-option value="equals">Equals</ion-select-option>
+              <ion-select-option value="not_equals">Not Equals</ion-select-option>
+              <ion-select-option value="contains">Contains</ion-select-option>
+              <ion-select-option value="greater_than">Greater Than</ion-select-option>
+              <ion-select-option value="less_than">Less Than</ion-select-option>
+            </ion-select>
+          </div>
+          <div class="condition-value">
+            <ion-input 
+              [(ngModel)]="condition.value" 
+              placeholder="Value"
+            ></ion-input>
+          </div>
+          <ion-button fill="clear" color="danger" (click)="removeCondition(i)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+      
+      <div class="no-conditions" *ngIf="!segment.conditions || segment.conditions.length === 0">
+        <p>No conditions added yet. Click "Add Condition" to create filtering rules.</p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="form-actions">
+      <ion-button expand="block" class="cancel-btn" fill="outline" (click)="router.navigate(['/segments'])">
+        Cancel
+      </ion-button>
+      <ion-button expand="block" class="save-btn-full" (click)="save()">
+        {{ isEditing ? 'Update Segment' : 'Save Segment' }}
+      </ion-button>
+    </div>
+  </div>
+
+  <ng-template #loadingTpl>
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading segment...</p>
+    </div>
+  </ng-template>
+</ion-content>

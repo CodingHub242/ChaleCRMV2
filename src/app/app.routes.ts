@@ -271,6 +271,18 @@ export const routes: Routes = [
         path: 'segments',
         loadComponent: () => import('./features/segments/segments.page').then(m => m.SegmentsPage)
       },
+      {
+        path: 'segments/new',
+        loadComponent: () => import('./features/segments/segment-form/segment-form.page').then(m => m.SegmentFormPage)
+      },
+      {
+        path: 'segments/:id',
+        loadComponent: () => import('./features/segments/segment-form/segment-form.page').then(m => m.SegmentFormPage)
+      },
+      {
+        path: 'segments/:id/edit',
+        loadComponent: () => import('./features/segments/segment-form/segment-form.page').then(m => m.SegmentFormPage)
+      },
       // Forecasting
       {
         path: 'forecasting',
