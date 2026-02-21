@@ -21,7 +21,7 @@ export class CampaignFormPage implements OnInit {
     start_date: '',
     end_date: '',
     budget: 0,
-    currency: 'USD',
+    currency: 'GHS',
     description: '',
     goals: ''
   };
@@ -35,7 +35,7 @@ export class CampaignFormPage implements OnInit {
   campaignStatuses = ['draft', 'active', 'paused', 'completed', 'cancelled'];
   
   // Currency options
-  currencies = ['USD', 'EUR', 'GBP', 'CAD', 'AUD', 'JPY', 'INR'];
+  currencies = ['GHS','USD', 'EUR', 'GBP', 'CAD', 'AUD', 'JPY', 'INR'];
 
   constructor(
     public router: Router,
