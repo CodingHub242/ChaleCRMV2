@@ -3,15 +3,18 @@ import { CommonModule } from '@angular/common';
 import { IonicModule, AlertController, PickerController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
+import { IonContent,IonTextarea, IonHeader, IonTitle, IonToolbar, IonButton, IonButtons, IonMenuButton, IonIcon, IonRow, IonCol, IonModal, IonLabel, IonItem, IonDatetime } from '@ionic/angular/standalone';
 import { ApiService } from '../../../core/services/api.service';
 import { Contract, Contact, Company, Deal, ContractSigner, ApiResponse } from '../../../models';
+import { addIcons } from 'ionicons';
+import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, cloudUploadOutline, personOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-contract-form',
   templateUrl: './contract-form.page.html',
   styleUrls: ['./contract-form.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, FormsModule, RouterModule],
+  imports: [IonContent, IonTextarea,IonHeader, IonTitle, IonToolbar,IonButton,IonButtons,IonIcon,IonModal,IonRow,IonCol,IonMenuButton, IonLabel, IonItem, IonDatetime,CommonModule, IonicModule, FormsModule, RouterModule],
 })
 export class ContractFormPage implements OnInit {
   contract: any = {
@@ -48,7 +51,9 @@ export class ContractFormPage implements OnInit {
     private alertController: AlertController,
     private pickerController: PickerController,
     private apiService: ApiService
-  ) {}
+  ) {
+    addIcons({personOutline});
+  }
 
   ngOnInit() {
     // Check if editing
