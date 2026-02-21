@@ -1,0 +1,306 @@
+<ion-header class="bigin-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="router.navigate(['/contracts'])">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ isEditing ? 'Edit Contract' : 'New Contract' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" [strong]="true">Save</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="form-container" *ngIf="!isLoading; else loadingTpl">
+    <!-- Contract Value Card -->
+    <div class="value-card">
+      <h4>Contract Value</h4>
+      <div class="value-input">
+        <span class="currency-symbol">{{ contract.currency || '$' }}</span>
+        <input 
+          type="number" 
+          [(ngModel)]="contract.value" 
+          placeholder="0"
+          min="0"
+          step="100"
+        >
+      </div>
+    </div>
+
+    <!-- Contract Type Selection -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="document-outline"></ion-icon>
+        <h3>Contract Type</h3>
+      </div>
+      <div class="type-selector">
+        <div 
+          *ngFor="let type of contractTypes" 
+          class="type-chip"
+          [class.active]="contract.type === type"
+          [ngClass]="getTypeClass(type)"
+          (click)="contract.type = type"
+        >
+          <ion-icon [name]="getTypeIcon(type)"></ion-icon>
+          <span>{{ type | titlecase }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contract Status Selection -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="flag-outline"></ion-icon>
+        <h3>Contract Status</h3>
+      </div>
+      <div class="status-selector">
+        <div 
+          *ngFor="let status of contractStatuses" 
+          class="status-chip"
+          [class.active]="contract.status === status"
+          [ngClass]="getStatusClass(status)"
+          (click)="contract.status = status"
+        >
+          {{ status | titlecase }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Contract Information -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="business-outline"></ion-icon>
+        <h3>Contract Information</h3>
+      </div>
+      
+      <div class="form-grid">
+        <div class="form-field full-width">
+          <label>Contract Title <span class="required">*</span></label>
+          <ion-item lines="none">
+            <ion-input 
+              [(ngModel)]="contract.title" 
+              name="title" 
+              placeholder="Enter contract title"
+              required
+            ></ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-field">
+          <label>Start Date</label>
+          <ion-item lines="none">
+            <ion-datetime style="max-width: 100%;"
+              [(ngModel)]="contract.start_date" 
+              name="start_date"
+              presentation="date"
+              placeholder="Select date"
+            ></ion-datetime>
+          </ion-item>
+        </div>
+
+        <div class="form-field">
+          <label>End Date</label>
+          <ion-item lines="none">
+            <ion-datetime style="max-width: 100%;"
+              [(ngModel)]="contract.end_date" 
+              name="end_date"
+              presentation="date"
+              placeholder="Select date"
+            ></ion-datetime>
+          </ion-item>
+        </div>
+
+        <div class="form-field">
+          <label>Currency</label>
+          <ion-item lines="none">
+            <ion-select 
+              [(ngModel)]="contract.currency" 
+              name="currency" 
+              interface="popover"
+            >
+              <ion-select-option *ngFor="let currency of currencies" [value]="currency">
+                {{ currency }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+
+        <div class="form-field">
+          <label>Deal</label>
+          <div 
+            class="related-card" 
+            *ngIf="!contract.deal_id; else selectedDeal"
+            (click)="showDealPicker()"
+          >
+            <div class="avatar">
+              <ion-icon name="trending-up-outline"></ion-icon>
+            </div>
+            <div class="info">
+              <div class="title">Link a Deal</div>
+              <div class="subtitle">Optional</div>
+            </div>
+            <ion-icon class="arrow" name="chevron-forward-outline"></ion-icon>
+          </div>
+          <ng-template #selectedDeal>
+            <div class="related-card" (click)="showDealPicker()">
+              <div class="avatar deal-avatar">
+                {{ getDealInitials() }}
+              </div>
+              <div class="info">
+                <div class="title">{{ getDealName() }}</div>
+                <div class="subtitle">Deal</div>
+              </div>
+              <ion-icon class="arrow" name="chevron-forward-outline"></ion-icon>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related To -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="link-outline"></ion-icon>
+        <h3>Related To</h3>
+      </div>
+      
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Contact</label>
+          <div 
+            class="related-card" 
+            *ngIf="!contract.customer_id; else selectedContact"
+            (click)="showContactPicker()"
+          >
+            <div class="avatar">
+              <ion-icon name="person-outline"></ion-icon>
+            </div>
+            <div class="info">
+              <div class="title">Link a Contact</div>
+              <div class="subtitle">Optional</div>
+            </div>
+            <ion-icon class="arrow" name="chevron-forward-outline"></ion-icon>
+          </div>
+          <ng-template #selectedContact>
+            <div class="related-card" (click)="showContactPicker()">
+              <div class="avatar">
+                {{ getContactInitials() }}
+              </div>
+              <div class="info">
+                <div class="title">{{ getContactName() }}</div>
+                <div class="subtitle">Contact</div>
+              </div>
+              <ion-icon class="arrow" name="chevron-forward-outline"></ion-icon>
+            </div>
+          </ng-template>
+        </div>
+
+        <div class="form-field">
+          <label>Company</label>
+          <div 
+            class="related-card" 
+            *ngIf="!contract.company_id; else selectedCompany"
+            (click)="showCompanyPicker()"
+          >
+            <div class="avatar">
+              <ion-icon name="business-outline"></ion-icon>
+            </div>
+            <div class="info">
+              <div class="title">Link a Company</div>
+              <div class="subtitle">Optional</div>
+            </div>
+            <ion-icon class="arrow" name="chevron-forward-outline"></ion-icon>
+          </div>
+          <ng-template #selectedCompany>
+            <div class="related-card" (click)="showCompanyPicker()">
+              <div class="avatar">
+                {{ getCompanyInitials() }}
+              </div>
+              <div class="info">
+                <div class="title">{{ getCompanyName() }}</div>
+                <div class="subtitle">Company</div>
+              </div>
+              <ion-icon class="arrow" name="chevron-forward-outline"></ion-icon>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contract Content -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="document-text-outline"></ion-icon>
+        <h3>Contract Content</h3>
+      </div>
+      
+      <div class="content-field">
+        <ion-item lines="none">
+          <ion-textarea 
+            [(ngModel)]="contract.content" 
+            name="content" 
+            rows="8"
+            placeholder="Enter contract terms and conditions..."
+          ></ion-textarea>
+        </ion-item>
+      </div>
+    </div>
+
+    <!-- Signers Section -->
+    <div class="form-section" *ngIf="isEditing">
+      <div class="form-section-header">
+        <ion-icon name="people-outline"></ion-icon>
+        <h3>Signers</h3>
+        <ion-button fill="clear" size="small" (click)="addSigner()">
+          <ion-icon slot="start" name="add"></ion-icon>
+          Add Signer
+        </ion-button>
+      </div>
+      
+      <div class="signers-list" *ngIf="contract.signers && contract.signers.length > 0">
+        <div class="signer-item" *ngFor="let signer of contract.signers; let i = index">
+          <div class="signer-avatar">
+            {{ getSignerInitials(signer) }}
+          </div>
+          <div class="signer-info">
+            <div class="signer-name">{{ signer.name }}</div>
+            <div class="signer-email">{{ signer.email }}</div>
+            <div class="signer-status" *ngIf="signer.signed_at">
+              <ion-icon name="checkmark-circle" color="success"></ion-icon>
+              Signed on {{ signer.signed_at | date:'mediumDate' }}
+            </div>
+            <div class="signer-status pending" *ngIf="!signer.signed_at">
+              <ion-icon name="time-outline"></ion-icon>
+              Pending signature
+            </div>
+          </div>
+          <ion-button fill="clear" color="danger" (click)="removeSigner(i)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+      <div class="no-signers" *ngIf="!contract.signers || contract.signers.length === 0">
+        <p>No signers added yet</p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="form-actions">
+      <ion-button expand="block" class="cancel-btn" fill="outline" (click)="router.navigate(['/contracts'])">
+        Cancel
+      </ion-button>
+      <ion-button expand="block" class="save-btn-full" (click)="save()">
+        {{ isEditing ? 'Update Contract' : 'Save Contract' }}
+      </ion-button>
+    </div>
+  </div>
+
+  <ng-template #loadingTpl>
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading contract...</p>
+    </div>
+  </ng-template>
+</ion-content>

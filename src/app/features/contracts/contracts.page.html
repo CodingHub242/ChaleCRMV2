@@ -1,52 +1,153 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
+<ion-header>
+  <ion-toolbar class="bigin-header">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Contracts</ion-title>
     <ion-buttons slot="end">
-      <ion-button routerLink="/contracts/new">
+      <ion-button class="import-btn" (click)="presentImportModal()">
+        <ion-icon slot="icon-only" name="cloud-upload-outline"></ion-icon>
+      </ion-button>
+      <ion-button class="add-btn" routerLink="/contracts/new">
         <ion-icon slot="icon-only" name="add"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+  <ion-toolbar class="search-toolbar">
+    <ion-searchbar 
+      placeholder="Search contracts..." 
+      (ionChange)="searchChanged($event)"
+      [value]="searchQuery"
+      class="bigin-search">
+    </ion-searchbar>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <div class="ion-padding">
-    <ion-segment (ionChange)="filterChanged($event)" value="all">
-      <ion-segment-button value="all"><ion-label>All</ion-label></ion-segment-button>
-      <ion-segment-button value="active"><ion-label>Active</ion-label></ion-segment-button>
-      <ion-segment-button value="pending"><ion-label>Pending</ion-label></ion-segment-button>
-      <ion-segment-button value="expired"><ion-label>Expired</ion-label></ion-segment-button>
-    </ion-segment>
-
-    <ion-searchbar placeholder="Search contracts..." (ionInput)="searchChanged($event)" [debounce]="500"></ion-searchbar>
-
-    <ion-list>
-      <ion-item-sliding *ngFor="let contract of contracts">
-        <ion-item button (click)="viewContract(contract)">
-          <ion-icon slot="start" name="document-lock" [color]="getStatusColor(contract.status)"></ion-icon>
-          <ion-label>
-            <h2>{{ contract.title }}</h2>
-            <p>{{ contract.type | titlecase }} - {{ contract.customer?.first_name + ' ' + contract.customer?.last_name || 'No customer' }}</p>
-            <p *ngIf="contract.end_date">Expires: {{ contract.end_date | date:'mediumDate' }}</p>
-          </ion-label>
-          <ion-badge slot="end" [color]="getStatusColor(contract.status)">{{ contract.status }}</ion-badge>
-        </ion-item>
-        <ion-item-options side="end">
-          <ion-item-option color="primary" (click)="sendForSignature(contract)">Send for Signature</ion-item-option>
-          <ion-item-option color="success" (click)="download(contract)">Download</ion-item-option>
-          <ion-item-option color="danger" (click)="deleteContract(contract)">Delete</ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
-
-    <div *ngIf="contracts.length === 0" class="empty-state">
-      <ion-icon name="document-lock-outline" size="large"></ion-icon>
-      <h3>No Contracts</h3>
-      <p>Create your first contract</p>
-      <ion-button routerLink="/contracts/new">Create Contract</ion-button>
+<ion-content class="bigin-content">
+  <div class="contracts-container">
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+      <div 
+        class="filter-tab" 
+        [class.active]="currentFilter === 'all'"
+        (click)="filterChanged('all')"
+      >
+        All
+        <span class="count" *ngIf="totalCount">{{ totalCount }}</span>
+      </div>
+      <div 
+        class="filter-tab" 
+        [class.active]="currentFilter === 'active'"
+        (click)="filterChanged('active')"
+      >
+        Active
+        <span class="count" *ngIf="activeCount">{{ activeCount }}</span>
+      </div>
+      <div 
+        class="filter-tab" 
+        [class.active]="currentFilter === 'pending'"
+        (click)="filterChanged('pending')"
+      >
+        Pending
+        <span class="count" *ngIf="pendingCount">{{ pendingCount }}</span>
+      </div>
+      <div 
+        class="filter-tab" 
+        [class.active]="currentFilter === 'expired'"
+        (click)="filterChanged('expired')"
+      >
+        Expired
+        <span class="count" *ngIf="expiredCount">{{ expiredCount }}</span>
+      </div>
     </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar" *ngIf="contracts.length > 0">
+      <div class="stat-item">
+        <span class="stat-value">{{ contracts.length }}</span>
+        <span class="stat-label">Total Contracts</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">{{ formatCurrency(totalValue) }}</span>
+        <span class="stat-label">Total Value</span>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading && contracts.length === 0" class="loading-state">
+      <ion-spinner name="lines"></ion-spinner>
+      <p>Loading contracts...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && contracts.length === 0" class="empty-state">
+      <div class="empty-illustration">
+        <ion-icon name="document-lock-outline"></ion-icon>
+      </div>
+      <h3>No contracts found</h3>
+      <p>Get started by creating your first contract</p>
+      <ion-button class="primary-btn" routerLink="/contracts/new">
+        <ion-icon slot="start" name="add"></ion-icon>
+        Create Contract
+      </ion-button>
+    </div>
+
+    <!-- Contracts Grid -->
+    <div *ngIf="!loading && contracts.length > 0" class="contracts-grid">
+      <div class="contract-card" *ngFor="let contract of contracts" (click)="viewContract(contract)">
+        <div class="card-header">
+          <div class="contract-info">
+            <div class="contract-type-icon" [class]="getTypeClass(contract.type)">
+              <ion-icon [name]="getTypeIcon(contract.type)"></ion-icon>
+            </div>
+            <div class="contract-details">
+              <h3 class="contract-title">{{ contract.title }}</h3>
+              <span class="contract-type">{{ contract.type | titlecase }}</span>
+            </div>
+          </div>
+          <ion-button fill="clear" class="more-btn" (click)="presentActionSheet($event, contract)">
+            <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+          </ion-button>
+        </div>
+
+        <div class="card-value" *ngIf="contract.value">
+          <span class="value">{{ formatCurrency(contract.value) }}</span>
+          <span class="currency">{{ contract.currency || 'USD' }}</span>
+        </div>
+
+        <div class="card-body">
+          <div class="info-row" *ngIf="contract.customer">
+            <ion-icon name="person-outline"></ion-icon>
+            <span>{{ contract.customer.first_name }} {{ contract.customer.last_name }}</span>
+          </div>
+          <div class="info-row" *ngIf="contract.company">
+            <ion-icon name="business-outline"></ion-icon>
+            <span>{{ contract.company.name }}</span>
+          </div>
+          <div class="info-row" *ngIf="contract.start_date">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>{{ contract.start_date | date:'mediumDate' }} - {{ contract.end_date ? (contract.end_date | date:'mediumDate') : 'Ongoing' }}</span>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <ion-badge class="status-badge" [class]="getStatusClass(contract.status)">
+            {{ contract.status }}
+          </ion-badge>
+          <div class="signers-info" *ngIf="contract.signers && contract.signers.length > 0">
+            <ion-icon name="pencil-outline"></ion-icon>
+            <span>{{ getSignedCount(contract) }}/{{ contract.signers.length }} signed</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Infinite Scroll -->
+    <ion-infinite-scroll (ionInfinite)="loadMore($event)" *ngIf="contracts.length > 0">
+      <ion-infinite-scroll-content
+        loading-spinner="lines-small"
+        loading-text="Loading more...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
   </div>
 </ion-content>

@@ -222,6 +222,14 @@ export const routes: Routes = [
         path: 'contracts',
         loadComponent: () => import('./features/contracts/contracts.page').then(m => m.ContractsPage)
       },
+      {
+        path: 'contracts/new',
+        loadComponent: () => import('./features/contracts/contract-form/contract-form.page').then(m => m.ContractFormPage)
+      },
+      {
+        path: 'contracts/:id',
+        loadComponent: () => import('./features/contracts/contract-form/contract-form.page').then(m => m.ContractFormPage)
+      },
       // Workflows
       {
         path: 'workflows',
