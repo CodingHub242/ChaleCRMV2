@@ -3,7 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, AlertController, LoadingController } from '@ionic/angular';
 import { ApiService } from '../../../core/services/api.service';
+import { IonContent, IonHeader, IonTitle, IonToolbar,IonSelect, IonButton, IonButtons, IonMenuButton, IonIcon, IonRow, IonCol, IonModal, IonLabel, IonItem, IonDatetime } from '@ionic/angular/standalone';
 import { firstValueFrom } from 'rxjs';
+import { addIcons } from 'ionicons';
+import { briefcase,add, trash, create, mail, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline } from 'ionicons/icons';
+
 
 export interface ImportField {
   excelColumn: string;
@@ -20,7 +24,7 @@ export interface ImportResult {
 @Component({
   selector: 'app-data-import',
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar,IonSelect,IonButton,IonButtons,IonIcon,IonModal,IonRow,IonCol,IonMenuButton, IonLabel, IonItem, IonDatetime,CommonModule, FormsModule, IonicModule],
   templateUrl: './data-import.component.html',
   styleUrls: ['./data-import.component.scss']
 })
