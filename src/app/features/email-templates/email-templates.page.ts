@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
-import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { IonicModule, ActionSheetController, AlertController, ModalController } from '@ionic/angular';
+import { Router, RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { EmailTemplate } from '../../models';
 
@@ -11,16 +10,33 @@ import { EmailTemplate } from '../../models';
   templateUrl: './email-templates.page.html',
   styleUrls: ['./email-templates.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule],
+  imports: [CommonModule, IonicModule, RouterModule],
 })
 export class EmailTemplatesPage implements OnInit {
   templates: EmailTemplate[] = [];
+  loading = false;
   currentFilter = 'all';
   searchQuery = '';
+  
+  // Stats
+  totalCount = 0;
+  leadCount = 0;
+  dealCount = 0;
+  invoiceCount = 0;
+  contactCount = 0;
+
+  // Pagination
+  currentPage = 1;
+  hasMore = true;
+
+  // Categories
+  categories = ['lead', 'deal', 'invoice', 'contact', 'company', 'custom', 'other'];
 
   constructor(
     private router: Router,
+    private actionSheetController: ActionSheetController,
     private alertController: AlertController,
+    private modalController: ModalController,
     private apiService: ApiService
   ) {}
 
@@ -29,10 +45,15 @@ export class EmailTemplatesPage implements OnInit {
   }
 
   loadTemplates() {
-    const params: any = {};
+    this.loading = true;
+    const params: any = {
+      page: this.currentPage
+    };
+    
     if (this.currentFilter !== 'all') {
       params.category = this.currentFilter;
     }
+    
     if (this.searchQuery) {
       params.search = this.searchQuery;
     }
@@ -42,44 +63,129 @@ export class EmailTemplatesPage implements OnInit {
         if (Array.isArray(response)) {
           this.templates = response;
         } else if (response?.data) {
-          this.templates = Array.isArray(response.data) ? response.data : (response.data?.data || []);
+          if (this.currentPage === 1) {
+            this.templates = Array.isArray(response.data) ? response.data : (response.data?.data || []);
+          } else {
+            this.templates = [...this.templates, ...(Array.isArray(response.data) ? response.data : (response.data?.data || []))];
+          }
+          this.hasMore = response.data?.next_page_url !== null;
         } else {
           this.templates = [];
         }
+        this.calculateStats();
+        this.loading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading email templates:', error);
+        this.loading = false;
       }
     });
   }
 
-  filterChanged(event: any) {
-    this.currentFilter = event.detail.value;
+  calculateStats() {
+    this.totalCount = this.templates.length;
+    this.leadCount = this.templates.filter(t => t.category === 'lead').length;
+    this.dealCount = this.templates.filter(t => t.category === 'deal').length;
+    this.invoiceCount = this.templates.filter(t => t.category === 'invoice').length;
+    this.contactCount = this.templates.filter(t => t.category === 'contact').length;
+  }
+
+  getActiveCount(): number {
+    return this.templates.filter(t => t.is_active).length;
+  }
+
+  filterChanged(filter: string) {
+    this.currentFilter = filter;
+    this.currentPage = 1;
     this.loadTemplates();
   }
 
   searchChanged(event: any) {
     this.searchQuery = event.detail.value;
+    this.currentPage = 1;
     this.loadTemplates();
+  }
+
+  loadMore(event: any) {
+    if (this.hasMore) {
+      this.currentPage++;
+      this.loadTemplates();
+    }
+    event.target.complete();
   }
 
   viewTemplate(template: EmailTemplate) {
     this.router.navigate(['/email-templates', template.id]);
   }
 
+  async presentActionSheet(event: Event, template: EmailTemplate) {
+    event.stopPropagation();
+    const actionSheet = await this.actionSheetController.create({
+      buttons: [
+        {
+          text: 'View Details',
+          icon: 'eye-outline',
+          handler: () => {
+            this.viewTemplate(template);
+          }
+        },
+        {
+          text: 'Preview',
+          icon: 'eye-outline',
+          handler: () => {
+            this.previewTemplate(template);
+          }
+        },
+        {
+          text: 'Edit',
+          icon: 'create-outline',
+          handler: () => {
+            this.router.navigate(['/email-templates', template.id, 'edit']);
+          }
+        },
+        {
+          text: 'Duplicate',
+          icon: 'copy-outline',
+          handler: () => {
+            this.duplicateTemplate(template);
+          }
+        },
+        {
+          text: 'Delete',
+          icon: 'trash-outline',
+          role: 'destructive',
+          handler: () => {
+            this.deleteTemplate(template);
+          }
+        },
+        {
+          text: 'Cancel',
+          icon: 'close-outline',
+          role: 'cancel'
+        }
+      ]
+    });
+    await actionSheet.present();
+  }
+
   editTemplate(template: EmailTemplate) {
     this.router.navigate(['/email-templates', template.id, 'edit']);
   }
 
-  previewTemplate(template: EmailTemplate) {
-    this.apiService.previewEmailTemplate(template.id).subscribe({
-      next: (response) => {
-        console.log('Preview:', response.data);
-      },
-      error: (error) => {
-        console.error('Error previewing template:', error);
-      }
+  async previewTemplate(template: EmailTemplate) {
+    const alert = await this.alertController.create({
+      header: template.name,
+      message: `
+        <div style="padding: 10px;">
+          <p><strong>Subject:</strong> ${template.subject}</p>
+          <hr/>
+          <div style="max-height: 300px; overflow-y: auto; white-space: pre-wrap;">${template.body}</div>
+        </div>
+      `,
+      buttons: ['Close', 'Edit'],
+      cssClass: 'preview-alert'
     });
+    await alert.present();
   }
 
   duplicateTemplate(template: EmailTemplate) {
@@ -93,7 +199,7 @@ export class EmailTemplatesPage implements OnInit {
       next: () => {
         this.loadTemplates();
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error duplicating template:', error);
       }
     });
@@ -113,7 +219,7 @@ export class EmailTemplatesPage implements OnInit {
               next: () => {
                 this.loadTemplates();
               },
-              error: (error) => {
+              error: (error: any) => {
                 console.error('Error deleting template:', error);
               }
             });
@@ -122,5 +228,30 @@ export class EmailTemplatesPage implements OnInit {
       ]
     });
     await alert.present();
+  }
+
+  // Helper methods
+  getCategoryClass(category: string): string {
+    return category || 'other';
+  }
+
+  getCategoryIcon(category: string): string {
+    const icons: any = {
+      lead: 'person-outline',
+      deal: 'handshake-outline',
+      invoice: 'document-text-outline',
+      contact: 'people-outline',
+      company: 'business-outline',
+      custom: 'settings-outline',
+      other: 'mail-outline'
+    };
+    return icons[category] || 'mail-outline';
+  }
+
+  getPreviewText(body: string): string {
+    if (!body) return '';
+    // Strip HTML tags
+    const text = body.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    return text.substring(0, 150) + (text.length > 150 ? '...' : '');
   }
 }

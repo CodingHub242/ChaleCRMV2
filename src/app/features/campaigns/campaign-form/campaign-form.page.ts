@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { Campaign, ApiResponse } from '../../../models';
+import { addIcons } from 'ionicons';
+import { briefcase,add, trash, create, mail, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, mailOutline, shareSocialOutline, megaphoneOutline, bulbOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-campaign-form',
@@ -42,7 +44,9 @@ export class CampaignFormPage implements OnInit {
     private route: ActivatedRoute,
     private alertController: AlertController,
     private apiService: ApiService
-  ) {}
+  ) {
+    addIcons({mailOutline,shareSocialOutline,calendarOutline,megaphoneOutline,bulbOutline});
+  }
 
   ngOnInit() {
     // Check if editing

@@ -1,0 +1,173 @@
+<ion-header class="bigin-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="router.navigate(['/email-templates'])">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ isEditing ? 'Edit Template' : 'New Template' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="togglePreview()" [strong]="true">
+        <ion-icon slot="start" name="eye-outline"></ion-icon>
+        Preview
+      </ion-button>
+      <ion-button (click)="save()" [strong]="true">Save</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="form-container" *ngIf="!isLoading; else loadingTpl">
+    <!-- Template Category Selection -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="mail-outline"></ion-icon>
+        <h3>Template Category</h3>
+      </div>
+      <div class="category-selector">
+        <div 
+          *ngFor="let cat of categories" 
+          class="category-chip"
+          [class.active]="template.category === cat"
+          [ngClass]="getCategoryClass(cat)"
+          (click)="template.category = cat"
+        >
+          <ion-icon [name]="getCategoryIcon(cat)"></ion-icon>
+          <span>{{ cat | titlecase }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Template Information -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="business-outline"></ion-icon>
+        <h3>Template Information</h3>
+      </div>
+      
+      <div class="form-grid">
+        <div class="form-field full-width">
+          <label>Template Name <span class="required">*</span></label>
+          <ion-item lines="none">
+            <ion-input 
+              [(ngModel)]="template.name" 
+              name="name" 
+              placeholder="Enter template name"
+              required
+            ></ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-field full-width">
+          <label>Subject Line <span class="required">*</span></label>
+          <ion-item lines="none">
+            <ion-input 
+              [(ngModel)]="template.subject" 
+              name="subject" 
+              placeholder="Enter email subject"
+              required
+            ></ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-field full-width">
+          <label>Active Status</label>
+          <div class="toggle-field">
+            <ion-toggle 
+              [(ngModel)]="template.is_active" 
+              name="is_active"
+              color="success"
+            ></ion-toggle>
+            <span>{{ template.is_active ? 'Active' : 'Inactive' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Email Body -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="document-text-outline"></ion-icon>
+        <h3>Email Body</h3>
+        <ion-button fill="clear" size="small" (click)="insertVariable()">
+          <ion-icon slot="start" name="code-slash-outline"></ion-icon>
+          Insert Variable
+        </ion-button>
+      </div>
+      
+      <div class="editor-container">
+        <div class="editor-toolbar">
+          <ion-button fill="clear" size="small" (click)="insertTag('b')">
+            <strong>B</strong>
+          </ion-button>
+          <ion-button fill="clear" size="small" (click)="insertTag('i')">
+            <em>I</em>
+          </ion-button>
+          <ion-button fill="clear" size="small" (click)="insertTag('u')">
+            <u>U</u>
+          </ion-button>
+          <ion-button fill="clear" size="small" (click)="insertTag('br')">
+            ↵ 
+          </ion-button>
+          <ion-button fill="clear" size="small" (click)="insertTag('a')">
+            Link
+          </ion-button>
+        </div>
+        <div class="editor-area">
+          <textarea 
+            [(ngModel)]="template.body" 
+            name="body" 
+            rows="15"
+            placeholder="Enter your email body here... You can use variables like {{contact.first_name}}, {{company.name}}, etc."
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="variables-help" *ngIf="availableVariables.length > 0">
+        <h4>Available Variables:</h4>
+        <div class="variables-list">
+          <span 
+            class="variable-chip" 
+            *ngFor="let var of availableVariables"
+            (click)="insertVariableValue(var)"
+          >
+            {{'{{' + var + '}}'}}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="form-actions">
+      <ion-button expand="block" class="cancel-btn" fill="outline" (click)="router.navigate(['/email-templates'])">
+        Cancel
+      </ion-button>
+      <ion-button expand="block" class="save-btn-full" (click)="save()">
+        {{ isEditing ? 'Update Template' : 'Save Template' }}
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Preview Modal -->
+  <div class="preview-panel" *ngIf="showPreview">
+    <div class="preview-header">
+      <h3>Email Preview</h3>
+      <ion-button fill="clear" (click)="togglePreview()">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+    </div>
+    <div class="preview-content">
+      <div class="preview-subject">
+        <strong>Subject:</strong> {{ template.subject || 'No subject' }}
+      </div>
+      <div class="preview-body" [innerHTML]="getProcessedBody()"></div>
+    </div>
+  </div>
+
+  <ng-template #loadingTpl>
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading template...</p>
+    </div>
+  </ng-template>
+</ion-content>

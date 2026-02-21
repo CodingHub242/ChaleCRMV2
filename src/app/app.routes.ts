@@ -256,6 +256,18 @@ export const routes: Routes = [
         path: 'email-templates',
         loadComponent: () => import('./features/email-templates/email-templates.page').then(m => m.EmailTemplatesPage)
       },
+      {
+        path: 'email-templates/new',
+        loadComponent: () => import('./features/email-templates/email-template-form/email-template-form.page').then(m => m.EmailTemplateFormPage)
+      },
+      {
+        path: 'email-templates/:id',
+        loadComponent: () => import('./features/email-templates/email-template-form/email-template-form.page').then(m => m.EmailTemplateFormPage)
+      },
+      {
+        path: 'email-templates/:id/edit',
+        loadComponent: () => import('./features/email-templates/email-template-form/email-template-form.page').then(m => m.EmailTemplateFormPage)
+      },
       // Analytics
       {
         path: 'analytics',

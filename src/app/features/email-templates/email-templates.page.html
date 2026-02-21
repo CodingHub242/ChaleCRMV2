@@ -1,53 +1,148 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
+<ion-header>
+  <ion-toolbar class="bigin-header">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Email Templates</ion-title>
     <ion-buttons slot="end">
-      <ion-button routerLink="/email-templates/new">
+      <ion-button class="add-btn" routerLink="/email-templates/new">
         <ion-icon slot="icon-only" name="add"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+  <ion-toolbar class="search-toolbar">
+    <ion-searchbar 
+      placeholder="Search templates..." 
+      (ionChange)="searchChanged($event)"
+      [value]="searchQuery"
+      class="bigin-search">
+    </ion-searchbar>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <div class="ion-padding">
-    <ion-segment (ionChange)="filterChanged($event)" value="all">
-      <ion-segment-button value="all"><ion-label>All</ion-label></ion-segment-button>
-      <ion-segment-button value="lead"><ion-label>Lead</ion-label></ion-segment-button>
-      <ion-segment-button value="deal"><ion-label>Deal</ion-label></ion-segment-button>
-      <ion-segment-button value="invoice"><ion-label>Invoice</ion-label></ion-segment-button>
-    </ion-segment>
+<ion-content class="bigin-content">
+  <div class="templates-container">
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+      <div 
+        class="filter-tab" 
+        [class.active]="currentFilter === 'all'"
+        (click)="filterChanged('all')"
+      >
+        All
+        <span class="count" *ngIf="totalCount">{{ totalCount }}</span>
+      </div>
+      <div 
+        class="filter-tab" 
+        [class.active]="currentFilter === 'lead'"
+        (click)="filterChanged('lead')"
+      >
+        Lead
+        <span class="count" *ngIf="leadCount">{{ leadCount }}</span>
+      </div>
+      <div 
+        class="filter-tab" 
+        [class.active]="currentFilter === 'deal'"
+        (click)="filterChanged('deal')"
+      >
+        Deal
+        <span class="count" *ngIf="dealCount">{{ dealCount }}</span>
+      </div>
+      <div 
+        class="filter-tab" 
+        [class.active]="currentFilter === 'invoice'"
+        (click)="filterChanged('invoice')"
+      >
+        Invoice
+        <span class="count" *ngIf="invoiceCount">{{ invoiceCount }}</span>
+      </div>
+      <div 
+        class="filter-tab" 
+        [class.active]="currentFilter === 'contact'"
+        (click)="filterChanged('contact')"
+      >
+        Contact
+        <span class="count" *ngIf="contactCount">{{ contactCount }}</span>
+      </div>
+    </div>
 
-    <ion-searchbar placeholder="Search templates..." (ionInput)="searchChanged($event)" [debounce]="500"></ion-searchbar>
+    <!-- Stats Bar -->
+    <div class="stats-bar" *ngIf="templates.length > 0">
+      <div class="stat-item">
+        <span class="stat-value">{{ templates.length }}</span>
+        <span class="stat-label">Total Templates</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">{{ getActiveCount() }}</span>
+        <span class="stat-label">Active</span>
+      </div>
+    </div>
 
-    <ion-list>
-      <ion-item-sliding *ngFor="let template of templates">
-        <ion-item button (click)="viewTemplate(template)">
-          <ion-icon slot="start" name="mail" color="primary"></ion-icon>
-          <ion-label>
-            <h2>{{ template.name }}</h2>
-            <p>{{ template.category | titlecase }} - {{ template.subject }}</p>
-          </ion-label>
-          <ion-badge slot="end" [color]="template.is_active ? 'success' : 'medium'">
+    <!-- Loading State -->
+    <div *ngIf="loading && templates.length === 0" class="loading-state">
+      <ion-spinner name="lines"></ion-spinner>
+      <p>Loading templates...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && templates.length === 0" class="empty-state">
+      <div class="empty-illustration">
+        <ion-icon name="mail-outline"></ion-icon>
+      </div>
+      <h3>No email templates found</h3>
+      <p>Create email templates for your team</p>
+      <ion-button class="primary-btn" routerLink="/email-templates/new">
+        <ion-icon slot="start" name="add"></ion-icon>
+        Create Template
+      </ion-button>
+    </div>
+
+    <!-- Templates Grid -->
+    <div *ngIf="!loading && templates.length > 0" class="templates-grid">
+      <div class="template-card" *ngFor="let template of templates" (click)="viewTemplate(template)">
+        <div class="card-header">
+          <div class="template-info">
+            <div class="template-category-icon" [class]="getCategoryClass(template.category)">
+              <ion-icon [name]="getCategoryIcon(template.category)"></ion-icon>
+            </div>
+            <div class="template-details">
+              <h3 class="template-name">{{ template.name }}</h3>
+              <span class="template-category">{{ template.category | titlecase }}</span>
+            </div>
+          </div>
+          <ion-button fill="clear" class="more-btn" (click)="presentActionSheet($event, template)">
+            <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+          </ion-button>
+        </div>
+
+        <div class="card-body">
+          <div class="subject-row">
+            <ion-icon name="subject-outline"></ion-icon>
+            <span class="subject">{{ template.subject }}</span>
+          </div>
+          <div class="preview-text" *ngIf="template.body">
+            {{ getPreviewText(template.body) }}
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <ion-badge class="status-badge" [class]="template.is_active ? 'active' : 'inactive'">
             {{ template.is_active ? 'Active' : 'Inactive' }}
           </ion-badge>
-        </ion-item>
-        <ion-item-options side="end">
-          <ion-item-option color="primary" (click)="editTemplate(template)">Edit</ion-item-option>
-          <ion-item-option color="tertiary" (click)="previewTemplate(template)">Preview</ion-item-option>
-          <ion-item-option color="success" (click)="duplicateTemplate(template)">Duplicate</ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
-
-    <div *ngIf="templates.length === 0" class="empty-state">
-      <ion-icon name="mail-outline" size="large"></ion-icon>
-      <h3>No Email Templates</h3>
-      <p>Create email templates for your team</p>
-      <ion-button routerLink="/email-templates/new">Create Template</ion-button>
+          <div class="variables-count" *ngIf="template.variables && template.variables.length > 0">
+            <ion-icon name="code-slash-outline"></ion-icon>
+            <span>{{ template.variables.length }} variables</span>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- Infinite Scroll -->
+    <ion-infinite-scroll (ionInfinite)="loadMore($event)" *ngIf="templates.length > 0">
+      <ion-infinite-scroll-content
+        loading-spinner="lines-small"
+        loading-text="Loading more...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
   </div>
 </ion-content>
