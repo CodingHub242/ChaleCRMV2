@@ -89,7 +89,7 @@
       <div class="form-section-header">
         <ion-icon name="document-text-outline"></ion-icon>
         <h3>Email Body</h3>
-        <ion-button fill="clear" size="small" (click)="insertVariable()">
+        <ion-button fill="clear" size="small" (click)="showVariablesList()">
           <ion-icon slot="start" name="code-slash-outline"></ion-icon>
           Insert Variable
         </ion-button>
@@ -118,7 +118,7 @@
             [(ngModel)]="template.body" 
             name="body" 
             rows="15"
-            placeholder="Enter your email body here... You can use variables like {{contact.first_name}}, {{company.name}}, etc."
+            placeholder="Enter your email body here. Use the 'Insert Variable' button to add dynamic fields."
           ></textarea>
         </div>
       </div>
@@ -128,10 +128,10 @@
         <div class="variables-list">
           <span 
             class="variable-chip" 
-            *ngFor="let var of availableVariables"
-            (click)="insertVariableValue(var)"
+            *ngFor="let v of availableVariables"
+            (click)="insertVariableValue(v)"
           >
-            {{'{{' + var + '}}'}}
+            {{ getVariableDisplay(v) }}
           </span>
         </div>
       </div>

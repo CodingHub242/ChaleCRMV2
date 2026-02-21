@@ -5,15 +5,16 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { EmailTemplate, ApiResponse } from '../../../models';
+import { IonContent,IonTextarea, IonHeader, IonTitle, IonToolbar, IonButton, IonButtons, IonMenuButton, IonIcon, IonRow, IonCol, IonModal, IonLabel, IonItem, IonDatetime } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { briefcase,add, trash, create, mail, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, eyeOutline, personOutline, documentTextOutline, peopleOutline, businessOutline, mailOutline } from 'ionicons/icons';
+import { briefcase,add, trash, create, mail, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, eyeOutline, personOutline, documentTextOutline, peopleOutline, businessOutline, mailOutline, codeSlashOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-email-template-form',
   templateUrl: './email-template-form.page.html',
   styleUrls: ['./email-template-form.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, FormsModule, RouterModule],
+  imports: [IonContent, IonTextarea,IonHeader, IonTitle, IonToolbar,IonButton,IonButtons,IonIcon,IonModal,IonRow,IonCol,IonMenuButton, IonLabel, IonItem, IonDatetime,CommonModule, IonicModule, FormsModule, RouterModule],
 })
 export class EmailTemplateFormPage implements OnInit {
   template: any = {
@@ -63,7 +64,7 @@ export class EmailTemplateFormPage implements OnInit {
     private alertController: AlertController,
     private apiService: ApiService
   ) {
-    addIcons({eyeOutline,personOutline,documentTextOutline,peopleOutline,businessOutline,settingsOutline,mailOutline});
+    addIcons({eyeOutline,personOutline,documentTextOutline,peopleOutline,businessOutline,settingsOutline,mailOutline,codeSlashOutline});
   }
 
   ngOnInit() {
@@ -291,5 +292,9 @@ export class EmailTemplateFormPage implements OnInit {
       other: 'mail-outline'
     };
     return icons[category] || 'mail-outline';
+  }
+
+  getVariableDisplay(variable: string): string {
+    return `{{${variable}}}`;
   }
 }
