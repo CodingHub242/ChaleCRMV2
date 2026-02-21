@@ -6,6 +6,8 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { IonContent,IonTextarea, IonHeader, IonTitle, IonToolbar, IonButton, IonButtons, IonMenuButton, IonIcon, IonRow, IonCol, IonModal, IonLabel, IonItem, IonDatetime } from '@ionic/angular/standalone';
 import { Segment, SegmentCondition, ApiResponse } from '../../../models';
+import { addIcons } from 'ionicons';
+import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, cloudUploadOutline, personOutline, trashOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-segment-form',
@@ -41,7 +43,9 @@ export class SegmentFormPage implements OnInit {
     private route: ActivatedRoute,
     private alertController: AlertController,
     private apiService: ApiService
-  ) {}
+  ) {
+    addIcons({trashOutline});
+  }
 
   ngOnInit() {
     // Check if editing
