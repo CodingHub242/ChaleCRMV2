@@ -1,87 +1,150 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
+<ion-header>
+  <ion-toolbar class="bigin-header">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Campaigns</ion-title>
     <ion-buttons slot="end">
-      <ion-button routerLink="/campaigns/new">
+      <ion-button class="import-btn" (click)="presentImportModal()">
+        <ion-icon slot="icon-only" name="cloud-upload-outline"></ion-icon>
+      </ion-button>
+      <ion-button class="add-btn" routerLink="/campaigns/new">
         <ion-icon slot="icon-only" name="add"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Campaigns</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div class="ion-padding">
-    <!-- Filters -->
-    <ion-segment (ionChange)="filterChanged($event)" value="all">
-      <ion-segment-button value="all">
-        <ion-label>All</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="active">
-        <ion-label>Active</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="draft">
-        <ion-label>Draft</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="completed">
-        <ion-label>Completed</ion-label>
-      </ion-segment-button>
-    </ion-segment>
-
-    <!-- Search -->
+  <ion-toolbar class="search-toolbar">
     <ion-searchbar 
       placeholder="Search campaigns..." 
-      (ionInput)="searchChanged($event)"
-      [debounce]="500">
+      (ionChange)="searchChanged($event)"
+      [value]="searchQuery"
+      class="bigin-search">
     </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
 
-    <!-- Campaign List -->
-    <ion-list>
-      <ion-item-sliding *ngFor="let campaign of campaigns">
-        <ion-item button (click)="viewCampaign(campaign)">
-          <ion-icon slot="start" name="megaphone" [color]="getCampaignColor(campaign.type)"></ion-icon>
-          <ion-label>
-            <h2>{{ campaign.name }}</h2>
-            <p>{{ campaign.type | titlecase }} - {{ campaign.status | titlecase }}</p>
-            <p *ngIf="campaign.start_date">
-              {{ campaign.start_date | date:'mediumDate' }}
-              <span *ngIf="campaign.end_date"> - {{ campaign.end_date | date:'mediumDate' }}</span>
-            </p>
-          </ion-label>
-          <ion-badge slot="end" [color]="getStatusColor(campaign.status)">
-            {{ campaign.status }}
-          </ion-badge>
-        </ion-item>
-        <ion-item-options side="end">
-          <ion-item-option color="primary" (click)="editCampaign(campaign)">
-            <ion-icon slot="icon-only" name="create"></ion-icon>
-          </ion-item-option>
-          <ion-item-option color="danger" (click)="deleteCampaign(campaign)">
-            <ion-icon slot="icon-only" name="trash"></ion-icon>
-          </ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
+<ion-content class="bigin-content">
+  <div class="campaigns-container">
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+      <div 
+        class="filter-tab" 
+        [class.active]="currentFilter === 'all'"
+        (click)="filterChanged('all')"
+      >
+        All
+        <span class="count" *ngIf="totalCount">{{ totalCount }}</span>
+      </div>
+      <div 
+        class="filter-tab" 
+        [class.active]="currentFilter === 'active'"
+        (click)="filterChanged('active')"
+      >
+        Active
+        <span class="count" *ngIf="activeCount">{{ activeCount }}</span>
+      </div>
+      <div 
+        class="filter-tab" 
+        [class.active]="currentFilter === 'draft'"
+        (click)="filterChanged('draft')"
+      >
+        Draft
+        <span class="count" *ngIf="draftCount">{{ draftCount }}</span>
+      </div>
+      <div 
+        class="filter-tab" 
+        [class.active]="currentFilter === 'completed'"
+        (click)="filterChanged('completed')"
+      >
+        Completed
+        <span class="count" *ngIf="completedCount">{{ completedCount }}</span>
+      </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar" *ngIf="campaigns.length > 0">
+      <div class="stat-item">
+        <span class="stat-value">{{ campaigns.length }}</span>
+        <span class="stat-label">Total Campaigns</span>
+      </div>
+      <div class="stat-item" *ngIf="totalBudget > 0">
+        <span class="stat-value">{{ formatCurrency(totalBudget) }}</span>
+        <span class="stat-label">Total Budget</span>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading && campaigns.length === 0" class="loading-state">
+      <ion-spinner name="lines"></ion-spinner>
+      <p>Loading campaigns...</p>
+    </div>
 
     <!-- Empty State -->
-    <div *ngIf="campaigns.length === 0 && !loading" class="empty-state">
-      <ion-icon name="megaphone-outline" size="large"></ion-icon>
-      <h3>No Campaigns Found</h3>
-      <p>Create your first campaign to get started</p>
-      <ion-button routerLink="/campaigns/new">Create Campaign</ion-button>
+    <div *ngIf="!loading && campaigns.length === 0" class="empty-state">
+      <div class="empty-illustration">
+        <ion-icon name="megaphone-outline"></ion-icon>
+      </div>
+      <h3>No campaigns found</h3>
+      <p>Get started by creating your first campaign</p>
+      <ion-button class="primary-btn" routerLink="/campaigns/new">
+        <ion-icon slot="start" name="add"></ion-icon>
+        Create Campaign
+      </ion-button>
     </div>
 
-    <!-- Loading -->
-    <div *ngIf="loading" class="loading">
-      <ion-spinner name="crescent"></ion-spinner>
+    <!-- Campaigns Grid -->
+    <div *ngIf="!loading && campaigns.length > 0" class="campaigns-grid">
+      <div class="campaign-card" *ngFor="let campaign of campaigns" (click)="viewCampaign(campaign)">
+        <div class="card-header">
+          <div class="campaign-info">
+            <div class="campaign-type-icon" [class]="getTypeClass(campaign.type)">
+              <ion-icon [name]="getTypeIcon(campaign.type)"></ion-icon>
+            </div>
+            <div class="campaign-details">
+              <h3 class="campaign-name">{{ campaign.name }}</h3>
+              <span class="campaign-type">{{ campaign.type | titlecase }}</span>
+            </div>
+          </div>
+          <ion-button fill="clear" class="more-btn" (click)="presentActionSheet($event, campaign)">
+            <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+          </ion-button>
+        </div>
+
+        <div class="card-body">
+          <div class="info-row" *ngIf="campaign.start_date">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>{{ campaign.start_date | date:'mediumDate' }}
+              <span *ngIf="campaign.end_date"> - {{ campaign.end_date | date:'mediumDate' }}</span>
+            </span>
+          </div>
+          <div class="info-row" *ngIf="campaign.budget">
+            <ion-icon name="wallet-outline"></ion-icon>
+            <span>Budget: {{ formatCurrency(campaign.budget) }}</span>
+          </div>
+          <div class="info-row" *ngIf="campaign.emails_sent">
+            <ion-icon name="mail-outline"></ion-icon>
+            <span>{{ campaign.emails_sent }} emails sent</span>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <ion-badge class="status-badge" [class]="getStatusClass(campaign.status)">
+            {{ campaign.status }}
+          </ion-badge>
+          <span class="owner" *ngIf="campaign.owner">
+            <ion-icon name="person-circle-outline"></ion-icon>
+            {{ campaign.owner.name }}
+          </span>
+        </div>
+      </div>
     </div>
+
+    <!-- Infinite Scroll -->
+    <ion-infinite-scroll (ionInfinite)="loadMore($event)" *ngIf="campaigns.length > 0">
+      <ion-infinite-scroll-content
+        loading-spinner="lines-small"
+        loading-text="Loading more...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
   </div>
 </ion-content>

@@ -200,6 +200,18 @@ export const routes: Routes = [
         path: 'campaigns',
         loadComponent: () => import('./features/campaigns/campaigns.page').then(m => m.CampaignsPage)
       },
+      {
+        path: 'campaigns/new',
+        loadComponent: () => import('./features/campaigns/campaign-form/campaign-form.page').then(m => m.CampaignFormPage)
+      },
+      {
+        path: 'campaigns/:id',
+        loadComponent: () => import('./features/campaigns/campaign-form/campaign-form.page').then(m => m.CampaignFormPage)
+      },
+      {
+        path: 'campaigns/:id/edit',
+        loadComponent: () => import('./features/campaigns/campaign-form/campaign-form.page').then(m => m.CampaignFormPage)
+      },
       // Sales Orders
       {
         path: 'sales-orders',

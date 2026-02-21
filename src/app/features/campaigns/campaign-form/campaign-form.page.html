@@ -1,0 +1,179 @@
+<ion-header class="bigin-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="router.navigate(['/campaigns'])">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ isEditing ? 'Edit Campaign' : 'New Campaign' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" [strong]="true">Save</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="form-container" *ngIf="!isLoading; else loadingTpl">
+    <!-- Campaign Budget Card -->
+    <div class="budget-card">
+      <h4>Campaign Budget</h4>
+      <div class="budget-input">
+        <span class="currency-symbol">{{ campaign.currency || '$' }}</span>
+        <input 
+          type="number" 
+          [(ngModel)]="campaign.budget" 
+          placeholder="0"
+          min="0"
+          step="100"
+        >
+      </div>
+    </div>
+
+    <!-- Campaign Type Selection -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="megaphone-outline"></ion-icon>
+        <h3>Campaign Type</h3>
+      </div>
+      <div class="type-selector">
+        <div 
+          *ngFor="let type of campaignTypes" 
+          class="type-chip"
+          [class.active]="campaign.type === type"
+          [ngClass]="getTypeClass(type)"
+          (click)="campaign.type = type"
+        >
+          <ion-icon [name]="getTypeIcon(type)"></ion-icon>
+          <span>{{ type | titlecase }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Campaign Status Selection -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="flag-outline"></ion-icon>
+        <h3>Campaign Status</h3>
+      </div>
+      <div class="status-selector">
+        <div 
+          *ngFor="let status of campaignStatuses" 
+          class="status-chip"
+          [class.active]="campaign.status === status"
+          [ngClass]="getStatusClass(status)"
+          (click)="campaign.status = status"
+        >
+          {{ status | titlecase }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Campaign Information -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="business-outline"></ion-icon>
+        <h3>Campaign Information</h3>
+      </div>
+      
+      <div class="form-grid">
+        <div class="form-field full-width">
+          <label>Campaign Name <span class="required">*</span></label>
+          <ion-item lines="none">
+            <ion-input 
+              [(ngModel)]="campaign.name" 
+              name="name" 
+              placeholder="Enter campaign name"
+              required
+            ></ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-field">
+          <label>Start Date</label>
+          <ion-item lines="none">
+            <ion-datetime style="max-width: 100%;"
+              [(ngModel)]="campaign.start_date" 
+              name="start_date"
+              presentation="date"
+              placeholder="Select date"
+            ></ion-datetime>
+          </ion-item>
+        </div>
+
+        <div class="form-field">
+          <label>End Date</label>
+          <ion-item lines="none">
+            <ion-datetime style="max-width: 100%;"
+              [(ngModel)]="campaign.end_date" 
+              name="end_date"
+              presentation="date"
+              placeholder="Select date"
+            ></ion-datetime>
+          </ion-item>
+        </div>
+
+        <div class="form-field">
+          <label>Currency</label>
+          <ion-item lines="none">
+            <ion-select 
+              [(ngModel)]="campaign.currency" 
+              name="currency" 
+              interface="popover"
+            >
+              <ion-select-option *ngFor="let currency of currencies" [value]="currency">
+                {{ currency }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+
+        <div class="form-field full-width">
+          <label>Goals</label>
+          <ion-item lines="none">
+            <ion-input 
+              [(ngModel)]="campaign.goals" 
+              name="goals" 
+              placeholder="What do you want to achieve with this campaign?"
+            ></ion-input>
+          </ion-item>
+        </div>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="document-text-outline"></ion-icon>
+        <h3>Description</h3>
+      </div>
+      
+      <div class="description-field">
+        <ion-item lines="none">
+          <ion-textarea 
+            [(ngModel)]="campaign.description" 
+            name="description" 
+            rows="6"
+            placeholder="Describe your campaign..."
+          ></ion-textarea>
+        </ion-item>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="form-actions">
+      <ion-button expand="block" class="cancel-btn" fill="outline" (click)="router.navigate(['/campaigns'])">
+        Cancel
+      </ion-button>
+      <ion-button expand="block" class="save-btn-full" (click)="save()">
+        {{ isEditing ? 'Update Campaign' : 'Save Campaign' }}
+      </ion-button>
+    </div>
+  </div>
+
+  <ng-template #loadingTpl>
+    <div class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading campaign...</p>
+    </div>
+  </ng-template>
+</ion-content>
