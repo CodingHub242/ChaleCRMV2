@@ -316,6 +316,23 @@ export const routes: Routes = [
       {
         path: 'forecasting',
         loadComponent: () => import('./features/forecasting/forecasting.page').then(m => m.ForecastingPage)
+      },
+      // SQR (Service Quality Requests)
+      {
+        path: 'sqrs',
+        loadComponent: () => import('./features/sqrs/sqrs-list/sqrs-list.page').then(m => m.SqrsListPage)
+      },
+      {
+        path: 'sqrs/new',
+        loadComponent: () => import('./features/sqrs/sqr-form/sqr-form.page').then(m => m.SqrFormPage)
+      },
+      {
+        path: 'sqrs/:id',
+        loadComponent: () => import('./features/sqrs/sqr-form/sqr-form.page').then(m => m.SqrFormPage)
+      },
+      {
+        path: 'sqrs/:id/edit',
+        loadComponent: () => import('./features/sqrs/sqr-form/sqr-form.page').then(m => m.SqrFormPage)
       }
     ]
   },

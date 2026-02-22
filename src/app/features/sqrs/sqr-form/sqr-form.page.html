@@ -1,0 +1,140 @@
+<ion-header>
+  <ion-toolbar class="bigin-header">
+    <ion-buttons slot="start">
+      <ion-button (click)="router.navigate(['/sqrs'])">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ isEditing ? 'Edit SQR' : 'New SQR' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" [strong]="true" class="save-btn">Save</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="form-page">
+    <div class="form-card">
+      <!-- Type & Priority -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon complaint">
+            <ion-icon name="warning"></ion-icon>
+          </div>
+          <h3>SQR Details</h3>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-field">
+            <ion-label>Type *</ion-label>
+            <ion-select [(ngModel)]="sqr.type" name="type" interface="popover">
+              <ion-select-option *ngFor="let type of types" [value]="type">
+                {{ type }}
+              </ion-select-option>
+            </ion-select>
+          </div>
+
+          <div class="form-field">
+            <ion-label>Priority *</ion-label>
+            <ion-select [(ngModel)]="sqr.priority" name="priority" interface="popover">
+              <ion-select-option *ngFor="let priority of priorities" [value]="priority">
+                {{ priority }}
+              </ion-select-option>
+            </ion-select>
+          </div>
+
+          <div class="form-field full-width" *ngIf="isEditing">
+            <ion-label>Status</ion-label>
+            <ion-select [(ngModel)]="sqr.status" name="status" interface="popover">
+              <ion-select-option *ngFor="let status of statuses" [value]="status">
+                {{ status }}
+              </ion-select-option>
+            </ion-select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Title & Description -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon">
+            <ion-icon name="document-text-outline"></ion-icon>
+          </div>
+          <h3>Information</h3>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-field full-width">
+            <ion-label>Title *</ion-label>
+            <ion-input [(ngModel)]="sqr.title" name="title" placeholder="Enter SQR title"></ion-input>
+          </div>
+
+          <div class="form-field full-width">
+            <ion-label>Description</ion-label>
+            <ion-textarea [(ngModel)]="sqr.description" name="description" placeholder="Describe the issue or feedback..." rows="4"></ion-textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related To -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon">
+            <ion-icon name="link-outline"></ion-icon>
+          </div>
+          <h3>Related To</h3>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-field">
+            <ion-label>Contact</ion-label>
+            <ion-select [(ngModel)]="sqr.contact_id" name="contact_id" interface="popover" placeholder="Select contact">
+              <ion-select-option [value]="undefined">No Contact</ion-select-option>
+              <ion-select-option *ngFor="let contact of contacts" [value]="contact.id">
+                {{ contact.first_name }} {{ contact.last_name }}
+              </ion-select-option>
+            </ion-select>
+          </div>
+
+          <div class="form-field">
+            <ion-label>Company</ion-label>
+            <ion-select [(ngModel)]="sqr.company_id" name="company_id" interface="popover" placeholder="Select company">
+              <ion-select-option [value]="undefined">No Company</ion-select-option>
+              <ion-select-option *ngFor="let company of companies" [value]="company.id">
+                {{ company.name }}
+              </ion-select-option>
+            </ion-select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resolution Notes (for editing) -->
+      <div class="form-section" *ngIf="isEditing">
+        <div class="section-header">
+          <div class="section-icon resolved">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+          </div>
+          <h3>Resolution</h3>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-field full-width">
+            <ion-label>Resolution Notes</ion-label>
+            <ion-textarea [(ngModel)]="sqr.resolution_notes" name="resolution_notes" placeholder="Add resolution notes..." rows="4"></ion-textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="form-actions">
+        <ion-button expand="block" class="cancel-btn" fill="outline" (click)="router.navigate(['/sqrs'])">
+          Cancel
+        </ion-button>
+        <ion-button expand="block" class="save-btn-full" (click)="save()" [disabled]="isSaving">
+          <ion-spinner *ngIf="isSaving" name="circular" style="margin-right: 8px;"></ion-spinner>
+          {{ isSaving ? 'Saving...' : (isEditing ? 'Update SQR' : 'Create SQR') }}
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>

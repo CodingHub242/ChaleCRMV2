@@ -25,7 +25,8 @@ import {
   EmailTemplate,
   Segment,
   Tag,
-  Label
+  Label,
+  Sqr
 } from '../../models';
 
 @Injectable({
@@ -728,5 +729,37 @@ export class ApiService {
 
   deleteSocialPost(id: number): Observable<ApiResponse<null>> {
     return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/social-posts/${id}`);
+  }
+
+  // ==================== SQR (Service Quality Requests) ====================
+  getSqrs(params?: { page?: number; per_page?: number; search?: string; status?: string }): Observable<PaginatedResponse<any>> {
+    let httpParams = new HttpParams();
+    if (params) {
+      if (params.page) httpParams = httpParams.set('page', params.page.toString());
+      if (params.per_page) httpParams = httpParams.set('per_page', params.per_page.toString());
+      if (params.search) httpParams = httpParams.set('search', params.search);
+      if (params.status) httpParams = httpParams.set('status', params.status);
+    }
+    return this.http.get<PaginatedResponse<any>>(`${this.baseUrl}/sqrs`, { params: httpParams });
+  }
+
+  getSqr(id: number): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/sqrs/${id}`);
+  }
+
+  createSqr(data: Partial<any>): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/sqrs`, data);
+  }
+
+  updateSqr(id: number, data: Partial<any>): Observable<ApiResponse<any>> {
+    return this.http.put<ApiResponse<any>>(`${this.baseUrl}/sqrs/${id}`, data);
+  }
+
+  deleteSqr(id: number): Observable<ApiResponse<null>> {
+    return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/sqrs/${id}`);
+  }
+
+  updateSqrStatus(id: number, data: { status: string; resolution_notes?: string }): Observable<ApiResponse<any>> {
+    return this.http.patch<ApiResponse<any>>(`${this.baseUrl}/sqrs/${id}/status`, data);
   }
 }

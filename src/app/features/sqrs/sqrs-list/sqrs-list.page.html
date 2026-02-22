@@ -1,0 +1,114 @@
+<ion-header>
+  <ion-toolbar class="bigin-header">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>SQR</ion-title>
+    <ion-buttons slot="end">
+      <ion-button class="add-btn" routerLink="/sqrs/new">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar class="search-toolbar">
+    <div class="filter-row">
+      <ion-searchbar 
+        placeholder="Search SQRs..." 
+        (ionChange)="onSearch($event)"
+        [value]="searchQuery"
+        class="bigin-search">
+      </ion-searchbar>
+      <ion-select 
+        interface="popover" 
+        placeholder="Status"
+        [value]="statusFilter"
+        (ionChange)="onStatusFilterChange($event)"
+        class="status-select">
+        <ion-select-option *ngFor="let option of statusOptions" [value]="option.value">
+          {{ option.label }}
+        </ion-select-option>
+      </ion-select>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="sqrs-container">
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <span class="stat-value">{{ sqrs.length }}</span>
+        <span class="stat-label">Total SQRs</span>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading && sqrs.length === 0" class="loading-state">
+      <ion-spinner name="lines"></ion-spinner>
+      <p>Loading SQRs...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && sqrs.length === 0" class="empty-state">
+      <div class="empty-illustration">
+        <ion-icon name="warning-outline"></ion-icon>
+      </div>
+      <h3>No SQRs found</h3>
+      <p>Get started by creating your first SQR</p>
+      <ion-button class="primary-btn" routerLink="/sqrs/new">
+        <ion-icon slot="start" name="add"></ion-icon>
+        Create SQR
+      </ion-button>
+    </div>
+
+    <!-- SQR List -->
+    <div *ngIf="sqrs.length > 0" class="sqrs-list">
+      <div class="sqr-card" *ngFor="let sqr of sqrs" [routerLink]="['/sqrs', sqr.id]">
+        <div class="card-header">
+          <div class="type-icon" [class]="sqr.type.toLowerCase()">
+            <ion-icon [name]="getTypeIcon(sqr.type)"></ion-icon>
+          </div>
+          <div class="sqr-info">
+            <h3 class="sqr-title">{{ sqr.title }}</h3>
+            <p class="sqr-type">{{ sqr.type }}</p>
+          </div>
+          <ion-badge class="priority-badge" [style.background-color]="getPriorityColor(sqr.priority)">
+            {{ sqr.priority }}
+          </ion-badge>
+        </div>
+        
+        <div class="card-body" *ngIf="sqr.description">
+          <p class="description">{{ sqr.description | slice:0:100 }}{{ sqr.description.length > 100 ? '...' : '' }}</p>
+        </div>
+
+        <div class="card-footer">
+          <div class="contact-info" *ngIf="sqr.contact">
+            <ion-icon name="person-outline"></ion-icon>
+            <span>{{ sqr.contact.first_name }} {{ sqr.contact.last_name }}</span>
+          </div>
+          <div class="company-info" *ngIf="sqr.company">
+            <ion-icon name="business-outline"></ion-icon>
+            <span>{{ sqr.company.name }}</span>
+          </div>
+          <ion-badge class="status-badge" [class]="getStatusClass(sqr.status)">
+            {{ sqr.status }}
+          </ion-badge>
+        </div>
+
+        <div class="card-actions">
+          <ion-button fill="clear" color="danger" (click)="deleteSqr(sqr); $event.stopPropagation()">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Infinite Scroll -->
+    <ion-infinite-scroll (ionInfinite)="loadMore($event)" *ngIf="sqrs.length > 0 && hasMore">
+      <ion-infinite-scroll-content
+        loading-spinner="lines-small"
+        loading-text="Loading more...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </div>
+</ion-content>

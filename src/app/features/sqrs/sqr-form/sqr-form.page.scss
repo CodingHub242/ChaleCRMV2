@@ -1,0 +1,157 @@
+.bigin-header {
+  --background: #073336;
+  --border-color: #e0e0e0;
+  --color: #e3e3e3;
+}
+
+.bigin-header ion-title {
+  font-weight: 600;
+}
+
+.save-btn {
+  --color: #e09027;
+  font-weight: 600;
+}
+
+.bigin-content {
+  --background: #f5f7fa;
+}
+
+.form-page {
+  padding: 16px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.form-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.form-section {
+  padding: 20px;
+  border-bottom: 1px solid #f0f0f0;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.section-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  
+  ion-icon {
+    font-size: 20px;
+    color: white;
+  }
+  
+  &.complaint {
+    background: linear-gradient(135deg, #f44336 0%, #e91e63 100%);
+  }
+  
+  &.resolved {
+    background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%);
+  }
+}
+
+.section-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  
+  &.full-width {
+    grid-column: span 2;
+  }
+  
+  ion-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #666;
+    margin-bottom: 4px;
+  }
+  
+  ion-input, ion-textarea, ion-select {
+    --background: #f5f7fa;
+    --padding-start: 12px;
+    --padding-end: 12px;
+    --border-radius: 10px;
+    --border: 1px solid #e0e0e0;
+    --border-color: #e0e0e0;
+    --box-shadow: none;
+  }
+  
+  ion-textarea {
+    --padding-start: 12px;
+    --padding-end: 12px;
+    --padding-top: 12px;
+    --padding-bottom: 12px;
+  }
+}
+
+.form-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 20px;
+  background: #fafafa;
+}
+
+.cancel-btn {
+  --border-radius: 10px;
+  --color: #666;
+  --border-color: #ddd;
+  font-weight: 500;
+  height: 48px;
+}
+
+.save-btn-full {
+  --background: #073336;
+  --background-hover: #094749;
+  --border-radius: 10px;
+  --color: white;
+  font-weight: 500;
+  height: 48px;
+}
+
+// Responsive
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-field.full-width {
+    grid-column: span 1;
+  }
+  
+  .form-actions {
+    grid-template-columns: 1fr;
+  }
+}

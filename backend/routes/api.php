@@ -88,3 +88,7 @@ Route::post('duplicates/merge', [App\Http\Controllers\Api\DuplicateController::c
 // Data Enrichment
 Route::post('enrichment/enrich', [App\Http\Controllers\Api\EnrichmentController::class, 'enrich']);
 Route::get('enrichment/providers', [App\Http\Controllers\Api\EnrichmentController::class, 'providers']);
+
+// SQR (Service Quality Requests)
+Route::apiResource('sqrs', App\Http\Controllers\Api\SqrController::class);
+Route::patch('sqrs/{id}/status', [App\Http\Controllers\Api\SqrController::class, 'updateStatus']);

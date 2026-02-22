@@ -57,6 +57,11 @@
           <ion-label>Activities</ion-label>
         </ion-item>
 
+        <ion-item button routerLink="/sqrs" routerLinkActive="active" routerDirection="root" (click)="closeSidebarOnMobile()">
+          <ion-icon slot="start" name="warning-outline"></ion-icon>
+          <ion-label>SQR</ion-label>
+        </ion-item>
+
         <ion-item-divider>Sales</ion-item-divider>
 
         <ion-item button routerLink="/products" routerLinkActive="active" routerDirection="root" (click)="closeSidebarOnMobile()">
@@ -83,6 +88,7 @@
           <ion-icon slot="start" name="document-lock-outline"></ion-icon>
           <ion-label>Contracts</ion-label>
         </ion-item>
+
 
         <ion-item-divider>Marketing</ion-item-divider>
 

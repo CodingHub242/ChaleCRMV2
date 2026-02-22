@@ -546,3 +546,23 @@ export interface SocialPost {
   created_at: string;
   updated_at: string;
 }
+
+// SQR (Service Quality Request) Model
+export interface Sqr {
+  id: number;
+  title: string;
+  type: 'Complaint' | 'Feedback' | 'Suggestion' | 'Inquiry';
+  priority: 'Low' | 'Medium' | 'High' | 'Critical';
+  status: 'Open' | 'In Progress' | 'Resolved' | 'Closed';
+  description?: string;
+  contact_id?: number;
+  contact?: Contact;
+  company_id?: number;
+  company?: Company;
+  assigned_to?: number;
+  assignee?: User;
+  resolved_at?: string;
+  resolution_notes?: string;
+  created_at: string;
+  updated_at: string;
+}
