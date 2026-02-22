@@ -25,6 +25,8 @@ interface SelectedContact {
   id: number;
   name: string;
   email: string;
+  phone?: string;
+  company?: any;
 }
 
 @Component({
@@ -64,6 +66,9 @@ export class SendEmailPage implements OnInit {
 
   // Preview
   showPreview = false;
+
+  // Contact data cache
+  private contactDataCache: Map<number, any> = new Map();
 
   // Loading state
   isSending = false;
@@ -155,7 +160,9 @@ export class SendEmailPage implements OnInit {
           this.selectedContacts.push({
             id: contact.id,
             name: contact.name,
-            email: contact.email
+            email: contact.email,
+            phone: contact.phone,
+            company: contact.company
           });
         }
       },
@@ -218,7 +225,9 @@ export class SendEmailPage implements OnInit {
       .map(c => ({
         id: c.id,
         name: c.name || 'Unknown',
-        email: c.email
+        email: c.email,
+        phone: c.phone,
+        company: c.company
       }));
     this.showContactPickerModal = false;
   }
@@ -284,15 +293,26 @@ export class SendEmailPage implements OnInit {
 
     this.isSending = true;
 
+    // Fetch full contact data for variables
+    try {
+      await this.fetchContactVariables();
+    } catch (error) {
+      console.error('Error fetching contact data:', error);
+    }
+
     const toEmails = this.selectedContacts.map(c => c.email);
     const cc = this.ccEmails ? this.ccEmails.split(',').map(e => e.trim()).filter(e => e) : [];
     const bcc = this.bccEmails ? this.bccEmails.split(',').map(e => e.trim()).filter(e => e) : [];
+
+    // Prepare variables from selected contacts
+    const variables: any = this.prepareVariables();
 
     const sendData: any = {
       to: toEmails,
       subject: this.emailData.subject,
       body: this.emailData.body,
-      template_id: this.selectedTemplateId || undefined
+      template_id: this.selectedTemplateId || undefined,
+      variables: variables
     };
 
     if (cc.length > 0) sendData.cc = cc;
@@ -316,6 +336,67 @@ export class SendEmailPage implements OnInit {
         this.showToast('Failed to send email. Please try again.', 'error');
       }
     });
+  }
+
+  // Fetch full contact data from API
+  async fetchContactVariables(): Promise<void> {
+    const contactsToFetch = this.selectedContacts.filter(c => c.id > 0 && !this.contactDataCache.has(c.id));
+    
+    for (const contact of contactsToFetch) {
+      try {
+        const response: any = await this.apiService.getContact(contact.id).toPromise();
+        if (response && response.data) {
+          this.contactDataCache.set(contact.id, response.data);
+          
+          // Update the selected contact with full data
+          const index = this.selectedContacts.findIndex(c => c.id === contact.id);
+          if (index >= 0) {
+            this.selectedContacts[index] = {
+              ...this.selectedContacts[index],
+              phone: response.data.phone,
+              company: response.data.company
+            };
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching contact:', contact.id, error);
+      }
+    }
+  }
+
+  prepareVariables(): any {
+    const variables: any = {};
+    
+    // Get the first contact's data for variables
+    if (this.selectedContacts.length > 0) {
+      const contact = this.selectedContacts[0];
+      
+      // Split name into first and last name
+      const nameParts = contact.name ? contact.name.split(' ') : [];
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+      
+      variables['contact.first_name'] = firstName;
+      variables['contact.last_name'] = lastName;
+      variables['contact.email'] = contact.email || '';
+      variables['contact.phone'] = contact.phone || '';
+      variables['contact.company'] = contact.company?.name || '';
+      
+      // Add company variables
+      if (contact.company) {
+        variables['company.name'] = contact.company.name || '';
+        variables['company.email'] = contact.company.email || '';
+        variables['company.phone'] = contact.company.phone || '';
+      }
+    }
+    
+    // Add common variables
+    variables['user.name'] = 'Sales Representative';
+    variables['company.name'] = variables['company.name'] || 'Your Company';
+    variables['today'] = new Date().toLocaleDateString();
+    variables['tomorrow'] = new Date(Date.now() + 86400000).toLocaleDateString();
+    
+    return variables;
   }
 
   // Editor methods
@@ -403,22 +484,12 @@ export class SendEmailPage implements OnInit {
     
     let body = this.emailData.body;
     
-    // Replace variables with sample values for preview
-    const sampleValues: any = {
-      'contact.first_name': 'John',
-      'contact.last_name': 'Doe',
-      'contact.email': 'john.doe@example.com',
-      'contact.phone': '+1234567890',
-      'contact.company': 'Acme Corp',
-      'company.name': 'Acme Corp',
-      'user.name': 'Sales Representative',
-      'today': new Date().toLocaleDateString(),
-      'tomorrow': new Date(Date.now() + 86400000).toLocaleDateString()
-    };
+    // Use actual contact variables
+    const variables = this.prepareVariables();
     
-    this.availableVariables.forEach(variable => {
-      const regex = new RegExp(`{{${variable}}}`, 'g');
-      body = body.replace(regex, sampleValues[variable] || `[${variable}]`);
+    Object.keys(variables).forEach(key => {
+      const regex = new RegExp(`{{${key}}}`, 'g');
+      body = body.replace(regex, variables[key] || `[${key}]`);
     });
     
     return body;
