@@ -125,7 +125,7 @@ export class ContactFormPage implements OnInit {
       return;
     }
 
-    console.log('Save clicked, selectedFile:', this.selectedFile);
+  //  console.log('Save clicked, selectedFile:', this.selectedFile);
     this.isSaving = true;
 
     try {
@@ -135,20 +135,20 @@ export class ContactFormPage implements OnInit {
       //   duration: 30000
       // });
       // await loading.present();
-      console.log('Loading presented, calling saveContact...');
-      console.log('Contact data to save:', this.selectedFile);
+     // console.log('Loading presented, calling saveContact...');
+     // console.log('Contact data to save:', this.selectedFile);
 
       // If there's a selected file, we need to upload it first
       if (this.selectedFile!= null) {
-        console.log('Has file, uploading...');
+        //console.log('Has file, uploading...');
         this.uploadPhotoAndSave();
       } else {
-        console.log('No file, calling saveContact directly...');
+       // console.log('No file, calling saveContact directly...');
         this.saveContact(null);
       }
     } catch (error) {
       this.isSaving = false;
-      console.error('Error in save:', error);
+     // console.error('Error in save:', error);
       this.showAlert('Error', 'Failed to initialize save process');
     }
   }
@@ -182,14 +182,14 @@ export class ContactFormPage implements OnInit {
       contactData.avatar = avatarUrl;
     }
 
-    console.log('Contact data to save:', contactData);
+   // console.log('Contact data to save:', contactData);
     const request = this.isEditing && this.contactId
       ? this.api.updateContact(this.contactId, contactData)
       : this.api.createContact(contactData as any);
 
     request.subscribe({
       next: (response) => {
-        console.log('API response:', response);
+       // console.log('API response:', response);
         //loading.dismiss();
         this.isSaving = false;
         if (response.success) {

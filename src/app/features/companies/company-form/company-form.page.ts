@@ -121,13 +121,13 @@ export class CompanyFormPage implements OnInit {
 
     // If there's a selected file, we need to upload it first
     if (this.selectedFile) {
-      this.uploadLogoAndSave(loading);
+      this.uploadLogoAndSave();
     } else {
-      this.saveCompany(loading, null);
+      this.saveCompany( null);
     }
   }
 
-  private uploadLogoAndSave(loading: HTMLIonLoadingElement): void {
+  private uploadLogoAndSave(): void {
     const formData = new FormData();
     formData.append('photo', this.selectedFile as File);
     formData.append('entity_type', 'company');
@@ -138,15 +138,15 @@ export class CompanyFormPage implements OnInit {
         if (response.success && response.data?.url) {
           this.company.logo = response.data.url;
         }
-        this.saveCompany(loading, response.success ? response.data?.url : null);
+        this.saveCompany(response.success ? response.data?.url : null);
       },
       error: () => {
-        this.saveCompany(loading, null);
+        this.saveCompany( null);
       }
     });
   }
 
-  private saveCompany(loading: HTMLIonLoadingElement, logoUrl: string | null): void {
+  private saveCompany( logoUrl: string | null): void {
     const companyData = { ...this.company };
     if (logoUrl) {
       companyData.logo = logoUrl;
@@ -158,7 +158,7 @@ export class CompanyFormPage implements OnInit {
 
     request.subscribe({
       next: (response) => {
-        loading.dismiss();
+       // loading.dismiss();
         if (response.success) {
           this.router.navigate(['/companies']);
         } else {
@@ -166,7 +166,7 @@ export class CompanyFormPage implements OnInit {
         }
       },
       error: (error) => {
-        loading.dismiss();
+      //  loading.dismiss();
         this.showAlert('Error', error.error?.message || 'Failed to save company');
       }
     });
