@@ -18,7 +18,10 @@ import { briefcase,add, trash, create, mail, document, close, eye, download, che
 })
 export class CompaniesListPage implements OnInit {
   companies: Company[] = [];
+  isLoading = true;
   searchQuery = '';
+  currentPage = 1;
+  hasMore = true;
   
   private avatarColors = [
     'linear-gradient(135deg, #f5576c 0%, #f093fb 100%)',
@@ -42,15 +45,30 @@ export class CompaniesListPage implements OnInit {
     this.loadCompanies();
   }
 
-  loadCompanies(): void {
+  loadCompanies(loadMore = false): void {
+    if (loadMore) {
+      this.currentPage++;
+    } else {
+      this.isLoading = true;
+      this.currentPage = 1;
+    }
+
     this.api.getCompanies({ 
-      per_page: 100,
+      page: this.currentPage, 
+      per_page: 20,
       search: this.searchQuery 
     }).subscribe({
       next: (response) => {
-        this.companies = response.data;
+        if (loadMore) {
+          this.companies = [...this.companies, ...response.data];
+        } else {
+          this.companies = response.data;
+        }
+        this.hasMore = response.current_page < response.last_page;
+        this.isLoading = false;
       },
       error: () => {
+        this.isLoading = false;
         this.companies = [];
       }
     });
@@ -59,6 +77,28 @@ export class CompaniesListPage implements OnInit {
   onSearch(event: SearchbarCustomEvent): void {
     this.searchQuery = event.detail.value || '';
     this.loadCompanies();
+  }
+
+  loadMore(event: any): void {
+    if (this.hasMore) {
+      this.currentPage++;
+      this.api.getCompanies({ 
+        page: this.currentPage, 
+        per_page: 20,
+        search: this.searchQuery 
+      }).subscribe({
+        next: (response) => {
+          this.companies = [...this.companies, ...response.data];
+          this.hasMore = response.current_page < response.last_page;
+          event.target.complete();
+        },
+        error: () => {
+          event.target.complete();
+        }
+      });
+    } else {
+      event.target.complete();
+    }
   }
 
   getInitials(company: Company): string {

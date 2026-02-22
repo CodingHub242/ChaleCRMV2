@@ -114,10 +114,10 @@ export class CompanyFormPage implements OnInit {
       return;
     }
 
-    const loading = await this.loadingController.create({
-      message: 'Saving...'
-    });
-    await loading.present();
+    // const loading = await this.loadingController.create({
+    //   message: 'Saving...'
+    // });
+    // await loading.present();
 
     // If there's a selected file, we need to upload it first
     if (this.selectedFile) {
