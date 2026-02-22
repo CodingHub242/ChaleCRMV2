@@ -121,6 +121,8 @@ export class SqrFormPage implements OnInit {
           this.isSaving = false;
           if (response.success) {
             this.router.navigate(['/sqrs']);
+            //reload sqrs after navigation
+            this.api.getSqrs();
           } else {
             this.showAlert('Error', response.message);
           }
