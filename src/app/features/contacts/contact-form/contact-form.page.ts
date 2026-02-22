@@ -125,7 +125,7 @@ export class ContactFormPage implements OnInit {
       return;
     }
 
-    console.log(this.contact);
+   // console.log(this.contact);
     this.isSaving = true;
 
     try {
@@ -140,6 +140,7 @@ export class ContactFormPage implements OnInit {
       if (this.selectedFile) {
         this.uploadPhotoAndSave(loading);
       } else {
+        console.log(this.contact);
         this.saveContact(loading, null);
       }
     } catch (error) {
