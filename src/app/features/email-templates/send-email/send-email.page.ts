@@ -65,6 +65,9 @@ export class SendEmailPage implements OnInit {
   // Preview
   showPreview = false;
 
+  // Loading state
+  isSending = false;
+
   // Available variables
   availableVariables = [
     'contact.first_name',
@@ -279,6 +282,8 @@ export class SendEmailPage implements OnInit {
       return;
     }
 
+    this.isSending = true;
+
     const toEmails = this.selectedContacts.map(c => c.email);
     const cc = this.ccEmails ? this.ccEmails.split(',').map(e => e.trim()).filter(e => e) : [];
     const bcc = this.bccEmails ? this.bccEmails.split(',').map(e => e.trim()).filter(e => e) : [];
@@ -295,6 +300,7 @@ export class SendEmailPage implements OnInit {
 
     this.apiService.sendEmail(sendData).subscribe({
       next: (response: any) => {
+        this.isSending = false;
         if (response.success) {
           this.showToast('Email sent successfully!', 'success');
           setTimeout(() => {
@@ -305,6 +311,7 @@ export class SendEmailPage implements OnInit {
         }
       },
       error: (error) => {
+        this.isSending = false;
         console.error('Error sending email:', error);
         this.showToast('Failed to send email. Please try again.', 'error');
       }

@@ -11,9 +11,10 @@
         <ion-icon slot="start" name="eye-outline"></ion-icon>
         Preview
       </ion-button>
-      <ion-button (click)="sendEmail()" [strong]="true" [disabled]="!canSend()">
-        <ion-icon slot="start" name="paper-plane-outline"></ion-icon>
-        Send
+      <ion-button (click)="sendEmail()" [strong]="true" [disabled]="!canSend() || isSending">
+        <ion-spinner *ngIf="isSending" name="lines-small" slot="start"></ion-spinner>
+        <ion-icon *ngIf="!isSending" slot="start" name="paper-plane-outline"></ion-icon>
+        {{ isSending ? 'Sending...' : 'Send' }}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
