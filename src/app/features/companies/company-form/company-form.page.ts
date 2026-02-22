@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, AlertController, LoadingController } from '@ionic/angular';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { Company } from '../../../models';
 import { addIcons } from 'ionicons';
@@ -11,7 +11,7 @@ import { briefcase,add, trash, create, mail, document, close, eye, download, che
 @Component({
   selector: 'app-company-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [CommonModule, FormsModule, IonicModule, RouterModule],
   templateUrl: './company-form.page.html',
   styleUrls: ['./company-form.page.scss']
 })
