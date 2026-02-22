@@ -35,6 +35,8 @@ export class DealFormPage implements OnInit {
     description: ''
   };
 
+  showDatePicker = false;
+
   stages = ['New', 'Qualification', 'Needs Analysis', 'Proposal', 'Negotiation', 'Closed Won', 'Closed Lost'];
   currencies = ['GHS','USD', 'EUR', 'GBP', 'CAD', 'AUD'];
 
@@ -52,6 +54,7 @@ export class DealFormPage implements OnInit {
   ngOnInit(): void {
     this.loadContacts();
     this.loadCompanies();
+
     
     const id = this.route.snapshot.paramMap.get('id');
     if (id && id !== 'new') {
@@ -64,6 +67,10 @@ export class DealFormPage implements OnInit {
       date.setDate(date.getDate() + 30);
       this.deal.expected_close_date = date.toISOString().split('T')[0];
     }
+  }
+
+  toggleDateTimePicker(): void {
+    this.showDatePicker = !this.showDatePicker;
   }
 
   loadContacts(): void {

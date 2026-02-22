@@ -101,7 +101,9 @@
 
         <div class="form-field full-width">
           <label>Expected Close Date</label>
-          <ion-item lines="none">
+          <!---Add toggle to show date picker-->
+          <ion-toggle [(ngModel)]="showDatePicker" (ionChange)="toggleDatePicker($event)"></ion-toggle>
+          <ion-item lines="none" *ngIf="showDatePicker">
             <ion-datetime style="max-width: 100%;"
               [(ngModel)]="deal.expected_close_date" 
               name="expected_close_date"
