@@ -71,7 +71,10 @@ export class DealFormPage implements OnInit {
   }
 
   toggleDatePicker(ev:any): void {
-    this.showDatePicker = !this.showDatePicker;
+    if(ev.detail.checked) this.showDatePicker = true;
+
+    if(!ev.detail.checked) this.showDatePicker = false;
+    //this.showDatePicker = !this.showDatePicker;
   }
 
   loadContacts(): void {
