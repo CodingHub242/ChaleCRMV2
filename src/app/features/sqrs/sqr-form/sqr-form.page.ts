@@ -104,12 +104,12 @@ export class SqrFormPage implements OnInit {
     this.isSaving = true;
 
     try {
-      const loading = await this.loadingController.create({
-        message: 'Saving...',
-        spinner: 'circles',
-        duration: 30000
-      });
-      await loading.present();
+    //   const loading = await this.loadingController.create({
+    //     message: 'Saving...',
+    //     spinner: 'circles',
+    //     duration: 30000
+    //   });
+    //   await loading.present();
 
       const request = this.isEditing && this.sqrId
         ? this.api.updateSqr(this.sqrId, this.sqr as any)
@@ -117,7 +117,7 @@ export class SqrFormPage implements OnInit {
 
       request.subscribe({
         next: (response) => {
-          loading.dismiss();
+          //loading.dismiss();
           this.isSaving = false;
           if (response.success) {
             this.router.navigate(['/sqrs']);
@@ -126,7 +126,7 @@ export class SqrFormPage implements OnInit {
           }
         },
         error: (error) => {
-          loading.dismiss();
+         // loading.dismiss();
           this.isSaving = false;
           this.showAlert('Error', error.error?.message || 'Failed to save SQR');
         }
