@@ -1,13 +1,108 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>register</ion-title>
-  </ion-toolbar>
-</ion-header>
+<div class="login-background">
+  <!-- Video hidden - using noise background instead -->
+  <video #videoPlayer class="video-bg" style="display: none;">
+    <source src="assets/chale.mp4" type="video/mp4">
+  </video>
+  <div class="video-overlay"></div>
+</div>
+<ion-content class="login-content">
+  <div class="login-container">
+    <form (ngSubmit)="register()" class="login-form">
+      <div class="login-header">
+        <h1 style="
+    height: 56px;
+    padding: 0;
+    margin: 0;
+    top: 0;
+    color:#073336;
+    position: relative;
+    width: 100%;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 23px;">Create Account</h1>
+        <p>Sign up to start managing your leads and contacts with Chale CRM</p>
+      </div>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">register</ion-title>
-    </ion-toolbar>
-  </ion-header>
+      <ion-item lines="full" class="form-item">
+        <ion-input 
+          type="text" 
+          [(ngModel)]="name" 
+          name="name" 
+          required
+          placeholder="Full Name">
+        </ion-input>
+      </ion-item>
+
+      <ion-item lines="full" class="form-item">
+        <ion-input 
+          type="email" 
+          [(ngModel)]="email" 
+          name="email" 
+          required
+          email
+          placeholder="Email Address">
+        </ion-input>
+      </ion-item>
+
+      <ion-item lines="full" class="form-item">
+        <ion-input 
+          type="text" 
+          [(ngModel)]="company" 
+          name="company" 
+          placeholder="Company Name (Optional)">
+        </ion-input>
+      </ion-item>
+
+      <ion-item lines="full" class="form-item">
+        <ion-input 
+          [type]="showPassword ? 'text' : 'password'" 
+          [(ngModel)]="password" 
+          name="password" 
+          required
+          placeholder="Password">
+        </ion-input>
+        <ion-button 
+          slot="end" 
+          fill="clear" 
+          (click)="togglePassword()"
+          class="password-toggle">
+          <ion-icon [name]="showPassword ? 'eye-off' : 'eye'"></ion-icon>
+        </ion-button>
+      </ion-item>
+
+      <ion-item lines="full" class="form-item">
+        <ion-input 
+          [type]="showConfirmPassword ? 'text' : 'password'" 
+          [(ngModel)]="confirmPassword" 
+          name="confirmPassword" 
+          required
+          placeholder="Confirm Password">
+        </ion-input>
+        <ion-button 
+          slot="end" 
+          fill="clear" 
+          (click)="toggleConfirmPassword()"
+          class="password-toggle">
+          <ion-icon [name]="showConfirmPassword ? 'eye-off' : 'eye'"></ion-icon>
+        </ion-button>
+      </ion-item>
+
+      <div class="terms">
+        <ion-checkbox [(ngModel)]="acceptTerms" name="acceptTerms"></ion-checkbox>
+        <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
+      </div>
+
+      <ion-button 
+        type="submit" 
+        expand="block" 
+        class="login-btn"
+        [disabled]="isLoading || !acceptTerms">
+        <ion-spinner *ngIf="isLoading" name="lines-small"></ion-spinner>
+        <span *ngIf="!isLoading">Create Account</span>
+      </ion-button>
+
+      <div class="register-link">
+        <p>Already have an account? <a (click)="goToLogin()">Sign In</a></p>
+      </div>
+    </form>
+  </div>
 </ion-content>

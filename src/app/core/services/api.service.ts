@@ -44,7 +44,7 @@ export class ApiService {
     });
   }
 
-  register(data: { name: string; email: string; password: string; password_confirmation: string }): Observable<ApiResponse<{ user: User; token: string }>> {
+  register(data: { name: string; email: string; company?: string; password: string; password_confirmation: string }): Observable<ApiResponse<{ user: User; token: string }>> {
     return this.http.post<ApiResponse<{ user: User; token: string }>>(`${this.baseUrl}/auth/register`, data);
   }
 
