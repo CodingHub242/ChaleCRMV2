@@ -24,15 +24,7 @@
 </ion-header>
 
 <ion-content class="bigin-content">
-  <div class="contacts-container">
-    <!-- Stats Bar -->
-    <div class="stats-bar">
-      <div class="stat-item">
-        <span class="stat-value">{{ contacts.length }}</span>
-        <span class="stat-label">Total Contacts</span>
-      </div>
-    </div>
-
+  <div class="table-container">
     <!-- Loading State -->
     <div *ngIf="isLoading && contacts.length === 0" class="loading-state">
       <ion-spinner name="lines"></ion-spinner>
@@ -52,59 +44,61 @@
       </ion-button>
     </div>
 
-    <!-- Contacts Grid - Bigin Style -->
-    <div *ngIf="contacts.length > 0" class="contacts-grid">
-      <div class="contact-card" *ngFor="let contact of contacts" [routerLink]="['/contacts', contact.id]">
-        <div class="card-header">
-          <div class="contact-avatar" [style.background]="getAvatarColor(contact)">
-            {{ getInitials(contact) }}
-          </div>
-          <div class="contact-info">
-            <h3 class="contact-name">{{ getFullName(contact) }}</h3>
-            <p class="contact-email">{{ contact.email }}</p>
-          </div>
-          <ion-button fill="clear" class="more-btn" (click)="$event.stopPropagation()">
-            <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
-          </ion-button>
-        </div>
-        
-        <div class="card-body">
-          <div class="info-row" *ngIf="contact.company">
-            <ion-icon name="business-outline"></ion-icon>
-            <span>{{ contact.company.name }}</span>
-          </div>
-          <div class="info-row" *ngIf="contact.phone">
-            <ion-icon name="call-outline"></ion-icon>
-            <span>{{ contact.phone }}</span>
-          </div>
-          <div class="info-row" *ngIf="contact.mobile">
-            <ion-icon name="mobile-portrait-outline"></ion-icon>
-            <span>{{ contact.mobile }}</span>
-          </div>
-        </div>
+    <!-- Contacts Table -->
+    <div *ngIf="contacts.length > 0" class="table-wrapper">
+      <table class="bigin-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Company</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let contact of contacts" [routerLink]="['/contacts', contact.id]" class="table-row">
+            <td>
+              <div class="contact-cell">
+                <div class="contact-avatar-small" [style.background]="getAvatarColor(contact)">
+                  {{ getInitials(contact) }}
+                </div>
+                <span class="contact-name">{{ getFullName(contact) }}</span>
+              </div>
+            </td>
+            <td>{{ contact.email }}</td>
+            <td>{{ contact.phone || contact.mobile || '-' }}</td>
+            <td>{{ contact.company?.name || '-' }}</td>
+            <td>
+              <ion-badge *ngIf="contact.lead_status" class="status-badge" [class]="getStatusClass(contact.lead_status)">
+                {{ contact.lead_status }}
+              </ion-badge>
+              <span *ngIf="!contact.lead_status">-</span>
+            </td>
+            <td>{{ contact.created_at | date:'mediumDate' }}</td>
+            <td>
+              <ion-button fill="clear" color="danger" (click)="deleteContact(contact); $event.stopPropagation()">
+                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+              </ion-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-        <div class="card-footer">
-          <ion-badge *ngIf="contact.lead_status" class="status-badge" [class]="getStatusClass(contact.lead_status)">
-            {{ contact.lead_status }}
-          </ion-badge>
-          <span class="created-date">Created {{ contact.created_at | date:'mediumDate' }}</span>
-        </div>
-
-        <!-- Swipe Actions -->
-        <div class="card-actions">
-          <ion-button fill="clear" color="danger" (click)="deleteContact(contact); $event.stopPropagation()">
-            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-          </ion-button>
-        </div>
+      <!-- Pagination Info -->
+      <div class="pagination-info">
+        <span>Showing {{ contacts.length }} contacts</span>
       </div>
-    </div>
 
-    <!-- Infinite Scroll -->
-    <ion-infinite-scroll (ionInfinite)="loadMore($event)" *ngIf="contacts.length > 0">
-      <ion-infinite-scroll-content
-        loading-spinner="lines-small"
-        loading-text="Loading more...">
-      </ion-infinite-scroll-content>
-    </ion-infinite-scroll>
+      <!-- Infinite Scroll -->
+      <ion-infinite-scroll (ionInfinite)="loadMore($event)" *ngIf="hasMore">
+        <ion-infinite-scroll-content
+          loading-spinner="lines-small"
+          loading-text="Loading more...">
+        </ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </div>
   </div>
 </ion-content>

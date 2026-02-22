@@ -16,23 +16,23 @@
   <ion-toolbar class="search-toolbar">
     <ion-searchbar 
       placeholder="Search by name, industry, city..." 
+      (ionChange)="onSearch($event)"
+      [value]="searchQuery"
       class="bigin-search">
     </ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="bigin-content">
-  <div class="companies-container">
-    <!-- Stats Bar -->
-    <div class="stats-bar">
-      <div class="stat-item">
-        <span class="stat-value">{{ companies.length }}</span>
-        <span class="stat-label">Total Companies</span>
-      </div>
+  <div class="table-container">
+    <!-- Loading State -->
+    <div *ngIf="isLoading && companies.length === 0" class="loading-state">
+      <ion-spinner name="lines"></ion-spinner>
+      <p>Loading companies...</p>
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="companies.length === 0" class="empty-state">
+    <div *ngIf="!isLoading && companies.length === 0" class="empty-state">
       <div class="empty-illustration">
         <ion-icon name="business-outline"></ion-icon>
       </div>
@@ -44,45 +44,56 @@
       </ion-button>
     </div>
 
-    <!-- Companies Grid -->
-    <div *ngIf="companies.length > 0" class="companies-grid">
-      <div class="company-card" *ngFor="let company of companies" [routerLink]="['/companies', company.id]">
-        <div class="card-header">
-          <div class="company-avatar" [style.background]="getAvatarColor(company)">
-            {{ getInitials(company) }}
-          </div>
-          <div class="company-info">
-            <h3 class="company-name">{{ company.name }}</h3>
-            <p class="company-industry">{{ company.industry || 'No industry' }}</p>
-          </div>
-          <ion-button fill="clear" class="more-btn">
-            <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
-          </ion-button>
-        </div>
+    <!-- Companies Table -->
+    <div *ngIf="companies.length > 0" class="table-wrapper">
+      <table class="bigin-table">
+        <thead>
+          <tr>
+            <th>Company Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Industry</th>
+            <th>Location</th>
+            <th>Created</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let company of companies" [routerLink]="['/companies', company.id]" class="table-row">
+            <td>
+              <div class="company-cell">
+                <div class="company-avatar-small" [style.background]="getAvatarColor(company)">
+                  {{ getInitials(company) }}
+                </div>
+                <span class="company-name">{{ company.name }}</span>
+              </div>
+            </td>
+            <td>{{ company.email || '-' }}</td>
+            <td>{{ company.phone || company.mobile || '-' }}</td>
+            <td>{{ company.industry || '-' }}</td>
+            <td>{{ company.city }}{{ company.city && company.country ? ', ' : '' }}{{ company.country || '-' }}</td>
+            <td>{{ company.created_at | date:'mediumDate' }}</td>
+            <td>
+              <ion-button fill="clear" (click)="$event.stopPropagation()">
+                <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+              </ion-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-        <div class="card-body">
-          <div class="info-row" *ngIf="company.email">
-            <ion-icon name="mail-outline"></ion-icon>
-            <span>{{ company.email }}</span>
-          </div>
-          <div class="info-row" *ngIf="company.phone">
-            <ion-icon name="call-outline"></ion-icon>
-            <span>{{ company.phone }}</span>
-          </div>
-          <div class="info-row" *ngIf="company.website">
-            <ion-icon name="globe-outline"></ion-icon>
-            <span>{{ company.website }}</span>
-          </div>
-          <div class="info-row" *ngIf="company.city || company.country">
-            <ion-icon name="location-outline"></ion-icon>
-            <span>{{ company.city }}{{ company.city && company.country ? ', ' : '' }}{{ company.country }}</span>
-          </div>
-        </div>
-
-        <div class="card-footer">
-          <span class="created-date">Created {{ company.created_at | date:'mediumDate' }}</span>
-        </div>
+      <!-- Pagination Info -->
+      <div class="pagination-info">
+        <span>Showing {{ companies.length }} companies</span>
       </div>
+
+      <!-- Infinite Scroll -->
+      <ion-infinite-scroll (ionInfinite)="loadMore($event)" *ngIf="hasMore">
+        <ion-infinite-scroll-content
+          loading-spinner="lines-small"
+          loading-text="Loading more...">
+        </ion-infinite-scroll-content>
+      </ion-infinite-scroll>
     </div>
   </div>
 </ion-content>
