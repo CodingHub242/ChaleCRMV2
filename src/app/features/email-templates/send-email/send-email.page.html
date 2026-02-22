@@ -35,7 +35,7 @@
           <div class="selected-recipients">
             <div class="recipient-chip" *ngFor="let contact of selectedContacts; let i = index">
               <ion-avatar>
-                <span>{{ getInitials(contact.name) }}</span>
+                <span>{{ getInitials(contact.name || '') }}</span>
               </ion-avatar>
               <span class="recipient-name">{{ contact.name }}</span>
               <ion-icon name="close-circle" (click)="removeContact(i)"></ion-icon>
@@ -192,7 +192,7 @@
         (click)="toggleContact(contact)"
       >
         <ion-avatar>
-          <span>{{ getInitials(contact.name) }}</span>
+          <span>{{ getInitials(contact.name || '') }}</span>
         </ion-avatar>
         <div class="contact-info">
           <span class="contact-name">{{ contact.name }}</span>
