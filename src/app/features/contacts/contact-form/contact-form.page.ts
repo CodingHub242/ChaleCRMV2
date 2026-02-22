@@ -119,11 +119,12 @@ export class ContactFormPage implements OnInit {
   }
 
   async save(): Promise<void> {
-    console.log(this.contact);
     if (this.contact.first_name=='' || this.contact.last_name=='' || this.contact.email=='') {
       this.showAlert('Validation Error', 'Please fill in required fields');
       return;
     }
+
+     console.log(this.contact);
 
     const loading = await this.loadingController.create({
       message: 'Saving...'
