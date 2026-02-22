@@ -6,7 +6,7 @@ import { RouterModule } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { Sqr } from '../../../models';
 import { addIcons } from 'ionicons';
-import { warning, chatbubbles, helpCircle, add, trash, create, chevronBack, chevronForward, chevronDown, alertCircle, bulb, person } from 'ionicons/icons';
+import { warning, chatbubbles, helpCircle, add, trash, create, chevronBack, chevronForward, chevronDown, alertCircle, bulb, person, trashOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-sqrs-list',
@@ -49,7 +49,7 @@ export class SqrsListPage implements OnInit {
     private api: ApiService,
     private alertController: AlertController
   ) {
-    addIcons({ warning, chatbubbles, helpCircle, add, trash, create, chevronBack, chevronForward, chevronDown, alertCircle, bulb: alertCircle, person });
+    addIcons({ trashOutline,warning, chatbubbles, helpCircle, add, trash, create, chevronBack, chevronForward, chevronDown, alertCircle, bulb: alertCircle, person });
   }
 
   ngOnInit(): void {
