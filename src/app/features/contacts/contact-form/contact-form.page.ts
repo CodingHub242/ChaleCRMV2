@@ -129,22 +129,22 @@ export class ContactFormPage implements OnInit {
     this.isSaving = true;
 
     try {
-      const loading = await this.loadingController.create({
-        message: 'Saving...',
-        spinner: 'circles',
-        duration: 30000
-      });
-      await loading.present();
+      // const loading = await this.loadingController.create({
+      //   message: 'Saving...',
+      //   spinner: 'circles',
+      //   duration: 30000
+      // });
+      // await loading.present();
       console.log('Loading presented, calling saveContact...');
       console.log('Contact data to save:', this.selectedFile);
 
       // If there's a selected file, we need to upload it first
       if (this.selectedFile!= null) {
         console.log('Has file, uploading...');
-        this.uploadPhotoAndSave(loading);
+        this.uploadPhotoAndSave();
       } else {
         console.log('No file, calling saveContact directly...');
-        this.saveContact(loading, null);
+        this.saveContact(null);
       }
     } catch (error) {
       this.isSaving = false;
@@ -153,7 +153,7 @@ export class ContactFormPage implements OnInit {
     }
   }
 
-  private uploadPhotoAndSave(loading: HTMLIonLoadingElement): void {
+  private uploadPhotoAndSave(): void {
     const formData = new FormData();
     formData.append('photo', this.selectedFile as File);
     formData.append('entity_type', 'contact');
@@ -165,17 +165,17 @@ export class ContactFormPage implements OnInit {
         if (response.success && response.data?.url) {
           this.contact.avatar = response.data.url;
         }
-        this.saveContact(loading, response.success ? response.data?.url : null);
+        this.saveContact( response.success ? response.data?.url : null);
       },
       error: () => {
         // Continue saving even if photo upload fails
         this.isSaving = false;
-        this.saveContact(loading, null);
+        this.saveContact( null);
       }
     });
   }
 
-  private saveContact(loading: HTMLIonLoadingElement, avatarUrl: string | null): void {
+  private saveContact( avatarUrl: string | null): void {
     console.log('saveContact called with avatarUrl:', avatarUrl);
     const contactData = { ...this.contact };
     if (avatarUrl) {
@@ -190,7 +190,7 @@ export class ContactFormPage implements OnInit {
     request.subscribe({
       next: (response) => {
         console.log('API response:', response);
-        loading.dismiss();
+        //loading.dismiss();
         this.isSaving = false;
         if (response.success) {
           this.router.navigate(['/contacts']);
@@ -200,7 +200,7 @@ export class ContactFormPage implements OnInit {
       },
       error: (error) => {
         console.error('API error:', error);
-        loading.dismiss();
+      //  loading.dismiss();
         this.isSaving = false;
         this.showAlert('Error', error.error?.message || 'Failed to save contact');
       }
