@@ -196,7 +196,25 @@
             [(ngModel)]="deal.description" 
             name="description" 
             rows="4"
-            placeholder="Add notes about this deal..."
+            placeholder="Add info about this lead..."
+          ></ion-textarea>
+        </ion-item>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-header">
+        <ion-icon name="document-text-outline"></ion-icon>
+        <h3>Correspondence</h3>
+      </div>
+      
+      <div class="description-field">
+        <ion-item lines="none">
+          <ion-textarea 
+            [(ngModel)]="deal.notes" 
+            name="correspondence" 
+            rows="4"
+            placeholder="Add notes about this lead..."
           ></ion-textarea>
         </ion-item>
       </div>

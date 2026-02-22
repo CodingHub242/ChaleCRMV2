@@ -89,6 +89,7 @@ export interface Deal {
   company?: Company;
   owner_id: number;
   owner?: User;
+  notes ?: string;
   description?: string;
   created_at: string;
   updated_at: string;

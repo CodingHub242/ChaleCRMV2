@@ -27,6 +27,7 @@ export class DealFormPage implements OnInit {
     amount: 0,
     currency: 'GHS',
     stage: 'New',
+    notes: '',
     probability: 10,
     expected_close_date: '',
     contact_id: undefined,
@@ -35,7 +36,7 @@ export class DealFormPage implements OnInit {
   };
 
   stages = ['New', 'Qualification', 'Needs Analysis', 'Proposal', 'Negotiation', 'Closed Won', 'Closed Lost'];
-  currencies = ['USD', 'EUR', 'GBP', 'CAD', 'AUD'];
+  currencies = ['GHS','USD', 'EUR', 'GBP', 'CAD', 'AUD'];
 
   constructor(
     private api: ApiService,
