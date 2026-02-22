@@ -166,6 +166,7 @@ export class ContactFormPage implements OnInit {
       contactData.avatar = avatarUrl;
     }
 
+    console.log(contactData);
     const request = this.isEditing && this.contactId
       ? this.api.updateContact(this.contactId, contactData)
       : this.api.createContact(contactData as any);
