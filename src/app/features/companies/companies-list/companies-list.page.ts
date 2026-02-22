@@ -126,4 +126,12 @@ export class CompaniesListPage implements OnInit {
       this.loadCompanies();
     }
   }
+
+  deleteCompany(company: Company) {
+    this.api.deleteCompany(company.id).subscribe({
+      next: () => {
+        this.loadCompanies();
+      }
+    });
+  }
 }

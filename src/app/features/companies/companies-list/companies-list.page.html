@@ -74,8 +74,8 @@
             <td>{{ company.city }}{{ company.city && company.country ? ', ' : '' }}{{ company.country || '-' }}</td>
             <td>{{ company.created_at | date:'mediumDate' }}</td>
             <td>
-              <ion-button fill="clear" (click)="$event.stopPropagation()">
-                <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+              <ion-button fill="clear" color="danger" (click)="deleteCompany(company); $event.stopPropagation()">
+                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
               </ion-button>
             </td>
           </tr>
