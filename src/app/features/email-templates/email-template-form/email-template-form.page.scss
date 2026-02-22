@@ -242,7 +242,7 @@
 }
 
 .variable-chip:hover {
-  background: #e3f2fd;
+  background: #e8f5f5;
   border-color: #073336;
 }
 
@@ -519,4 +519,20 @@
   .form-actions {
     grid-template-columns: 1fr;
   }
+}
+
+// Variable Alert Styling
+:host ::ng-deep .variable-alert .alert-message {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+:host ::ng-deep .variable-alert .alert-button {
+  color: #073336;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+:host ::ng-deep .variable-alert .alert-button.role-cancel {
+  color: #666;
 }

@@ -204,7 +204,8 @@ export class EmailTemplateFormPage implements OnInit {
     const alert = await this.alertController.create({
       header: 'Insert Variable',
       message: 'Select a variable to insert:',
-      buttons: buttons
+      buttons: buttons,
+      cssClass: 'variable-alert'
     });
     await alert.present();
   }

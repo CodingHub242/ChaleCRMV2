@@ -45,6 +45,7 @@ export class SendEmailPage implements OnInit {
   selectedContacts: SelectedContact[] = [];
   ccEmails = '';
   bccEmails = '';
+  customEmail = '';
 
   // Template
   selectedTemplateId: number | null = null;
@@ -223,6 +224,39 @@ export class SendEmailPage implements OnInit {
     this.selectedContacts.splice(index, 1);
   }
 
+  addCustomEmail() {
+    const email = this.customEmail?.trim();
+    if (!email) {
+      return;
+    }
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      this.showToast('Please enter a valid email address', 'warning');
+      return;
+    }
+    
+    // Check if already added
+    const exists = this.selectedContacts.some(c => c.email.toLowerCase() === email.toLowerCase());
+    if (exists) {
+      this.showToast('This email is already added', 'warning');
+      this.customEmail = '';
+      return;
+    }
+    
+    // Add as custom recipient
+    const name = email.split('@')[0];
+    this.selectedContacts.push({
+      id: 0, // 0 indicates custom email
+      name: name,
+      email: email
+    });
+    
+    this.customEmail = '';
+    this.showToast('Email added', 'success');
+  }
+
   getInitials(name: string): string {
     if (!name) return '?';
     const parts = name.split(' ');
@@ -327,7 +361,8 @@ export class SendEmailPage implements OnInit {
     const alert = await this.alertController.create({
       header: 'Insert Variable',
       message: 'Select a variable to insert:',
-      buttons: buttons
+      buttons: buttons,
+      cssClass: 'variable-alert'
     });
     await alert.present();
   }
