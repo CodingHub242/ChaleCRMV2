@@ -4,6 +4,8 @@ import { IonicModule, ActionSheetController, AlertController, ModalController } 
 import { Router, RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { EmailTemplate } from '../../models';
+import { addIcons } from 'ionicons';
+import { personOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-email-templates',
@@ -38,7 +40,9 @@ export class EmailTemplatesPage implements OnInit {
     private alertController: AlertController,
     private modalController: ModalController,
     private apiService: ApiService
-  ) {}
+  ) {
+    addIcons({personOutline});
+  }
 
   ngOnInit() {
     this.loadTemplates();
