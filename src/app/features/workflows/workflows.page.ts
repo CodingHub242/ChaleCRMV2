@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, AlertController, ActionSheetController } from '@ionic/angular';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { Workflow } from '../../models';
 
@@ -10,7 +10,7 @@ import { Workflow } from '../../models';
   templateUrl: './workflows.page.html',
   styleUrls: ['./workflows.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule],
+  imports: [CommonModule, IonicModule, RouterModule],
 })
 export class WorkflowsPage implements OnInit {
   workflows: Workflow[] = [];
