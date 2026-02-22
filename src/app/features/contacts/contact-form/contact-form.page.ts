@@ -125,7 +125,7 @@ export class ContactFormPage implements OnInit {
       return;
     }
 
-   // console.log(this.contact);
+    console.log('Save clicked, selectedFile:', this.selectedFile);
     this.isSaving = true;
 
     try {
@@ -135,17 +135,20 @@ export class ContactFormPage implements OnInit {
         duration: 30000
       });
       await loading.present();
+      console.log('Loading presented, calling saveContact...');
+      console.log('Contact data to save:', this.selectedFile);
 
       // If there's a selected file, we need to upload it first
       if (this.selectedFile) {
+        console.log('Has file, uploading...');
         this.uploadPhotoAndSave(loading);
       } else {
-        console.log(this.contact);
+        console.log('No file, calling saveContact directly...');
         this.saveContact(loading, null);
       }
     } catch (error) {
       this.isSaving = false;
-      console.error('Error creating loading:', error);
+      console.error('Error in save:', error);
       this.showAlert('Error', 'Failed to initialize save process');
     }
   }
@@ -173,18 +176,20 @@ export class ContactFormPage implements OnInit {
   }
 
   private saveContact(loading: HTMLIonLoadingElement, avatarUrl: string | null): void {
+    console.log('saveContact called with avatarUrl:', avatarUrl);
     const contactData = { ...this.contact };
     if (avatarUrl) {
       contactData.avatar = avatarUrl;
     }
 
-    console.log(contactData);
+    console.log('Contact data to save:', contactData);
     const request = this.isEditing && this.contactId
       ? this.api.updateContact(this.contactId, contactData)
       : this.api.createContact(contactData as any);
 
     request.subscribe({
       next: (response) => {
+        console.log('API response:', response);
         loading.dismiss();
         this.isSaving = false;
         if (response.success) {
@@ -194,6 +199,7 @@ export class ContactFormPage implements OnInit {
         }
       },
       error: (error) => {
+        console.error('API error:', error);
         loading.dismiss();
         this.isSaving = false;
         this.showAlert('Error', error.error?.message || 'Failed to save contact');

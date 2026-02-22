@@ -43,6 +43,12 @@ Route::post('email/send', [App\Http\Controllers\Api\EmailController::class, 'sen
 Route::get('email/history', [App\Http\Controllers\Api\EmailController::class, 'history']);
 Route::post('contacts/{id}/send-email', [App\Http\Controllers\Api\EmailController::class, 'sendToContact']);
 
+// Contacts
+Route::apiResource('contacts', App\Http\Controllers\Api\ContactController::class);
+
+// Companies
+Route::apiResource('companies', App\Http\Controllers\Api\CompanyController::class);
+
 // Document Templates
 Route::apiResource('document-templates', App\Http\Controllers\Api\DocumentTemplateController::class);
 Route::post('document-templates/{template}/generate', [App\Http\Controllers\Api\DocumentTemplateController::class, 'generate']);
