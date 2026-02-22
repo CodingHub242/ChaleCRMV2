@@ -3,7 +3,19 @@
     --border-color: #e0e0e0;
     --color: #e3e3e3;
 }
+ion-toggle{
+  --track-background-checked: #073336 !important;
+    --border-radius: 14px;
+    --handle-background: #ffffff;
+    --handle-background-checked: var(--ion-color-primary, #073336) !important;
 
+    label{
+      font-size: 13px;
+      font-weight: 500;
+      color: #666;
+      margin-bottom: 8px;
+    }
+}
 .bigin-header ion-toolbar {
   --background: #073336;
     --border-color: #e0e0e0;
