@@ -251,6 +251,18 @@ export const routes: Routes = [
         path: 'workflows',
         loadComponent: () => import('./features/workflows/workflows.page').then(m => m.WorkflowsPage)
       },
+      {
+        path: 'workflows/new',
+        loadComponent: () => import('./features/workflows/workflow-form/workflow-form.page').then(m => m.WorkflowFormPage)
+      },
+      {
+        path: 'workflows/:id',
+        loadComponent: () => import('./features/workflows/workflow-form/workflow-form.page').then(m => m.WorkflowFormPage)
+      },
+      {
+        path: 'workflows/:id/edit',
+        loadComponent: () => import('./features/workflows/workflow-form/workflow-form.page').then(m => m.WorkflowFormPage)
+      },
       // Email Templates
       {
         path: 'email-templates',
