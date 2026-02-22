@@ -88,7 +88,7 @@
                 {{ sqr.status }}
               </ion-badge>
             </td>
-            <td>{{ sqr.contact?.first_name ? sqr.contact.first_name + ' ' + sqr.contact.last_name : '-' }}</td>
+            <td>{{ sqr.contact?.first_name ? sqr.contact?.first_name + ' ' + sqr.contact?.last_name : '-' }}</td>
             <td>{{ sqr.company?.name || '-' }}</td>
             <td>{{ sqr.created_at | date:'mediumDate' }}</td>
             <td>
