@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, AlertController, LoadingController, ModalController } from '@ionic/angular';
 import { Router, ActivatedRoute } from '@angular/router';
+import { IonToggle,IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonButtons, IonMenuButton, IonIcon, IonRow, IonCol, IonModal, IonLabel, IonItem, IonDatetime } from '@ionic/angular/standalone';
 import { ApiService } from '../../../core/services/api.service';
 import { Deal, Contact, Company } from '../../../models';
 import { addIcons } from 'ionicons';
@@ -11,7 +12,7 @@ import { briefcase,add, trash, create, mail, document, close, eye, download, che
 @Component({
   selector: 'app-deal-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule],
+  imports: [IonToggle,CommonModule, FormsModule, IonicModule],
   templateUrl: './deal-form.page.html',
   styleUrls: ['./deal-form.page.scss']
 })
