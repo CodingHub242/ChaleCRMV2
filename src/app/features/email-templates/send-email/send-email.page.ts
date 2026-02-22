@@ -117,7 +117,8 @@ export class SendEmailPage implements OnInit {
     const templateId = this.route.snapshot.queryParamMap.get('template_id');
     if (templateId) {
       this.selectedTemplateId = parseInt(templateId, 10);
-      this.loadTemplateData();
+      // Load template directly from API to ensure we have the data
+      this.loadTemplateById(this.selectedTemplateId);
     }
 
     // Check if contact_id was passed
@@ -125,6 +126,28 @@ export class SendEmailPage implements OnInit {
     if (contactId) {
       this.loadContact(parseInt(contactId, 10));
     }
+  }
+
+  // Load template directly by ID
+  loadTemplateById(templateId: number) {
+    this.apiService.getEmailTemplate(templateId).subscribe({
+      next: (response: any) => {
+        if (response.data) {
+          const template = response.data;
+          this.emailData.subject = template.subject || '';
+          this.emailData.body = template.body || '';
+          // Also add to local templates array for consistency
+          if (!this.emailTemplates.find(t => t.id === template.id)) {
+            this.emailTemplates.push(template);
+          }
+        }
+      },
+      error: (error) => {
+        console.error('Error loading template:', error);
+        // Fallback to finding in loaded templates
+        this.loadTemplateData();
+      }
+    });
   }
 
   loadEmailTemplates() {
