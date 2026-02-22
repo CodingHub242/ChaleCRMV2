@@ -66,9 +66,11 @@
               {{ deal.stage }}
             </ion-badge>
           </div>
-          <ion-button fill="clear" class="more-btn">
-            <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+         
+          <ion-button fill="clear" color="danger" (click)="deleteLead(deal); $event.stopPropagation()">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
           </ion-button>
+            
         </div>
 
         <div class="card-amount">

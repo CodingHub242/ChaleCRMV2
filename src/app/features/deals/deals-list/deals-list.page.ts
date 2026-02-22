@@ -128,4 +128,12 @@ export class DealsListPage implements OnInit {
       this.loadDeals();
     }
   }
+
+  deleteLead(deal: Deal) {
+    this.api.deleteDeal(deal.id).subscribe({
+      next: () => {
+        this.loadDeals();
+      }
+    });
+  }
 }
