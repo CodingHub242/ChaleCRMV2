@@ -145,6 +145,13 @@ export class SendEmailPage implements OnInit {
       next: (response: any) => {
         this.contacts = response.data || [];
         this.filteredContacts = [...this.contacts];
+        
+        // Pre-load company data for each contact
+        this.contacts.forEach((contact: any) => {
+          if (contact.id > 0 && contact.company) {
+            this.contactDataCache.set(contact.id, contact);
+          }
+        });
       },
       error: (error) => {
         console.error('Error loading contacts:', error);
@@ -347,16 +354,6 @@ export class SendEmailPage implements OnInit {
         const response: any = await this.apiService.getContact(contact.id).toPromise();
         if (response && response.data) {
           this.contactDataCache.set(contact.id, response.data);
-          
-          // Update the selected contact with full data
-          const index = this.selectedContacts.findIndex(c => c.id === contact.id);
-          if (index >= 0) {
-            this.selectedContacts[index] = {
-              ...this.selectedContacts[index],
-              phone: response.data.phone,
-              company: response.data.company
-            };
-          }
         }
       } catch (error) {
         console.error('Error fetching contact:', contact.id, error);
@@ -371,22 +368,31 @@ export class SendEmailPage implements OnInit {
     if (this.selectedContacts.length > 0) {
       const contact = this.selectedContacts[0];
       
+      // Check cache first for full contact data
+      let fullContact = this.contactDataCache.get(contact.id);
+      
+      // If not in cache but we have company data in contact, use that
+      if (!fullContact && contact.company) {
+        fullContact = contact;
+      }
+      
       // Split name into first and last name
-      const nameParts = contact.name ? contact.name.split(' ') : [];
+      const nameParts = (fullContact?.name || contact.name || '').split(' ');
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || '';
       
       variables['contact.first_name'] = firstName;
       variables['contact.last_name'] = lastName;
-      variables['contact.email'] = contact.email || '';
-      variables['contact.phone'] = contact.phone || '';
-      variables['contact.company'] = contact.company?.name || '';
+      variables['contact.email'] = fullContact?.email || contact.email || '';
+      variables['contact.phone'] = fullContact?.phone || contact.phone || '';
+      variables['contact.company'] = fullContact?.company?.name || contact.company?.name || '';
       
       // Add company variables
-      if (contact.company) {
-        variables['company.name'] = contact.company.name || '';
-        variables['company.email'] = contact.company.email || '';
-        variables['company.phone'] = contact.company.phone || '';
+      const company = fullContact?.company || contact.company;
+      if (company) {
+        variables['company.name'] = company.name || '';
+        variables['company.email'] = company.email || '';
+        variables['company.phone'] = company.phone || '';
       }
     }
     

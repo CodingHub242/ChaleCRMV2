@@ -118,6 +118,12 @@ export class EmailTemplatesPage implements OnInit {
     this.router.navigate(['/email-templates', template.id]);
   }
 
+  useTemplate(template: EmailTemplate) {
+    this.router.navigate(['/send-email'], { 
+      queryParams: { template_id: template.id } 
+    });
+  }
+
   sendWithTemplate(template: EmailTemplate) {
     this.router.navigate(['/send-email'], { queryParams: { template_id: template.id } });
   }

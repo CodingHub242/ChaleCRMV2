@@ -340,6 +340,21 @@
   color: #999;
 }
 
+.card-actions {
+  display: flex;
+  align-items: center;
+}
+
+.use-template-btn {
+  --color: #e09027;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.use-template-btn ion-icon {
+  font-size: 14px;
+}
+
 .variables-count {
   display: flex;
   align-items: center;

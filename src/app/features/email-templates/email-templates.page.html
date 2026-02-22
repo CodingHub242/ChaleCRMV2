@@ -103,7 +103,7 @@
 
     <!-- Templates Grid -->
     <div *ngIf="!loading && templates.length > 0" class="templates-grid">
-      <div class="template-card" *ngFor="let template of templates" (click)="viewTemplate(template)">
+      <div class="template-card" *ngFor="let template of templates">
         <div class="card-header">
           <div class="template-info">
             <div class="template-category-icon" [class]="getCategoryClass(template.category)">
@@ -119,7 +119,7 @@
           </ion-button>
         </div>
 
-        <div class="card-body">
+        <div class="card-body" (click)="viewTemplate(template)">
           <div class="subject-row">
             <ion-icon name="subject-outline"></ion-icon>
             <span class="subject">{{ template.subject }}</span>
@@ -133,9 +133,11 @@
           <ion-badge class="status-badge" [class]="template.is_active ? 'active' : 'inactive'">
             {{ template.is_active ? 'Active' : 'Inactive' }}
           </ion-badge>
-          <div class="variables-count" *ngIf="template.variables && template.variables.length > 0">
-            <ion-icon name="code-slash-outline"></ion-icon>
-            <span>{{ template.variables.length }} variables</span>
+          <div class="card-actions">
+            <ion-button fill="clear" size="small" class="use-template-btn" (click)="useTemplate(template)">
+              <ion-icon slot="start" name="paper-plane-outline"></ion-icon>
+              Use Template
+            </ion-button>
           </div>
         </div>
       </div>
