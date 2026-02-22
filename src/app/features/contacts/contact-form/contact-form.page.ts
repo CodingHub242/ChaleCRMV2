@@ -20,6 +20,7 @@ export class ContactFormPage implements OnInit {
   isEditing = false;
   contactId: number | null = null;
   isLoading = false;
+  isSaving = false;
   companies: Company[] = [];
   
   // Photo upload
@@ -124,18 +125,27 @@ export class ContactFormPage implements OnInit {
       return;
     }
 
-     console.log(this.contact);
+    console.log(this.contact);
+    this.isSaving = true;
 
-    const loading = await this.loadingController.create({
-      message: 'Saving...'
-    });
-    await loading.present();
+    try {
+      const loading = await this.loadingController.create({
+        message: 'Saving...',
+        spinner: 'circles',
+        duration: 30000
+      });
+      await loading.present();
 
-    // If there's a selected file, we need to upload it first
-    if (this.selectedFile) {
-      this.uploadPhotoAndSave(loading);
-    } else {
-      this.saveContact(loading, null);
+      // If there's a selected file, we need to upload it first
+      if (this.selectedFile) {
+        this.uploadPhotoAndSave(loading);
+      } else {
+        this.saveContact(loading, null);
+      }
+    } catch (error) {
+      this.isSaving = false;
+      console.error('Error creating loading:', error);
+      this.showAlert('Error', 'Failed to initialize save process');
     }
   }
 
@@ -155,6 +165,7 @@ export class ContactFormPage implements OnInit {
       },
       error: () => {
         // Continue saving even if photo upload fails
+        this.isSaving = false;
         this.saveContact(loading, null);
       }
     });
@@ -174,6 +185,7 @@ export class ContactFormPage implements OnInit {
     request.subscribe({
       next: (response) => {
         loading.dismiss();
+        this.isSaving = false;
         if (response.success) {
           this.router.navigate(['/contacts']);
         } else {
@@ -182,6 +194,7 @@ export class ContactFormPage implements OnInit {
       },
       error: (error) => {
         loading.dismiss();
+        this.isSaving = false;
         this.showAlert('Error', error.error?.message || 'Failed to save contact');
       }
     });

@@ -128,8 +128,9 @@
         <ion-button expand="block" class="cancel-btn" fill="outline" (click)="router.navigate(['/contacts'])">
           Cancel
         </ion-button>
-        <ion-button expand="block" class="save-btn-full" (click)="save()">
-          {{ isEditing ? 'Update Contact' : 'Create Contact' }}
+        <ion-button expand="block" class="save-btn-full" (click)="save()" [disabled]="isSaving">
+          <ion-spinner *ngIf="isSaving" name="circular" style="margin-right: 8px;"></ion-spinner>
+          {{ isSaving ? 'Saving...' : (isEditing ? 'Update Contact' : 'Create Contact') }}
         </ion-button>
       </div>
     </div>
