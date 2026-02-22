@@ -139,7 +139,7 @@ export class ContactFormPage implements OnInit {
       console.log('Contact data to save:', this.selectedFile);
 
       // If there's a selected file, we need to upload it first
-      if (this.selectedFile) {
+      if (this.selectedFile!= null) {
         console.log('Has file, uploading...');
         this.uploadPhotoAndSave(loading);
       } else {
