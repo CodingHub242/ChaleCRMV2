@@ -5,7 +5,7 @@
         <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>{{ isEditing ? 'Edit Deal' : 'New Deal' }}</ion-title>
+    <ion-title>{{ isEditing ? 'Edit Lead' : 'New Lead' }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="save()" [strong]="true">Save</ion-button>
     </ion-buttons>
@@ -16,9 +16,9 @@
   <div class="form-container" *ngIf="!isLoading; else loadingTpl">
     <!-- Amount Card -->
     <div class="amount-card">
-      <h4>Deal Value</h4>
+      <h4>Lead Value</h4>
       <div class="amount-input">
-        <span class="currency-symbol">{{ deal.currency || '$' }}</span>
+        <span class="currency-symbol">{{ deal.currency || 'GHS' }}</span>
         <input 
           type="number" 
           [(ngModel)]="deal.amount" 
@@ -33,7 +33,7 @@
     <div class="form-section">
       <div class="form-section-header">
         <ion-icon name="flag-outline"></ion-icon>
-        <h3>Deal Stage</h3>
+        <h3>Lead Stage</h3>
       </div>
       <div class="stage-selector">
         <div 
@@ -52,12 +52,12 @@
     <div class="form-section">
       <div class="form-section-header">
         <ion-icon name="business-outline"></ion-icon>
-        <h3>Deal Information</h3>
+        <h3>Lead Information</h3>
       </div>
       
       <div class="form-grid">
         <div class="form-field full-width">
-          <label>Deal Name <span class="required">*</span></label>
+          <label>Lead Name <span class="required">*</span></label>
           <ion-item lines="none">
             <ion-input 
               [(ngModel)]="deal.name" 
@@ -208,7 +208,7 @@
           Cancel
         </ion-button>
         <ion-button expand="block" class="save-btn-full" (click)="save()">
-          {{ isEditing ? 'Update Deal' : 'Save Deal' }}
+          {{ isEditing ? 'Update Lead' : 'Save Lead' }}
         </ion-button>
       </div>
   </div>
@@ -216,7 +216,7 @@
   <ng-template #loadingTpl>
     <div class="loading-container">
       <ion-spinner name="crescent"></ion-spinner>
-      <p>Loading deal...</p>
+      <p>Loading lead...</p>
     </div>
   </ng-template>
 </ion-content>

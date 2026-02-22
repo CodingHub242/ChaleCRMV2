@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Deals</ion-title>
+    <ion-title>Leads</ion-title>
     <ion-buttons slot="end">
       <ion-button class="import-btn" (click)="presentImportModal()">
         <ion-icon slot="icon-only" name="cloud-upload-outline"></ion-icon>
@@ -29,7 +29,7 @@
     <div class="stats-bar">
       <div class="stat-item">
         <span class="stat-value">{{ deals.length }}</span>
-        <span class="stat-label">Total Deals</span>
+        <span class="stat-label">Total Leads</span>
       </div>
       <div class="stat-item">
         <span class="stat-value">{{ formatCurrency(totalValue) }}</span>
@@ -40,7 +40,7 @@
     <!-- Loading State -->
     <div *ngIf="isLoading && deals.length === 0" class="loading-state">
       <ion-spinner name="lines"></ion-spinner>
-      <p>Loading deals...</p>
+      <p>Loading leads...</p>
     </div>
 
     <!-- Empty State -->
@@ -48,11 +48,11 @@
       <div class="empty-illustration">
         <ion-icon name="trending-up-outline"></ion-icon>
       </div>
-      <h3>No deals found</h3>
-      <p>Get started by creating your first deal</p>
+      <h3>No leads found</h3>
+      <p>Get started by creating your first lead</p>
       <ion-button class="primary-btn" routerLink="/deals/new">
         <ion-icon slot="start" name="add"></ion-icon>
-        Create Deal
+        Create Lead
       </ion-button>
     </div>
 
@@ -73,7 +73,7 @@
 
         <div class="card-amount">
           <span class="amount">{{ formatCurrency(deal.amount) }}</span>
-          <span class="currency">{{ deal.currency || 'USD' }}</span>
+          <span class="currency">{{ deal.currency || 'GHS' }}</span>
         </div>
 
         <div class="card-body">
