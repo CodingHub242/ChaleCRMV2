@@ -69,7 +69,7 @@ export class DealFormPage implements OnInit {
     }
   }
 
-  toggleDateTimePicker(): void {
+  toggleDatePicker(): void {
     this.showDatePicker = !this.showDatePicker;
   }
 
