@@ -6,7 +6,7 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { Sqr, Contact, Company } from '../../../models';
 import { addIcons } from 'ionicons';
-import { warning, alertCircle, person, business, add, chevronBack, chevronDown } from 'ionicons/icons';
+import { warning, alertCircle, person, business, add, chevronBack, chevronDown, linkOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-sqr-form',
@@ -46,7 +46,7 @@ export class SqrFormPage implements OnInit {
     private alertController: AlertController,
     private loadingController: LoadingController
   ) {
-    addIcons({ warning, alertCircle, person, business, add, chevronBack, chevronDown });
+    addIcons({ linkOutline,warning, alertCircle, person, business, add, chevronBack, chevronDown });
   }
 
   ngOnInit(): void {
