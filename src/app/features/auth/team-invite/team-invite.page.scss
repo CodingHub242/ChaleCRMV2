@@ -153,42 +153,38 @@ ion-item {
 
 // Modal Styles
 ion-modal {
+  --width: 100%;
+  --max-width: 480px;
   --height: auto;
-  --border-radius: 16px 16px 0 0;
+  --max-height: 90vh;
+  --border-radius: 16px;
   --background: white;
+  --box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
 
-  @media (min-width: 576px) {
-    --width: 440px;
-    --border-radius: 16px;
-    --max-height: 90vh;
+ion-header {
+  &.modal-header {
+    ion-toolbar {
+      --background: #073336;
+      --color: white;
+      
+      ion-title {
+        --color: white;
+        font-weight: 600;
+      }
+      
+      .send-btn {
+        --color: #fa8d34;
+        font-weight: 600;
+      }
+    }
   }
 }
 
 .modal-content {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  max-height: 90vh;
-}
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
-  border-bottom: 1px solid #f0f0f0;
-  background: #073336;
-  color: white;
-
-  h2 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-  }
-
-  ion-button {
-    --color: white;
-  }
+  --background: white;
+  --padding-start: 0;
+  --padding-end: 0;
 }
 
 .invite-form {

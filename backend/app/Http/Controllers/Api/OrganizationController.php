@@ -70,10 +70,13 @@ class OrganizationController extends Controller
             'organization_id' => $organization->id,
             'role' => ZohoUser::ROLE_ADMIN
         ]);
+        //make sure validated['website'] is also returned in the response
+        $organization->with('users');
+        $organization->website = $validated['website'];
 
         return response()->json([
             'success' => true,
-            'data' => $organization->load('users'),
+            'data' => $organization->with('users'),
             'message' => 'Organization created successfully'
         ], 201);
     }
