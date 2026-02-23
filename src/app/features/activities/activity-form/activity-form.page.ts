@@ -166,10 +166,10 @@ export class ActivityFormPage implements OnInit {
       return;
     }
 
-    const loading = await this.loadingController.create({
-      message: 'Saving...'
-    });
-    await loading.present();
+    // const loading = await this.loadingController.create({
+    //   message: 'Saving...'
+    // });
+    // await loading.present();
 
     const request = this.isEditing && this.activityId
       ? this.api.updateActivity(this.activityId, this.activity)
@@ -177,7 +177,7 @@ export class ActivityFormPage implements OnInit {
 
     request.subscribe({
       next: (response) => {
-        loading.dismiss();
+       // loading.dismiss();
         if (response.success) {
           this.router.navigate(['/activities']);
         } else {
@@ -185,7 +185,7 @@ export class ActivityFormPage implements OnInit {
         }
       },
       error: (error) => {
-        loading.dismiss();
+       // loading.dismiss();
         this.showAlert('Error', error.error?.message || 'Failed to save activity');
       }
     });

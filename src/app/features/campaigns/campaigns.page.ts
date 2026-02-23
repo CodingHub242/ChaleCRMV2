@@ -264,10 +264,10 @@ export class CampaignsPage implements OnInit {
   }
 
   formatCurrency(value: number): string {
-    if (!value) return '$0';
+    if (!value) return 'GHS0';
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'GHS',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }).format(value);

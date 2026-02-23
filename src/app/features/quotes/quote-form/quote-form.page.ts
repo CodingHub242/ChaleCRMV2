@@ -131,8 +131,8 @@ export class QuoteFormPage implements OnInit {
       return;
     }
 
-    const loading = await this.loadingController.create({ message: 'Saving...' });
-    await loading.present();
+    // const loading = await this.loadingController.create({ message: 'Saving...' });
+    // await loading.present();
 
     const request = this.isEditing && this.quoteId
       ? this.api.updateQuote(this.quoteId, this.quote)
@@ -140,12 +140,12 @@ export class QuoteFormPage implements OnInit {
 
     request.subscribe({
       next: (response) => {
-        loading.dismiss();
+       //loading.dismiss();
         if (response.success) this.router.navigate(['/quotes']);
         else this.showAlert('Error', response.message);
       },
       error: (error) => {
-        loading.dismiss();
+      //  loading.dismiss();
         this.showAlert('Error', error.error?.message || 'Failed to save quote');
       }
     });

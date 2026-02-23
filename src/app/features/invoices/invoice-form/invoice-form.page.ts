@@ -125,8 +125,8 @@ export class InvoiceFormPage implements OnInit {
       return;
     }
 
-    const loading = await this.loadingController.create({ message: 'Saving...' });
-    await loading.present();
+    // const loading = await this.loadingController.create({ message: 'Saving...' });
+    // await loading.present();
 
     const request = this.isEditing && this.invoiceId
       ? this.api.updateInvoice(this.invoiceId, this.invoice)
@@ -134,12 +134,12 @@ export class InvoiceFormPage implements OnInit {
 
     request.subscribe({
       next: (response) => {
-        loading.dismiss();
+        ///loading.dismiss();
         if (response.success) this.router.navigate(['/invoices']);
         else this.showAlert('Error', response.message);
       },
       error: (error) => {
-        loading.dismiss();
+        //loading.dismiss();
         this.showAlert('Error', error.error?.message || 'Failed to save invoice');
       }
     });

@@ -191,8 +191,8 @@ export class SalesOrderFormPage implements OnInit {
     // Calculate totals before saving
     this.calculateTotals();
 
-    const loading = await this.loadingController.create({ message: 'Saving...' });
-    await loading.present();
+    // const loading = await this.loadingController.create({ message: 'Saving...' });
+    // await loading.present();
 
     const request = this.isEditing && this.orderId
       ? this.api.updateSalesOrder(this.orderId, this.order)
@@ -200,7 +200,7 @@ export class SalesOrderFormPage implements OnInit {
 
     request.subscribe({
       next: (response: any) => {
-        loading.dismiss();
+       // loading.dismiss();
         if (response.success) {
           this.router.navigate(['/sales-orders']);
         } else {
@@ -208,7 +208,7 @@ export class SalesOrderFormPage implements OnInit {
         }
       },
       error: (error: any) => {
-        loading.dismiss();
+      //  loading.dismiss();
         this.showAlert('Error', error.error?.message || 'Failed to save order');
       }
     });
