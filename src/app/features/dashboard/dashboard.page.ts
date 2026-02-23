@@ -168,8 +168,9 @@ stats: any = {
     this.api.getContacts().subscribe({
       next: (response: any) => {
         const contacts = response.data || response;
+        const compData = response.data;
         if (contacts && contacts.length > 0) {
-          this.processLocationData(contacts);
+          this.processLocationData(contacts,compData);
         }
       },
       error: (err) => {
@@ -180,11 +181,11 @@ stats: any = {
     });
   }
 
-  processLocationData(contacts: any[]) {
+  processLocationData(contacts: any[], compData: any[]) {
     const locationMap: { [key: string]: { count: number, value: number, contacts: any[] } } = {};
 
     contacts.forEach(contact => {
-      const country = contact.country || contact.city || 'Unknown';
+      const country = contact.country || contact.city || contact.company.country || 'Unknown';
       const location = contact.state ? `${contact.state}, ${country}` : country;
 
       if (!locationMap[location]) {
