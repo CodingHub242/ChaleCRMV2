@@ -121,25 +121,26 @@ export class SettingsPage implements OnInit {
     this.successMessage = '';
     this.errorMessage = '';
 
-    // In a real app, you'd call an API to update the profile
-    // For now, we'll just simulate it
-    setTimeout(() => {
-      const user = this.authService.currentUser;
-      if (user) {
-        // Update local storage
-        const updatedUser = { 
-          ...user, 
-          name: this.profileName,
-          phone: this.profilePhone 
-        };
-        localStorage.setItem('bigin_user', JSON.stringify(updatedUser));
-        this.authService.refreshUser();
+    const data = {
+      name: this.profileName,
+      phone: this.profilePhone || undefined
+    };
+
+    this.authService.updateProfile(data).subscribe({
+      next: (response) => {
+        this.isSaving = false;
+        if (response.data) {
+          localStorage.setItem('bigin_user', JSON.stringify(response.data));
+          this.authService.refreshUser();
+        }
+        this.successMessage = 'Profile updated successfully!';
+        setTimeout(() => this.successMessage = '', 3000);
+      },
+      error: (err) => {
+        this.isSaving = false;
+        this.errorMessage = err?.error?.message || 'Failed to update profile';
       }
-      
-      this.isSaving = false;
-      this.successMessage = 'Profile updated successfully!';
-      setTimeout(() => this.successMessage = '', 3000);
-    }, 1000);
+    });
   }
 
   saveOrganization(): void {

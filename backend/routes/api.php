@@ -23,6 +23,10 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
     
+    // User Profile
+    Route::get('user/profile', [App\Http\Controllers\Api\UserController::class, 'profile']);
+    Route::put('user/profile', [App\Http\Controllers\Api\UserController::class, 'updateProfile']);
+    
     // Organization management
     Route::get('organization/current', [App\Http\Controllers\Api\OrganizationController::class, 'current']);
     Route::put('organization', [App\Http\Controllers\Api\OrganizationController::class, 'update']);

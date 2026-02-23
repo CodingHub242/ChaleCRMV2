@@ -205,6 +205,10 @@ export class AuthService {
     return this.api.removeUser(userId);
   }
 
+  updateProfile(data: { name?: string; phone?: string; avatar?: string }): Observable<any> {
+    return this.api.updateProfile(data);
+  }
+
   logout(): void {
     if (this.isLoggedIn) {
       this.api.logout().subscribe({

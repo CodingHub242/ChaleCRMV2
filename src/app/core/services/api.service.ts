@@ -97,6 +97,11 @@ export class ApiService {
     return this.http.delete<ApiResponse<any>>(`${this.baseUrl}/organization/users/${userId}`);
   }
 
+  // User Profile
+  updateProfile(data: { name?: string; phone?: string; avatar?: string }): Observable<ApiResponse<User>> {
+    return this.http.put<ApiResponse<User>>(`${this.baseUrl}/user/profile`, data);
+  }
+
   // Dashboard
   getDashboardStats(): Observable<ApiResponse<DashboardStats>> {
     return this.http.get<ApiResponse<DashboardStats>>(`${this.baseUrl}/dashboard`);
