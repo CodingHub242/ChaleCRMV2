@@ -835,6 +835,12 @@ export class ApiService {
     return this.http.get<ApiResponse<any>>(`${this.baseUrl}/analytics/pipeline`, { params: httpParams });
   }
 
+  getAnalyticsPerformance(): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    httpParams = this.addOrganizationParams(httpParams);
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/analytics/performance`, { params: httpParams });
+  }
+
   // ==================== FORECASTING ====================
   getForecastPredictions(params?: { period?: number; from_date?: string }): Observable<ApiResponse<any>> {
     let httpParams = new HttpParams();

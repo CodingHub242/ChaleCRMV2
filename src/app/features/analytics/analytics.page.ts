@@ -38,6 +38,8 @@ export class AnalyticsPage implements OnInit {
 
   ngOnInit() {
     this.loadAnalytics();
+    this.loadPipeline();
+    this.loadPerformance();
   }
 
   loadAnalytics() {
@@ -47,14 +49,50 @@ export class AnalyticsPage implements OnInit {
     this.apiService.getAnalyticsOverview().subscribe({
       next: (response: any) => {
         if (response.data) {
-          this.stats = response.data.stats || this.stats;
-          this.pipeline = response.data.pipeline || this.pipeline;
-          this.performance = response.data.performance || this.performance;
+          this.stats = response.data || this.stats;
+         // this.pipeline = response.data.pipeline || this.pipeline;
+          //this.performance = response.data.performance || this.performance;
         }
         this.loading = false;
       },
       error: (error) => {
         console.error('Error loading analytics:', error);
+        this.loading = false;
+      }
+    });
+  }
+
+  loadPipeline() {
+    this.loading = true;
+    
+    // Load pipeline overview
+    this.apiService.getAnalyticsPipeline().subscribe({
+      next: (response: any) => {
+        if (response.data) {
+          this.pipeline = response.data || this.pipeline;
+        }
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading pipeline:', error);
+        this.loading = false;
+      }
+    });
+  }
+
+  loadPerformance() {
+    this.loading = true;
+    
+    // Load performance overview
+    this.apiService.getAnalyticsPerformance().subscribe({
+      next: (response: any) => {
+        if (response.data) {
+          this.performance = response.data || this.performance;
+        }
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading performance:', error);
         this.loading = false;
       }
     });

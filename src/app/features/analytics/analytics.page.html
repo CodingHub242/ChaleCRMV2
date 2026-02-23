@@ -22,7 +22,7 @@
         </div>
         <div class="stat-content">
           <span class="stat-label">Total Revenue</span>
-          <span class="stat-value">{{ stats.total_revenue | currency }}</span>
+          <span class="stat-value">{{ stats.total_revenue | currency : 'GHS' }}</span>
           <span class="stat-trend positive">
             <ion-icon name="trending-up"></ion-icon> 12% vs last period
           </span>
@@ -80,7 +80,7 @@
         <div class="pipeline-stats">
           <div class="pipeline-stat">
             <span class="label">Total Pipeline Value</span>
-            <span class="value">{{ pipeline.total_pipeline_value | currency }}</span>
+            <span class="value">{{ pipeline.total_pipeline_value | currency : 'GHS' }}</span>
           </div>
           <div class="pipeline-stat">
             <span class="label">Deals in Pipeline</span>
