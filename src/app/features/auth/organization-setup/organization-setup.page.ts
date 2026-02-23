@@ -7,15 +7,15 @@ import {
   IonTitle, 
   IonToolbar,
   IonItem,
+  IonItemGroup,
+  IonItemDivider,
   IonLabel,
   IonInput,
   IonButton,
   IonIcon,
   IonSpinner,
   IonNote,
-  IonList,
-  IonSelect,
-  IonSelectOption
+  IonList
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -33,6 +33,8 @@ import { businessOutline, createOutline, peopleOutline, shieldOutline } from 'io
     IonTitle, 
     IonToolbar,
     IonItem,
+    IonItemGroup,
+    IonItemDivider,
     IonLabel,
     IonInput,
     IonButton,
@@ -40,8 +42,6 @@ import { businessOutline, createOutline, peopleOutline, shieldOutline } from 'io
     IonSpinner,
     IonNote,
     IonList,
-    IonSelect,
-    IonSelectOption,
     CommonModule, 
     FormsModule
   ]
