@@ -131,7 +131,7 @@
             </div>
             <div class="activities-timeline">
               <div class="activity-item" *ngFor="let activity of stats?.recent_activities">
-                <div class="activity-dot" [ngClass]="activity.type"></div>
+                <div class="activity-dot" [ngClass]="activity.activity_type"></div>
                 <div class="activity-content">
                   <h4>{{ activity.title }}</h4>
                   <p>{{ activity.description || 'No description' }}</p>
