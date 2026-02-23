@@ -1,0 +1,123 @@
+.setup-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.setup-header {
+  text-align: center;
+  margin-bottom: 30px;
+
+  .header-icon {
+    font-size: 64px;
+    color: var(--ion-color-primary);
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--ion-color-dark);
+  }
+
+  p {
+    color: var(--ion-color-medium);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}
+
+form {
+  margin-bottom: 24px;
+}
+
+ion-item-group {
+  margin-bottom: 16px;
+  background: var(--ion-item-background, var(--ion-background-color, #fff));
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+ion-item-divider {
+  --background: var(--ion-color-light);
+  --padding-start: 16px;
+  --padding-end: 16px;
+  min-height: 40px;
+
+  ion-label {
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--ion-color-medium);
+  }
+}
+
+ion-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --inner-padding-end: 16px;
+
+  ion-label {
+    color: var(--ion-color-dark);
+  }
+
+  ion-input {
+    --padding-start: 0;
+  }
+}
+
+.error-message {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.setup-actions {
+  margin-top: 24px;
+
+  ion-button {
+    --border-radius: 12px;
+    height: 48px;
+    font-size: 16px;
+    font-weight: 600;
+
+    ion-spinner {
+      margin-right: 8px;
+    }
+  }
+}
+
+.setup-info {
+  margin-top: 32px;
+
+  .info-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    background: var(--ion-color-light);
+    border-radius: 12px;
+    margin-bottom: 12px;
+
+    ion-icon {
+      font-size: 24px;
+      color: var(--ion-color-primary);
+      flex-shrink: 0;
+    }
+
+    h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0 0 4px 0;
+      color: var(--ion-color-dark);
+    }
+
+    p {
+      font-size: 13px;
+      margin: 0;
+      color: var(--ion-color-medium);
+      line-height: 1.4;
+    }
+  }
+}

@@ -5,13 +5,39 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| API Routes (TEMPORARILY WITHOUT AUTH FOR TESTING)
+| API Routes
 |--------------------------------------------------------------------------
 */
 
-// Remove auth:sanctum temporarily to test - add back after fixing Sanctum config
+// Organization routes (public - for creating org during setup)
+Route::post('organizations', [App\Http\Controllers\Api\OrganizationController::class, 'store']);
 
-// Campaigns
+// Public auth routes
+Route::post('login', [App\Http\Controllers\Api\AuthController::class, 'login']);
+Route::post('register', [App\Http\Controllers\Api\AuthController::class, 'register']);
+
+// Auth routes - require authentication for all other routes
+Route::middleware('auth:sanctum')->group(function () {
+    // User & Organization
+    Route::get('user', function (Request $request) {
+        return $request->user();
+    });
+    
+    // Organization management
+    Route::get('organization/current', [App\Http\Controllers\Api\OrganizationController::class, 'current']);
+    Route::put('organization', [App\Http\Controllers\Api\OrganizationController::class, 'update']);
+    Route::get('organization/users', [App\Http\Controllers\Api\OrganizationController::class, 'users']);
+    Route::post('organization/users/invite', [App\Http\Controllers\Api\OrganizationController::class, 'inviteUser']);
+    Route::put('organization/users/{user}/role', [App\Http\Controllers\Api\OrganizationController::class, 'updateUserRole']);
+    Route::delete('organization/users/{user}', [App\Http\Controllers\Api\OrganizationController::class, 'removeUser']);
+
+    // Logout
+    Route::post('logout', function (Request $request) {
+        $request->user()->currentAccessToken()->delete();
+        return response()->json(['success' => true]);
+    });
+
+    // Campaigns
 Route::apiResource('campaigns', App\Http\Controllers\Api\CampaignController::class);
 
 // Sales Orders
@@ -101,3 +127,5 @@ Route::get('activities/statistics', [App\Http\Controllers\Api\ActivityController
 Route::post('activities', [App\Http\Controllers\Api\ActivityController::class, 'store']);
 Route::get('activities/{activity}', [App\Http\Controllers\Api\ActivityController::class, 'show']);
 Route::delete('activities/{activity}', [App\Http\Controllers\Api\ActivityController::class, 'destroy']);
+
+}); // End auth middleware group

@@ -81,9 +81,14 @@ export class LoginPage implements OnInit {
     this.isLoading = true;
     
     this.authService.login(this.email, this.password).subscribe({
-      next: () => {
+      next: (response) => {
         this.isLoading = false;
-        this.router.navigate(['/dashboard']);
+        // Check if user needs to create an organization
+        if (response.data && !response.data.has_organization) {
+          this.router.navigate(['/organization-setup']);
+        } else {
+          this.router.navigate(['/dashboard']);
+        }
       },
       error: (error: any) => {
         this.isLoading = false;

@@ -3,16 +3,21 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Traits\ScopesByOrganization;
 use App\Models\Contact;
+use App\Models\Activity;
 use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
-    use RecordsActivity;
+    use RecordsActivity, ScopesByOrganization;
+
     public function index(Request $request)
     {
         $perPage = $request->input('per_page', 15);
-        $contacts = Contact::with('company')->paginate($perPage);
+        $contacts = Contact::with('company')
+            ->where('organization_id', $this->getOrganizationId())
+            ->paginate($perPage);
         
         return response()->json([
             'success' => true,
@@ -45,6 +50,9 @@ class ContactController extends Controller
             'zip_code' => 'nullable|string|max:20',
         ]);
 
+        // Add organization_id to the validated data
+        $validated['organization_id'] = $this->getOrganizationId();
+
         $contact = Contact::create($validated);
 
         // Record activity
@@ -59,7 +67,9 @@ class ContactController extends Controller
 
     public function show(int $id)
     {
-        $contact = Contact::with('company')->findOrFail($id);
+        $contact = Contact::with('company')
+            ->where('organization_id', $this->getOrganizationId())
+            ->findOrFail($id);
         
         return response()->json([
             'success' => true,
@@ -69,7 +79,8 @@ class ContactController extends Controller
 
     public function update(Request $request, int $id)
     {
-        $contact = Contact::findOrFail($id);
+        $contact = Contact::where('organization_id', $this->getOrganizationId())
+            ->findOrFail($id);
 
         $validated = $request->validate([
             'first_name' => 'sometimes|required|string|max:255',
@@ -102,7 +113,8 @@ class ContactController extends Controller
 
     public function destroy(int $id)
     {
-        $contact = Contact::findOrFail($id);
+        $contact = Contact::where('organization_id', $this->getOrganizationId())
+            ->findOrFail($id);
         $contactName = "{$contact->first_name} {$contact->last_name}";
         $contact->delete();
 

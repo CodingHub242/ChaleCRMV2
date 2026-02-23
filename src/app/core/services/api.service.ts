@@ -26,7 +26,8 @@ import {
   Segment,
   Tag,
   Label,
-  Sqr
+  Sqr,
+  Organization
 } from '../../models';
 
 @Injectable({
@@ -38,23 +39,62 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   // Auth endpoints
-  login(email: string, password: string): Observable<ApiResponse<{ user: User; token: string }>> {
-    return this.http.post<ApiResponse<{ user: User; token: string }>>(`${this.baseUrl}/auth/login`, {
+  login(email: string, password: string): Observable<ApiResponse<{ user: User; token: string; has_organization: boolean }>> {
+    return this.http.post<ApiResponse<{ user: User; token: string; has_organization: boolean }>>(`${this.baseUrl}/login`, {
       email,
       password
     });
   }
 
-  register(data: { name: string; email: string; company?: string; password: string; password_confirmation: string }): Observable<ApiResponse<{ user: User; token: string }>> {
-    return this.http.post<ApiResponse<{ user: User; token: string }>>(`${this.baseUrl}/auth/register`, data);
+  register(data: { name: string; email: string; company?: string; password: string; password_confirmation: string }): Observable<ApiResponse<{ user: User; token: string; has_organization: boolean }>> {
+    return this.http.post<ApiResponse<{ user: User; token: string; has_organization: boolean }>>(`${this.baseUrl}/register`, data);
   }
 
   logout(): Observable<ApiResponse<null>> {
-    return this.http.post<ApiResponse<null>>(`${this.baseUrl}/auth/logout`, {});
+    return this.http.post<ApiResponse<null>>(`${this.baseUrl}/logout`, {});
   }
 
   getCurrentUser(): Observable<ApiResponse<User>> {
-    return this.http.get<ApiResponse<User>>(`${this.baseUrl}/auth/user`);
+    return this.http.get<ApiResponse<User>>(`${this.baseUrl}/user`);
+  }
+
+  // Organization endpoints
+  createOrganization(data: {
+    name: string;
+    email?: string;
+    phone?: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    country?: string;
+    zip_code?: string;
+    website?: string;
+  }): Observable<ApiResponse<Organization>> {
+    return this.http.post<ApiResponse<Organization>>(`${this.baseUrl}/organizations`, data);
+  }
+
+  getCurrentOrganization(): Observable<ApiResponse<Organization>> {
+    return this.http.get<ApiResponse<Organization>>(`${this.baseUrl}/organization/current`);
+  }
+
+  updateOrganization(data: Partial<Organization>): Observable<ApiResponse<Organization>> {
+    return this.http.put<ApiResponse<Organization>>(`${this.baseUrl}/organization`, data);
+  }
+
+  getOrganizationUsers(): Observable<ApiResponse<User[]>> {
+    return this.http.get<ApiResponse<User[]>>(`${this.baseUrl}/organization/users`);
+  }
+
+  inviteUser(data: { name: string; email: string; phone?: string; role?: string }): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/organization/users/invite`, data);
+  }
+
+  updateUserRole(userId: number, role: string): Observable<ApiResponse<any>> {
+    return this.http.put<ApiResponse<any>>(`${this.baseUrl}/organization/users/${userId}/role`, { role });
+  }
+
+  removeUser(userId: number): Observable<ApiResponse<any>> {
+    return this.http.delete<ApiResponse<any>>(`${this.baseUrl}/organization/users/${userId}`);
   }
 
   // Dashboard

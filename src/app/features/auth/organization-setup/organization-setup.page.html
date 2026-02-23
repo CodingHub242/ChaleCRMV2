@@ -1,0 +1,156 @@
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="setup-container">
+    <div class="setup-header">
+      <ion-icon name="business-outline" class="header-icon"></ion-icon>
+      <h1>Set Up Your Organization</h1>
+      <p>Create your organization to start managing your CRM data. You'll be the admin of this organization.</p>
+    </div>
+
+    <form (ngSubmit)="createOrganization()" #setupForm="ngForm">
+      <ion-list lines="full" class="ion-no-margin">
+        <ion-item-group>
+          <ion-item-divider>
+            <ion-label>Organization Details</ion-label>
+          </ion-item-divider>
+
+          <ion-item>
+            <ion-label position="stacked">Organization Name *</ion-label>
+            <ion-input
+              [(ngModel)]="organizationName"
+              name="name"
+              type="text"
+              placeholder="Enter organization name"
+              required
+              [disabled]="isLoading">
+            </ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Business Email</ion-label>
+            <ion-input
+              [(ngModel)]="email"
+              name="email"
+              type="email"
+              placeholder="organization@example.com"
+              [disabled]="isLoading">
+            </ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Phone</ion-label>
+            <ion-input
+              [(ngModel)]="phone"
+              name="phone"
+              type="tel"
+              placeholder="+1 (555) 000-0000"
+              [disabled]="isLoading">
+            </ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Website</ion-label>
+            <ion-input
+              [(ngModel)]="website"
+              name="website"
+              type="url"
+              placeholder="https://example.com"
+              [disabled]="isLoading">
+            </ion-input>
+          </ion-item>
+        </ion-item-group>
+
+        <ion-item-group>
+          <ion-item-divider>
+            <ion-label>Address (Optional)</ion-label>
+          </ion-item-divider>
+
+          <ion-item>
+            <ion-label position="stacked">Street Address</ion-label>
+            <ion-input
+              [(ngModel)]="address"
+              name="address"
+              type="text"
+              placeholder="123 Main St"
+              [disabled]="isLoading">
+            </ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">City</ion-label>
+            <ion-input
+              [(ngModel)]="city"
+              name="city"
+              type="text"
+              placeholder="New York"
+              [disabled]="isLoading">
+            </ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">State/Province</ion-label>
+            <ion-input
+              [(ngModel)]="state"
+              name="state"
+              type="text"
+              placeholder="NY"
+              [disabled]="isLoading">
+            </ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Country</ion-label>
+            <ion-input
+              [(ngModel)]="country"
+              name="country"
+              type="text"
+              placeholder="United States"
+              [disabled]="isLoading">
+            </ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Zip/Postal Code</ion-label>
+            <ion-input
+              [(ngModel)]="zipCode"
+              name="zipCode"
+              type="text"
+              placeholder="10001"
+              [disabled]="isLoading">
+            </ion-input>
+          </ion-item>
+        </ion-item-group>
+      </ion-list>
+
+      <div class="error-message" *ngIf="errorMessage">
+        <ion-note color="danger">{{ errorMessage }}</ion-note>
+      </div>
+
+      <div class="setup-actions">
+        <ion-button
+          type="submit"
+          expand="block"
+          [disabled]="isLoading || !organizationName">
+          <ion-spinner *ngIf="isLoading" name="lines"></ion-spinner>
+          <span *ngIf="!isLoading">Create Organization</span>
+        </ion-button>
+      </div>
+    </form>
+
+    <div class="setup-info">
+      <div class="info-card">
+        <ion-icon name="shield-outline"></ion-icon>
+        <div>
+          <h3>Your Data is Secure</h3>
+          <p>All your organization's data is private and isolated from other organizations.</p>
+        </div>
+      </div>
+      <div class="info-card">
+        <ion-icon name="people-outline"></ion-icon>
+        <div>
+          <h3>Invite Your Team</h3>
+          <p>After creating your organization, you can invite team members to join.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

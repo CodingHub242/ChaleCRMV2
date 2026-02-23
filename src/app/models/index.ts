@@ -27,6 +27,26 @@ export interface User {
   phone?: string;
   avatar?: string;
   role: 'admin' | 'user' | 'manager';
+  organization_id?: number;
+  created_at: string;
+  updated_at: string;
+}
+
+// Organization Model
+export interface Organization {
+  id: number;
+  name: string;
+  slug: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  zip_code?: string;
+  logo?: string;
+  website?: string;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }

@@ -16,12 +16,20 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.authService.token;
+    const organizationId = this.authService.currentOrganization?.id;
 
     if (token) {
+      const headers: { [key: string]: string } = {
+        Authorization: `Bearer ${token}`
+      };
+
+      // Add organization header if user has an organization
+      if (organizationId) {
+        headers['X-Organization-ID'] = organizationId.toString();
+      }
+
       request = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
+        setHeaders: headers
       });
     }
 

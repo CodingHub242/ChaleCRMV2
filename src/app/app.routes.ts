@@ -4,6 +4,7 @@ import { AuthGuard } from './core/guards/auth.guard';
 // Auth
 import { LoginPage } from './features/auth/login/login.page';
 import { RegisterPage } from './features/auth/register/register.page';
+import { OrganizationSetupPage } from './features/auth/organization-setup/organization-setup.page';
 
 // Layout
 import { MainLayoutPage } from './features/layout/main-layout/main-layout.page';
@@ -74,6 +75,10 @@ export const routes: Routes = [
   {
     path: 'register',
     component: RegisterPage
+  },
+  {
+    path: 'organization-setup',
+    component: OrganizationSetupPage
   },
   
   // Main app routes with sidebar layout
