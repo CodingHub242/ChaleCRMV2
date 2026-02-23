@@ -109,6 +109,7 @@ export class SettingsPage implements OnInit {
       this.orgCountry = org.country || '';
       this.orgZipCode = org.zip_code || '';
       this.orgWebsite = org.website || '';
+      console.log(org.website);
     }
   }
 
