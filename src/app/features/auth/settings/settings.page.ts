@@ -23,6 +23,7 @@ import {
 import { addIcons } from 'ionicons';
 import { personOutline, businessOutline, saveOutline, shieldOutline } from 'ionicons/icons';
 import { AuthService } from '../../../core/services/auth.service';
+import { ApiService } from '../../../core/services/api.service';
 import { User, Organization } from '../../../models';
 
 @Component({
@@ -77,7 +78,8 @@ export class SettingsPage implements OnInit {
   orgWebsite = '';
 
   constructor(
-    public authService: AuthService
+    public authService: AuthService,
+    public apiService: ApiService
   ) {
     addIcons({ personOutline, businessOutline, saveOutline, shieldOutline });
   }
@@ -163,7 +165,7 @@ export class SettingsPage implements OnInit {
     };
 
     // Call API to update organization
-    this.authService.createOrganization(data).subscribe({
+    this.apiService.updateOrganization(data).subscribe({
       next: () => {
         this.isSaving = false;
         this.successMessage = 'Organization updated successfully!';
