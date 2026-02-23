@@ -5,18 +5,23 @@
     </ion-buttons>
     <ion-title>Settings</ion-title>
   </ion-toolbar>
-  <ion-toolbar>
-    <ion-segment [(ngModel)]="selectedSegment" mode="ios">
-      <ion-segment-button value="profile">
-        <ion-icon name="person-outline"></ion-icon>
-        <ion-label>Profile</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="organization" *ngIf="isAdmin">
-        <ion-icon name="business-outline"></ion-icon>
-        <ion-label>Organization</ion-label>
-      </ion-segment-button>
-    </ion-segment>
-  </ion-toolbar>
+  <div class="tab-bar">
+    <button 
+      class="tab-item" 
+      [class.active]="selectedSegment === 'profile'" 
+      (click)="selectedSegment = 'profile'">
+      <ion-icon name="person-outline"></ion-icon>
+      <span>Profile</span>
+    </button>
+    <button 
+      class="tab-item" 
+      [class.active]="selectedSegment === 'organization'" 
+      (click)="selectedSegment = 'organization'"
+      *ngIf="isAdmin">
+      <ion-icon name="business-outline"></ion-icon>
+      <span>Organization</span>
+    </button>
+  </div>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
