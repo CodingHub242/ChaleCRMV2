@@ -92,3 +92,12 @@ Route::get('enrichment/providers', [App\Http\Controllers\Api\EnrichmentControlle
 // SQR (Service Quality Requests)
 Route::apiResource('sqrs', App\Http\Controllers\Api\SqrController::class);
 Route::patch('sqrs/{id}/status', [App\Http\Controllers\Api\SqrController::class, 'updateStatus']);
+
+// Activities
+Route::get('activities', [App\Http\Controllers\Api\ActivityController::class, 'index']);
+Route::get('activities/recent', [App\Http\Controllers\Api\ActivityController::class, 'recent']);
+Route::get('activities/for-subject', [App\Http\Controllers\Api\ActivityController::class, 'forSubject']);
+Route::get('activities/statistics', [App\Http\Controllers\Api\ActivityController::class, 'statistics']);
+Route::post('activities', [App\Http\Controllers\Api\ActivityController::class, 'store']);
+Route::get('activities/{activity}', [App\Http\Controllers\Api\ActivityController::class, 'show']);
+Route::delete('activities/{activity}', [App\Http\Controllers\Api\ActivityController::class, 'destroy']);

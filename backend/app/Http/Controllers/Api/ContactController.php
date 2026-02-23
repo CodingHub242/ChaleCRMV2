@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
+    use RecordsActivity;
     public function index(Request $request)
     {
         $perPage = $request->input('per_page', 15);
@@ -45,6 +46,9 @@ class ContactController extends Controller
         ]);
 
         $contact = Contact::create($validated);
+
+        // Record activity
+        $this->logCreated($contact, "Created contact: {$contact->first_name} {$contact->last_name}");
 
         return response()->json([
             'success' => true,
@@ -86,6 +90,9 @@ class ContactController extends Controller
 
         $contact->update($validated);
 
+        // Record activity
+        $this->logUpdated($contact, $validated, "Updated contact: {$contact->first_name} {$contact->last_name}");
+
         return response()->json([
             'success' => true,
             'data' => $contact->load('company'),
@@ -96,7 +103,14 @@ class ContactController extends Controller
     public function destroy(int $id)
     {
         $contact = Contact::findOrFail($id);
+        $contactName = "{$contact->first_name} {$contact->last_name}";
         $contact->delete();
+
+        // Record activity (note: subject is deleted, so we log without subject reference)
+        $this->logActivity(
+            Activity::TYPE_DELETED,
+            "Deleted contact: {$contactName}"
+        );
 
         return response()->json([
             'success' => true,

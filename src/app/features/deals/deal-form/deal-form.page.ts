@@ -228,6 +228,8 @@ export class DealFormPage implements OnInit {
        // loading.dismiss();
         if (response.success) {
           this.router.navigate(['/deals']);
+          //refresh to load deals
+          this.api.getDeals();
         } else {
           this.showAlert('Error', response.message);
         }

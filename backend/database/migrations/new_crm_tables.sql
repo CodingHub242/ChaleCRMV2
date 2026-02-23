@@ -259,3 +259,24 @@ CREATE TABLE IF NOT EXISTS `labels` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
+-- ACTIVITIES - Activity Log for CRM
+-- =============================================
+CREATE TABLE IF NOT EXISTS `activities` (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` bigint UNSIGNED DEFAULT NULL,
+  `activity_type` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `subject_type` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `subject_id` bigint UNSIGNED DEFAULT NULL,
+  `activity_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `metadata` json DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `activities_subject_type_subject_id_index` (`subject_type`, `subject_id`),
+  KEY `activities_activity_type_index` (`activity_type`),
+  KEY `activities_activity_date_index` (`activity_date`),
+  KEY `activities_user_id_foreign` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

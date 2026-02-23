@@ -100,7 +100,7 @@ stats: any = {
   loadStats() {
     this.api.getDashboardStats().subscribe({
       next: (data: any) => {
-        this.stats = { ...this.stats, ...data };
+        this.stats = { ...this.stats.data, ...data.data };
         this.calculatePipelinePercentages();
       },
       error: (err) => {
