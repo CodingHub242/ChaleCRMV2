@@ -24,7 +24,7 @@
           <span class="stat-label">Total Revenue</span>
           <span class="stat-value">{{ stats.total_revenue | currency : 'GHS' }}</span>
           <span class="stat-trend positive">
-            <ion-icon name="trending-up"></ion-icon> 12% vs last period
+            <ion-icon name="trending-up"></ion-icon> 
           </span>
         </div>
       </div>
@@ -37,7 +37,7 @@
           <span class="stat-label">Total Deals</span>
           <span class="stat-value">{{ stats.total_deals }}</span>
           <span class="stat-trend positive">
-            <ion-icon name="trending-up"></ion-icon> 5% vs last period
+            <ion-icon name="trending-up"></ion-icon> 
           </span>
         </div>
       </div>
@@ -50,7 +50,7 @@
           <span class="stat-label">Total Contacts</span>
           <span class="stat-value">{{ stats.total_contacts }}</span>
           <span class="stat-trend positive">
-            <ion-icon name="trending-up"></ion-icon> 8% vs last period
+            <ion-icon name="trending-up"></ion-icon> 
           </span>
         </div>
       </div>
@@ -63,7 +63,7 @@
           <span class="stat-label">Conversion Rate</span>
           <span class="stat-value">{{ stats.conversion_rate | number:'1.1-1' }}%</span>
           <span class="stat-trend negative">
-            <ion-icon name="trending-down"></ion-icon> 2% vs last period
+            <ion-icon name="trending-down"></ion-icon> 
           </span>
         </div>
       </div>
@@ -143,8 +143,8 @@
               <ion-icon name="person"></ion-icon>
             </div>
             <div class="performance-info">
-              <span class="name">John Doe</span>
-              <span class="role">Sales Manager</span>
+              <span class="name">{{performance.activity_by_user.name}}</span>
+              <span class="role"></span>
             </div>
             <div class="performance-metrics">
               <div class="metric">

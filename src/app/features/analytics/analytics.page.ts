@@ -31,7 +31,11 @@ export class AnalyticsPage implements OnInit {
   performance = {
     tasks_completed: 32,
     calls_logged: 48,
-    meetings_scheduled: 15
+    meetings_scheduled: 15,
+    activity_by_user: {
+      name: 'John Doe',
+      role: 'Sales Manager'
+    }
   };
 
   constructor(private apiService: ApiService) {}
