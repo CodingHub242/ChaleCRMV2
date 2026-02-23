@@ -85,7 +85,7 @@ export class ApiService {
     return this.http.get<ApiResponse<User[]>>(`${this.baseUrl}/organization/users`);
   }
 
-  inviteUser(data: { name: string; email: string; phone?: string; role?: string }): Observable<ApiResponse<any>> {
+  inviteUser(data: { name: string; email: string; phone?: string; role?: string, organization_id?: number }): Observable<ApiResponse<any>> {
     return this.http.post<ApiResponse<any>>(`${this.baseUrl}/organization/users/invite`, data);
   }
 

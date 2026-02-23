@@ -187,7 +187,7 @@ export class AuthService {
   /**
    * Invite a new user to the organization
    */
-  inviteUser(data: { name: string; email: string; phone?: string; role?: string }): Observable<any> {
+  inviteUser(data: { name: string; email: string; phone?: string; role?: string, organization_id?: number }): Observable<any> {
     return this.api.inviteUser(data);
   }
 

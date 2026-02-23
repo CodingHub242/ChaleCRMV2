@@ -92,6 +92,7 @@ export class LoginPage implements OnInit {
       },
       error: (error: any) => {
         this.isLoading = false;
+        alert(error?.error?.message || 'Failed to login');
         console.error('Login error:', error);
       }
     });

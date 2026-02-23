@@ -129,7 +129,8 @@ export class TeamInvitePage implements OnInit {
       name: this.inviteName,
       email: this.inviteEmail,
       phone: this.invitePhone || undefined,
-      role: this.inviteRole
+      role: this.inviteRole,
+      organization_id: this.authService.currentOrganization?.id
     };
 
     this.authService.inviteUser(data).subscribe({
