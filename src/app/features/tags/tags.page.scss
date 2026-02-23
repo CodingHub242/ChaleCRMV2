@@ -1,17 +1,17 @@
 /* Zoho Bigin Style Tags Page */
 
 .bigin-header {
-  --background: #ffffff;
-  --border-color: #e5e7eb;
+  --background: #073336;
+  --border-color: #073336;
   
   ion-title {
     font-weight: 600;
     font-size: 18px;
-    color: #1f2937;
+    color: #fff;
   }
 
   .add-button {
-    --color: #073336;
+    --color: #fff;
     font-weight: 500;
     --padding-start: 12px;
     --padding-end: 12px;
@@ -306,12 +306,15 @@
 /* Alert Button Styles */
 .alert-button-cancel {
   --color: #073336 !important;
+  color: #073336 !important;
   font-weight: 500;
 }
 
 .alert-button-save {
   --background: #073336 !important;
   --color: #ffffff !important;
+  background: #073336 !important;
+  color: #ffffff !important;
   font-weight: 500;
 }
 .bigin-alert{
