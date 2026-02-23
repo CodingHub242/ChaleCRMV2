@@ -1,0 +1,234 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Settings</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="selectedSegment" mode="ios">
+      <ion-segment-button value="profile">
+        <ion-icon name="person-outline"></ion-icon>
+        <ion-label>Profile</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="organization" *ngIf="isAdmin">
+        <ion-icon name="business-outline"></ion-icon>
+        <ion-label>Organization</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  
+  <!-- Profile Settings -->
+  <div *ngIf="selectedSegment === 'profile'" class="settings-section">
+    <div class="profile-header">
+      <ion-avatar class="large-avatar">
+        <div class="avatar-placeholder">{{ userInitials }}</div>
+      </ion-avatar>
+      <p class="role-badge" *ngIf="authService.currentUser?.role">
+        <ion-icon name="shield-outline"></ion-icon>
+        {{ authService.currentUser?.role | titlecase }}
+      </p>
+    </div>
+
+    <form (ngSubmit)="saveProfile()">
+      <ion-list lines="full">
+        <ion-item>
+          <ion-label position="stacked">Full Name</ion-label>
+          <ion-input
+            [(ngModel)]="profileName"
+            name="name"
+            type="text"
+            placeholder="John Doe"
+            [disabled]="isSaving">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Email Address</ion-label>
+          <ion-input
+            [(ngModel)]="profileEmail"
+            name="email"
+            type="email"
+            placeholder="john@example.com"
+            disabled>
+          </ion-input>
+          <ion-note>Email cannot be changed</ion-note>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Phone Number</ion-label>
+          <ion-input
+            [(ngModel)]="profilePhone"
+            name="phone"
+            type="tel"
+            placeholder="+1 (555) 000-0000"
+            [disabled]="isSaving">
+          </ion-input>
+        </ion-item>
+      </ion-list>
+
+      <div class="success-message" *ngIf="successMessage && selectedSegment === 'profile'">
+        <ion-note color="success">{{ successMessage }}</ion-note>
+      </div>
+
+      <div class="error-message" *ngIf="errorMessage && selectedSegment === 'profile'">
+        <ion-note color="danger">{{ errorMessage }}</ion-note>
+      </div>
+
+      <ion-button
+        type="submit"
+        expand="block"
+        [disabled]="isSaving"
+        class="save-button">
+        <ion-spinner *ngIf="isSaving" name="lines"></ion-spinner>
+        <ion-icon *ngIf="!isSaving" slot="start" name="save-outline"></ion-icon>
+        <span *ngIf="!isSaving">Save Profile</span>
+      </ion-button>
+    </form>
+  </div>
+
+  <!-- Organization Settings (Admin Only) -->
+  <div *ngIf="selectedSegment === 'organization' && isAdmin" class="settings-section">
+    <div class="section-header">
+      <ion-icon name="business-outline"></ion-icon>
+      <h2>Organization Settings</h2>
+      <p>Manage your organization details (Admin only)</p>
+    </div>
+
+    <form (ngSubmit)="saveOrganization()">
+      <ion-list lines="full">
+        <ion-item>
+          <ion-label position="stacked">Organization Name *</ion-label>
+          <ion-input
+            [(ngModel)]="orgName"
+            name="orgName"
+            type="text"
+            placeholder="Acme Inc."
+            [disabled]="isSaving">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Business Email</ion-label>
+          <ion-input
+            [(ngModel)]="orgEmail"
+            name="orgEmail"
+            type="email"
+            placeholder="info@company.com"
+            [disabled]="isSaving">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Phone</ion-label>
+          <ion-input
+            [(ngModel)]="orgPhone"
+            name="orgPhone"
+            type="tel"
+            placeholder="+1 (555) 000-0000"
+            [disabled]="isSaving">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Website</ion-label>
+          <ion-input
+            [(ngModel)]="orgWebsite"
+            name="orgWebsite"
+            type="url"
+            placeholder="https://company.com"
+            [disabled]="isSaving">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Address</ion-label>
+          <ion-input
+            [(ngModel)]="orgAddress"
+            name="orgAddress"
+            type="text"
+            placeholder="123 Main St"
+            [disabled]="isSaving">
+          </ion-input>
+        </ion-item>
+
+        <div class="address-row">
+          <ion-item>
+            <ion-label position="stacked">City</ion-label>
+            <ion-input
+              [(ngModel)]="orgCity"
+              name="orgCity"
+              type="text"
+              placeholder="New York"
+              [disabled]="isSaving">
+            </ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">State</ion-label>
+            <ion-input
+              [(ngModel)]="orgState"
+              name="orgState"
+              type="text"
+              placeholder="NY"
+              [disabled]="isSaving">
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <div class="address-row">
+          <ion-item>
+            <ion-label position="stacked">Country</ion-label>
+            <ion-input
+              [(ngModel)]="orgCountry"
+              name="orgCountry"
+              type="text"
+              placeholder="United States"
+              [disabled]="isSaving">
+            </ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Zip Code</ion-label>
+            <ion-input
+              [(ngModel)]="orgZipCode"
+              name="orgZipCode"
+              type="text"
+              placeholder="10001"
+              [disabled]="isSaving">
+            </ion-input>
+          </ion-item>
+        </div>
+      </ion-list>
+
+      <div class="success-message" *ngIf="successMessage && selectedSegment === 'organization'">
+        <ion-note color="success">{{ successMessage }}</ion-note>
+      </div>
+
+      <div class="error-message" *ngIf="errorMessage && selectedSegment === 'organization'">
+        <ion-note color="danger">{{ errorMessage }}</ion-note>
+      </div>
+
+      <ion-button
+        type="submit"
+        expand="block"
+        [disabled]="isSaving || !orgName"
+        class="save-button">
+        <ion-spinner *ngIf="isSaving" name="lines"></ion-spinner>
+        <ion-icon *ngIf="!isSaving" slot="start" name="save-outline"></ion-icon>
+        <span *ngIf="!isSaving">Save Organization</span>
+      </ion-button>
+    </form>
+  </div>
+
+  <!-- Non-admin trying to access org settings -->
+  <div *ngIf="selectedSegment === 'organization' && !isAdmin" class="access-denied">
+    <ion-icon name="shield-outline"></ion-icon>
+    <h3>Access Restricted</h3>
+    <p>Only organization admins can manage organization settings.</p>
+  </div>
+
+</ion-content>
