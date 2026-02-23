@@ -1,8 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, forwardRef } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { AuthService } from './auth.service';
 import { 
   ApiResponse, 
   PaginatedResponse, 
@@ -37,17 +36,24 @@ import {
 export class ApiService {
   private baseUrl = environment.apiUrl;
 
-  constructor(
-    private http: HttpClient,
-    private authService: AuthService
-  ) {}
+  private organizationKey = 'bigin_organization';
+
+  constructor(private http: HttpClient) {}
 
   /**
-   * Get the current organization_id
+   * Get the current organization_id from localStorage
    */
   private getOrganizationId(): number | null {
-    const organization = this.authService.currentOrganization;
-    return organization?.id || null;
+    try {
+      const storedOrg = localStorage.getItem(this.organizationKey);
+      if (storedOrg) {
+        const org = JSON.parse(storedOrg) as Organization;
+        return org.id || null;
+      }
+    } catch (e) {
+      // Ignore parse errors
+    }
+    return null;
   }
 
   /**
