@@ -58,7 +58,7 @@ export class AnalyticsPage implements OnInit {
       next: (response: any) => {
         if (response.data) {
           this.stats = response.data || this.stats;
-          this.recent = response.data['recent_activites'] || this.recent;
+          this.recent = response.data.recent_activities;
           console.log(this.recent);
          // this.pipeline = response.data.pipeline || this.pipeline;
           //this.performance = response.data.performance || this.performance;
