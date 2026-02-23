@@ -23,12 +23,12 @@ export class TagsPage implements OnInit {
   editingType: 'tag' | 'label' = 'tag';
   editingItem: Tag | Label | null = null;
   formName = '';
-  formColor = '#2563eb';
+  formColor = '#073336';
   formEntityType = 'contact';
 
   // Color options
   colorOptions = [
-    { name: 'Blue', value: '#2563eb' },
+    { name: 'Blue', value: '#073336' },
     { name: 'Green', value: '#16a34a' },
     { name: 'Red', value: '#dc2626' },
     { name: 'Orange', value: '#ea580c' },
