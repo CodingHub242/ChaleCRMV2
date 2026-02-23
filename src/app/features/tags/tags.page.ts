@@ -108,7 +108,7 @@ export class TagsPage implements OnInit {
     this.isEditing = false;
     this.editingItem = null;
     this.formName = '';
-    this.formColor = '#2563eb';
+    this.formColor = '#073336';
     this.formEntityType = 'contact';
     this.editingType = this.currentSegment as 'tag' | 'label';
 
@@ -142,7 +142,8 @@ export class TagsPage implements OnInit {
             }
           }
         }
-      ]
+      ],
+      
     });
 
     await alert.present();
