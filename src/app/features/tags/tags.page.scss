@@ -1,31 +1,304 @@
-/* Tags Page Styles */
+/* Zoho Bigin Style Tags Page */
+
+.bigin-header {
+  --background: #ffffff;
+  --border-color: #e5e7eb;
+  
+  ion-title {
+    font-weight: 600;
+    font-size: 18px;
+    color: #1f2937;
+  }
+
+  .add-button {
+    --color: #2563eb;
+    font-weight: 500;
+    --padding-start: 12px;
+    --padding-end: 12px;
+  }
+}
+
+.bigin-content {
+  --background: #f9fafb;
+}
+
+.page-container {
+  padding: 16px;
+}
+
+/* Segment Tabs */
+.segment-container {
+  margin-bottom: 20px;
+}
+
+.bigin-segment {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  ion-segment-button {
+    --background-checked: #2563eb;
+    --color-checked: #ffffff;
+    --border-radius: 6px;
+    --padding-start: 16px;
+    --padding-end: 16px;
+    
+    --color: #6b7280;
+    --background: transparent;
+
+    ion-label {
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .count {
+      display: inline-block;
+      background: #f3f4f6;
+      color: #6b7280;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      margin-left: 6px;
+    }
+
+    &.segment-button-checked .count {
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+    }
+  }
+}
+
+/* Section Container */
+.section-container {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Cards Grid */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* Tag Card */
+.tag-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid #e5e7eb;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+  }
+
+  .tag-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+
+    .tag-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .tag-name {
+      flex: 1;
+      font-weight: 600;
+      font-size: 16px;
+      color: #1f2937;
+    }
+
+    .more-button {
+      --color: #9ca3af;
+      --padding-start: 4px;
+      --padding-end: 4px;
+      width: 28px;
+      height: 28px;
+
+      &:hover {
+        --color: #6b7280;
+      }
+    }
+  }
+
+  .tag-stats {
+    display: flex;
+    gap: 24px;
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+
+      .stat-value {
+        font-size: 20px;
+        font-weight: 700;
+        color: #2563eb;
+      }
+
+      .stat-label {
+        font-size: 12px;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+  }
+}
+
+/* Label Card */
+.label-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid #e5e7eb;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+  }
+
+  .label-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+
+    .label-icon {
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .label-name {
+      flex: 1;
+      font-weight: 600;
+      font-size: 16px;
+      color: #1f2937;
+    }
+
+    .more-button {
+      --color: #9ca3af;
+      --padding-start: 4px;
+      --padding-end: 4px;
+      width: 28px;
+      height: 28px;
+
+      &:hover {
+        --color: #6b7280;
+      }
+    }
+  }
+
+  .label-meta {
+    padding-left: 30px;
+
+    .entity-type {
+      font-size: 13px;
+      color: #6b7280;
+      background: #f3f4f6;
+      padding: 4px 10px;
+      border-radius: 20px;
+      display: inline-block;
+    }
+  }
+}
+
+/* Empty State */
 .empty-state {
   text-align: center;
-  padding: 50px 20px;
-  
-  ion-icon {
-    font-size: 64px;
-    color: var(--ion-color-medium);
-    margin-bottom: 16px;
+  padding: 60px 20px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 2px dashed #e5e7eb;
+  margin-top: 20px;
+
+  .empty-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background: #f3f4f6;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    ion-icon {
+      font-size: 36px;
+      color: #9ca3af;
+    }
   }
-  
+
   h3 {
     margin: 0 0 8px;
-    color: var(--ion-color-dark);
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
   }
-  
+
   p {
-    color: var(--ion-color-medium);
-    margin-bottom: 20px;
+    color: #6b7280;
+    font-size: 14px;
+    margin: 0 0 24px;
+    line-height: 1.5;
+  }
+
+  .empty-action {
+    --background: #2563eb;
+    --background-hover: #1d4ed8;
+    --border-radius: 8px;
+    font-weight: 500;
+    --padding-start: 20px;
+    --padding-end: 20px;
   }
 }
 
-.loading {
+/* Loading */
+.loading-container {
   display: flex;
   justify-content: center;
+  align-items: center;
   padding: 40px;
+
+  ion-spinner {
+    width: 40px;
+    height: 40px;
+    color: #2563eb;
+  }
 }
 
-ion-badge {
-  text-transform: capitalize;
+/* Action Sheet Styles */
+.action-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  ion-button {
+    --border-radius: 8px;
+    --background: #f3f4f6;
+    --color: #1f2937;
+    font-weight: 500;
+    height: 44px;
+
+    &.delete-btn {
+      --background: #fee2e2;
+      --color: #dc2626;
+    }
+  }
 }

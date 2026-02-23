@@ -1,61 +1,108 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar class="bigin-header">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Tags & Labels</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="showCreateModal()">
-        <ion-icon slot="icon-only" name="add"></ion-icon>
+      <ion-button class="add-button" (click)="showCreateModal()">
+        <ion-icon slot="start" name="add"></ion-icon>
+        New
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <div class="ion-padding">
-    <ion-segment (ionChange)="segmentChanged($event)" value="tags">
-      <ion-segment-button value="tags"><ion-label>Tags</ion-label></ion-segment-button>
-      <ion-segment-button value="labels"><ion-label>Labels</ion-label></ion-segment-button>
-    </ion-segment>
-
-    <ion-list *ngIf="currentSegment === 'tags'">
-      <ion-item-sliding *ngFor="let tag of tags">
-        <ion-item>
-          <ion-icon slot="start" name="pricetag" [style.color]="tag.color"></ion-icon>
-          <ion-label>
-            <h2>{{ tag.name }}</h2>
-            <p>{{ tag.entity_type | titlecase }} - {{ tag.contacts_count }} contacts</p>
-          </ion-label>
-          <ion-badge slot="end">{{ tag.contacts_count }}</ion-badge>
-        </ion-item>
-        <ion-item-options side="end">
-          <ion-item-option color="primary" (click)="editTag(tag)">Edit</ion-item-option>
-          <ion-item-option color="danger" (click)="deleteTag(tag)">Delete</ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
-
-    <ion-list *ngIf="currentSegment === 'labels'">
-      <ion-item-sliding *ngFor="let label of labels">
-        <ion-item>
-          <ion-icon slot="start" name="bookmark" [style.color]="label.color"></ion-icon>
-          <ion-label>
-            <h2>{{ label.name }}</h2>
-            <p>{{ label.entity_type | titlecase }}</p>
-          </ion-label>
-        </ion-item>
-        <ion-item-options side="end">
-          <ion-item-option color="primary" (click)="editLabel(label)">Edit</ion-item-option>
-          <ion-item-option color="danger" (click)="deleteLabel(label)">Delete</ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
-
-    <div *ngIf="(tags.length === 0 || labels.length === 0) && !loading" class="empty-state">
-      <ion-icon name="pricetags-outline" size="large"></ion-icon>
-      <h3>No Tags or Labels</h3>
-      <p>Create tags and labels to organize your data</p>
+<ion-content [fullscreen]="true" class="bigin-content">
+  <div class="page-container">
+    <!-- Segment Tabs -->
+    <div class="segment-container">
+      <ion-segment (ionChange)="segmentChanged($event)" value="tags" class="bigin-segment">
+        <ion-segment-button value="tags">
+          <ion-label>Tags</ion-label>
+          <span class="count">{{ tags.length }}</span>
+        </ion-segment-button>
+        <ion-segment-button value="labels">
+          <ion-label>Labels</ion-label>
+          <span class="count">{{ labels.length }}</span>
+        </ion-segment-button>
+      </ion-segment>
     </div>
+
+    <!-- Tags Section -->
+    <div *ngIf="currentSegment === 'tags'" class="section-container">
+      <div *ngIf="tags.length > 0; else noTags" class="cards-grid">
+        <div *ngFor="let tag of tags" class="tag-card" (click)="editTag(tag)">
+          <div class="tag-header">
+            <div class="tag-color" [style.background-color]="tag.color || '#6B7280'"></div>
+            <span class="tag-name">{{ tag.name }}</span>
+            <ion-button class="more-button" fill="clear" (click)="presentTagOptions($event, tag)">
+              <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+            </ion-button>
+          </div>
+          <div class="tag-stats">
+            <div class="stat">
+              <span class="stat-value">{{ tag.contacts_count || 0 }}</span>
+              <span class="stat-label">Contacts</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">{{ tag.entity_type || 'General' }}</span>
+              <span class="stat-label">Type</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-template #noTags>
+        <div class="empty-state">
+          <div class="empty-icon">
+            <ion-icon name="pricetags-outline"></ion-icon>
+          </div>
+          <h3>No Tags Yet</h3>
+          <p>Create tags to categorize and organize your contacts</p>
+          <ion-button class="empty-action" (click)="showCreateModal()">
+            <ion-icon slot="start" name="add"></ion-icon>
+            Create Tag
+          </ion-button>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Labels Section -->
+    <div *ngIf="currentSegment === 'labels'" class="section-container">
+      <div *ngIf="labels.length > 0; else noLabels" class="cards-grid">
+        <div *ngFor="let label of labels" class="label-card" (click)="editLabel(label)">
+          <div class="label-header">
+            <div class="label-icon" [style.color]="label.color || '#6B7280'">
+              <ion-icon name="bookmark"></ion-icon>
+            </div>
+            <span class="label-name">{{ label.name }}</span>
+            <ion-button class="more-button" fill="clear" (click)="presentLabelOptions($event, label)">
+              <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+            </ion-button>
+          </div>
+          <div class="label-meta">
+            <span class="entity-type">{{ label.entity_type || 'General' }}</span>
+          </div>
+        </div>
+      </div>
+      <ng-template #noLabels>
+        <div class="empty-state">
+          <div class="empty-icon">
+            <ion-icon name="bookmark-outline"></ion-icon>
+          </div>
+          <h3>No Labels Yet</h3>
+          <p>Create labels to highlight important records</p>
+          <ion-button class="empty-action" (click)="showCreateModal()">
+            <ion-icon slot="start" name="add"></ion-icon>
+            Create Label
+          </ion-button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-container">
+    <ion-spinner name="lines-sharp"></ion-spinner>
   </div>
 </ion-content>
