@@ -69,27 +69,17 @@
   </div>
 
   <!-- Invite Modal -->
-  <ion-modal [isOpen]="isInviteModalOpen" (didDismiss)="closeInviteModal()">
+  <ion-modal [isOpen]="isInviteModalOpen" (didDismiss)="closeInviteModal()" [breakpoints]="[0.5, 0.9]" [initialBreakpoint]="0.9">
     <ng-template>
-      <ion-header>
-        <ion-toolbar>
-          <ion-buttons slot="start">
-            <ion-button (click)="closeInviteModal()">
-              <ion-icon slot="icon-only" name="close-outline"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-          <ion-title>Invite Team Member</ion-title>
-          <ion-buttons slot="end">
-            <ion-button (click)="sendInvite()" [disabled]="!inviteName || !inviteEmail || isLoading">
-              <ion-spinner *ngIf="isLoading" name="lines"></ion-spinner>
-              <span *ngIf="!isLoading">Send Invite</span>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Invite Team Member</h2>
+          <ion-button fill="clear" (click)="closeInviteModal()">
+            <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+          </ion-button>
+        </div>
 
-      <ion-content class="ion-padding">
-        <div class="invite-form">
+        <div class="invite-form ion-padding">
           <p class="invite-info">Send an invitation to join your organization</p>
 
           <ion-item>
@@ -136,8 +126,17 @@
             <p *ngIf="inviteRole === 'manager'">Managers can manage team members and have full access to data.</p>
             <p *ngIf="inviteRole === 'admin'">Admins have full access including user management and organization settings.</p>
           </div>
+
+          <ion-button 
+            expand="block" 
+            (click)="sendInvite()" 
+            [disabled]="!inviteName || !inviteEmail || isLoading"
+            class="invite-btn">
+            <ion-spinner *ngIf="isLoading" name="lines"></ion-spinner>
+            <span *ngIf="!isLoading">Send Invite</span>
+          </ion-button>
         </div>
-      </ion-content>
+      </div>
     </ng-template>
   </ion-modal>
 </ion-content>
