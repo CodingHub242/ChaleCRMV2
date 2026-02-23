@@ -403,7 +403,7 @@ stats: any = {
                 id: activity.id,
                 title: activity.title || activity.subject || 'Activity',
                 description: activity.description,
-                type: this.mapActivityType(activity.type),
+                type: this.mapActivityType(activity.activity_type),
                 time: activity.time || 'All day',
                 date: new Date(activity.due_date)
               });
