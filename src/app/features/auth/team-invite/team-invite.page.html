@@ -68,76 +68,77 @@
     <p>Loading team members...</p>
   </div>
 
-  <!-- Invite Modal -->
-  <ion-modal [isOpen]="isInviteModalOpen" (didDismiss)="closeInviteModal()" [presentingElement]="null">
-    <ng-template>
-      <ion-header>
-        <ion-toolbar>
-          <ion-buttons slot="start">
-            <ion-button (click)="closeInviteModal()">
-              <ion-icon slot="icon-only" name="close-outline"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-          <ion-title>Invite Team Member</ion-title>
-          <ion-buttons slot="end">
-            <ion-button (click)="sendInvite()" [disabled]="!inviteName || !inviteEmail || isLoading" class="send-btn">
-              <ion-spinner *ngIf="isLoading" name="lines"></ion-spinner>
-              <span *ngIf="!isLoading">Send</span>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
-
-      <ion-content class="modal-content">
-        <div class="invite-form">
-          <p class="invite-info">Send an invitation to join your organization</p>
-
-          <ion-item>
-            <ion-label position="stacked">Full Name *</ion-label>
-            <ion-input
-              [(ngModel)]="inviteName"
-              type="text"
-              placeholder="John Doe"
-              [disabled]="isLoading">
-            </ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="stacked">Email Address *</ion-label>
-            <ion-input
-              [(ngModel)]="inviteEmail"
-              type="email"
-              placeholder="john@example.com"
-              [disabled]="isLoading">
-            </ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="stacked">Phone (Optional)</ion-label>
-            <ion-input
-              [(ngModel)]="invitePhone"
-              type="tel"
-              placeholder="+1 (555) 000-0000"
-              [disabled]="isLoading">
-            </ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="stacked">Role</ion-label>
-            <ion-select [(ngModel)]="inviteRole" [disabled]="isLoading">
-              <ion-select-option value="user">User</ion-select-option>
-              <ion-select-option value="manager">Manager</ion-select-option>
-              <ion-select-option value="admin">Admin</ion-select-option>
-            </ion-select>
-          </ion-item>
-
-          <div class="role-info">
-            <p *ngIf="inviteRole === 'user'">Users can view and edit data based on their permissions.</p>
-            <p *ngIf="inviteRole === 'manager'">Managers can manage team members and have full access to data.</p>
-            <p *ngIf="inviteRole === 'admin'">Admins have full access including user management and organization settings.</p>
-          </div>
-        </div>
-      </ion-content>
-    </ng-template>
-  </ion-modal>
 </ion-content>
+
+<!-- Invite Modal - outside ion-content -->
+<ion-modal #modal [isOpen]="isInviteModalOpen" (didDismiss)="closeInviteModal()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="closeInviteModal()">
+            <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-title>Invite Team Member</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="sendInvite()" [disabled]="!inviteName || !inviteEmail || isLoading" class="send-btn">
+            <ion-spinner *ngIf="isLoading" name="lines"></ion-spinner>
+            <span *ngIf="!isLoading">Send</span>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="modal-content">
+      <div class="invite-form">
+        <p class="invite-info">Send an invitation to join your organization</p>
+
+        <ion-item>
+          <ion-label position="stacked">Full Name *</ion-label>
+          <ion-input
+            [(ngModel)]="inviteName"
+            type="text"
+            placeholder="John Doe"
+            [disabled]="isLoading">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Email Address *</ion-label>
+          <ion-input
+            [(ngModel)]="inviteEmail"
+            type="email"
+            placeholder="john@example.com"
+            [disabled]="isLoading">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Phone (Optional)</ion-label>
+          <ion-input
+            [(ngModel)]="invitePhone"
+            type="tel"
+            placeholder="+1 (555) 000-0000"
+            [disabled]="isLoading">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Role</ion-label>
+          <ion-select [(ngModel)]="inviteRole" [disabled]="isLoading">
+            <ion-select-option value="user">User</ion-select-option>
+            <ion-select-option value="manager">Manager</ion-select-option>
+            <ion-select-option value="admin">Admin</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <div class="role-info">
+          <p *ngIf="inviteRole === 'user'">Users can view and edit data based on their permissions.</p>
+          <p *ngIf="inviteRole === 'manager'">Managers can manage team members and have full access to data.</p>
+          <p *ngIf="inviteRole === 'admin'">Admins have full access including user management and organization settings.</p>
+        </div>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>

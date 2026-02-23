@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { 
@@ -21,7 +21,8 @@ import {
   IonRefresherContent,
   IonAvatar,
   IonMenuButton,
-  IonSpinner
+  IonSpinner,
+  ModalController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { personAddOutline, mailOutline, callOutline, trashOutline, shieldOutline, peopleOutline, closeOutline } from 'ionicons/icons';
@@ -54,11 +55,14 @@ import { User } from '../../../models';
     IonAvatar,
     IonMenuButton,
     IonSpinner,
+    ModalController,
     CommonModule, 
     FormsModule
   ]
 })
 export class TeamInvitePage implements OnInit {
+  @ViewChild('modal') modal!: IonModal;
+  
   public users: User[] = [];
   public isLoading = false;
   public isInviteModalOpen = false;
@@ -71,7 +75,8 @@ export class TeamInvitePage implements OnInit {
   public inviteRole = 'user';
 
   constructor(
-    public authService: AuthService
+    public authService: AuthService,
+    public modalController: ModalController
   ) {
     addIcons({ 
       personAddOutline, 
@@ -109,6 +114,12 @@ export class TeamInvitePage implements OnInit {
   closeInviteModal(): void {
     this.isInviteModalOpen = false;
     this.resetInviteForm();
+  }
+
+  async dismissModal(): Promise<void> {
+    if (this.modal) {
+      await this.modal.dismiss();
+    }
   }
 
   resetInviteForm(): void {
