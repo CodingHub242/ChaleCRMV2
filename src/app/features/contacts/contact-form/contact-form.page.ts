@@ -176,7 +176,7 @@ export class ContactFormPage implements OnInit {
   }
 
   private saveContact( avatarUrl: string | null): void {
-    console.log('saveContact called with avatarUrl:', avatarUrl);
+    //console.log('saveContact called with avatarUrl:', avatarUrl);
     const contactData = { ...this.contact };
     if (avatarUrl) {
       contactData.avatar = avatarUrl;
@@ -194,6 +194,8 @@ export class ContactFormPage implements OnInit {
         this.isSaving = false;
         if (response.success) {
           this.router.navigate(['/contacts']);
+          //refresh contacts list
+          this.api.getContacts();
         } else {
           this.showAlert('Error', response.message);
         }

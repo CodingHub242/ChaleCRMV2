@@ -161,6 +161,9 @@ export class CompanyFormPage implements OnInit {
        // loading.dismiss();
         if (response.success) {
           this.router.navigate(['/companies']);
+          //refresh companies list
+          this.api.getCompanies();
+
         } else {
           this.showAlert('Error', response.message);
         }
