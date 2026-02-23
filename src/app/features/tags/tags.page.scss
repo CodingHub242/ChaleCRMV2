@@ -302,6 +302,18 @@
     }
   }
 }
+
+/* Alert Button Styles */
+.alert-button-cancel {
+  --color: #073336 !important;
+  font-weight: 500;
+}
+
+.alert-button-save {
+  --background: #073336 !important;
+  --color: #ffffff !important;
+  font-weight: 500;
+}
 .bigin-alert{
   color:#073336;
 

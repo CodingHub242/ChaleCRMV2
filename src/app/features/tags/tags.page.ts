@@ -132,10 +132,12 @@ export class TagsPage implements OnInit {
       buttons: [
         {
           text: 'Cancel',
-          role: 'cancel'
+          role: 'cancel',
+          cssClass: 'alert-button-cancel'
         },
         {
           text: 'Save',
+          cssClass: 'alert-button-save',
           handler: (data) => {
             if (data.name) {
               this.saveItem(data.name, data.entity_type || 'contact');
