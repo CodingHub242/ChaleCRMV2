@@ -14,7 +14,7 @@ import { ApiService } from '../../core/services/api.service';
 export class AnalyticsPage implements OnInit {
   currentSegment = 'overview';
   loading = false;
-  
+  recent: any[] = [];
   stats = {
     total_revenue: 125000,
     total_deals: 45,
@@ -54,6 +54,7 @@ export class AnalyticsPage implements OnInit {
       next: (response: any) => {
         if (response.data) {
           this.stats = response.data || this.stats;
+          this.recent = response.data.recent_activites || this.recent;
          // this.pipeline = response.data.pipeline || this.pipeline;
           //this.performance = response.data.performance || this.performance;
         }

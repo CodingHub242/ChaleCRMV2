@@ -169,43 +169,13 @@
           <ion-button fill="clear" size="small">View All</ion-button>
         </div>
         <div class="activity-list">
-          <div class="activity-item">
+          <div class="activity-item" *ngFor="let activity of recent">
             <div class="activity-icon deal">
               <ion-icon name="checkmark-circle"></ion-icon>
             </div>
             <div class="activity-content">
-              <span class="activity-text">Deal "Enterprise License" moved to Won</span>
-              <span class="activity-time">2 hours ago</span>
-            </div>
-          </div>
-
-          <div class="activity-item">
-            <div class="activity-icon contact">
-              <ion-icon name="person-add"></ion-icon>
-            </div>
-            <div class="activity-content">
-              <span class="activity-text">New contact "Mike Johnson" added</span>
-              <span class="activity-time">4 hours ago</span>
-            </div>
-          </div>
-
-          <div class="activity-item">
-            <div class="activity-icon task">
-              <ion-icon name="create"></ion-icon>
-            </div>
-            <div class="activity-content">
-              <span class="activity-text">Task "Follow up with client" completed</span>
-              <span class="activity-time">5 hours ago</span>
-            </div>
-          </div>
-
-          <div class="activity-item">
-            <div class="activity-icon call">
-              <ion-icon name="call"></ion-icon>
-            </div>
-            <div class="activity-content">
-              <span class="activity-text">Call logged with "ABC Corp"</span>
-              <span class="activity-time">Yesterday</span>
+              <span class="activity-text">{{activity.description}}</span>
+              <span class="activity-time">{{ activity.created_at | date:'short' }}</span>
             </div>
           </div>
         </div>
@@ -219,9 +189,9 @@
           <ion-icon name="trending-up" class="success"></ion-icon>
           <span>Won Deals</span>
         </div>
-        <div class="metric-value">18</div>
+        <div class="metric-value">0</div>
         <div class="metric-footer">
-          <span class="value">$85,000</span>
+          <span class="value">GHS0.00</span>
           <span class="label">Total Value</span>
         </div>
       </div>
@@ -233,7 +203,7 @@
         </div>
         <div class="metric-value">{{ stats.average_deal_size | currency }}</div>
         <div class="metric-footer">
-          <span class="value">15</span>
+          <span class="value">0</span>
           <span class="label">Deals closed</span>
         </div>
       </div>
@@ -243,9 +213,9 @@
           <ion-icon name="calendar" class="primary"></ion-icon>
           <span>Avg. Cycle Time</span>
         </div>
-        <div class="metric-value">12 days</div>
+        <div class="metric-value">0 days</div>
         <div class="metric-footer">
-          <span class="value">-3 days</span>
+          <span class="value">0 days</span>
           <span class="label">vs last month</span>
         </div>
       </div>
@@ -257,7 +227,7 @@
         </div>
         <div class="metric-value">2.5 hrs</div>
         <div class="metric-footer">
-          <span class="value">-1 hr</span>
+          <span class="value">0 hr</span>
           <span class="label">vs last month</span>
         </div>
       </div>

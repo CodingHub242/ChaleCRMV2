@@ -20,6 +20,7 @@ trait RecordsActivity
     {
         $activityData = [
             'user_id' => Auth::id(),
+            'organization_id' => $this->getOrganizationId(),
             'activity_type' => $type,
             'description' => $description,
             'activity_date' => now(),
