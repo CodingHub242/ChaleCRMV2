@@ -22,7 +22,7 @@ interface CalendarEvent {
   id: number;
   title: string;
   description?: string;
-  type: 'call' | 'meeting' | 'email' | 'task' | 'deadline';
+  type: 'created'|'updated'|'call' | 'meeting' | 'email' | 'task' | 'deadline';
   time?: string;
   date: Date;
 }
@@ -452,9 +452,11 @@ stats: any = {
     }
   }
 
-  mapActivityType(type: string): 'call' | 'meeting' | 'email' | 'task' | 'deadline' {
+  mapActivityType(type: string): 'created' |'updated' |'call' | 'meeting' | 'email' | 'task' | 'deadline' {
     const typeMap: { [key: string]: 'call' | 'meeting' | 'email' | 'task' | 'deadline' } = {
       'call': 'call',
+      'created': 'call',
+      'updated': 'call',
       'meeting': 'meeting',
       'email': 'email',
       'task': 'task',
