@@ -59,8 +59,6 @@ import { User } from '../../../models';
   ]
 })
 export class TeamInvitePage implements OnInit {
-  @ViewChild('modal') modal!: IonModal;
-  
   public users: User[] = [];
   public isLoading = false;
   public isInviteModalOpen = false;
@@ -111,12 +109,6 @@ export class TeamInvitePage implements OnInit {
   closeInviteModal(): void {
     this.isInviteModalOpen = false;
     this.resetInviteForm();
-  }
-
-  async dismissModal(): Promise<void> {
-    if (this.modal) {
-      await this.modal.dismiss();
-    }
   }
 
   resetInviteForm(): void {
