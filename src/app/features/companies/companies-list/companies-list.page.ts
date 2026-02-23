@@ -42,6 +42,10 @@ export class CompaniesListPage implements OnInit {
   }
 
   ngOnInit(): void {
+    //this.loadCompanies();
+  }
+
+  ionViewWillEnter(): void {
     this.loadCompanies();
   }
 

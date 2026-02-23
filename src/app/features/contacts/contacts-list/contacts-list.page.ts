@@ -43,6 +43,10 @@ export class ContactsListPage implements OnInit {
   }
 
   ngOnInit(): void {
+    //this.loadContacts();
+  }
+
+  ionViewWillEnter(): void {
     this.loadContacts();
   }
 

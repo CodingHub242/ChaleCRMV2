@@ -34,6 +34,10 @@ export class DealsListPage implements OnInit {
   }
 
   ngOnInit(): void {
+   // this.loadDeals();
+  }
+
+  ionViewWillEnter(): void {
     this.loadDeals();
   }
 
