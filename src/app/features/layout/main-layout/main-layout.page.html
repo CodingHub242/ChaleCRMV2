@@ -32,6 +32,11 @@
 
         <ion-item-divider>Bigin CRM</ion-item-divider>
 
+        <ion-item button routerLink="/team" routerLinkActive="active" routerDirection="root" (click)="closeSidebarOnMobile()">
+          <ion-icon slot="start" name="people-outline"></ion-icon>
+          <ion-label>Team</ion-label>
+        </ion-item>
+
         <ion-item button routerLink="/contacts" routerLinkActive="active" routerDirection="root" (click)="closeSidebarOnMobile()">
           <ion-icon slot="start" name="people-outline"></ion-icon>
           <ion-label>Contacts</ion-label>

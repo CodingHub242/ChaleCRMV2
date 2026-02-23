@@ -1,0 +1,143 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Team Members</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openInviteModal()" *ngIf="canManageUsers()">
+        <ion-icon slot="start" name="person-add-outline"></ion-icon>
+        Invite
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="loadUsers()">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="team-header">
+    <ion-icon name="people-outline" class="header-icon"></ion-icon>
+    <h2>Organization Team</h2>
+    <p>Manage your team members and their access levels</p>
+  </div>
+
+  <div class="users-list" *ngIf="!isLoadingUsers && users.length > 0">
+    <ion-list lines="full">
+      <ion-item *ngFor="let user of users">
+        <ion-avatar slot="start">
+          <div class="avatar-placeholder">
+            {{ user.name?.charAt(0).toUpperCase() }}
+          </div>
+        </ion-avatar>
+        <ion-label>
+          <h3>{{ user.name }}</h3>
+          <p>{{ user.email }}</p>
+          <p *ngIf="user.phone" class="phone">{{ user.phone }}</p>
+        </ion-label>
+        <ion-badge [color]="getRoleBadgeColor(user.role)" slot="end">
+          {{ getRoleLabel(user.role) }}
+        </ion-badge>
+        
+        <ion-buttons slot="end" *ngIf="canManageUsers() && user.id !== authService.currentUser?.id">
+          <ion-button *ngIf="canManageRoles()" (click)="updateUserRole(user.id, user.role === 'admin' ? 'user' : 'admin')">
+            <ion-icon slot="icon-only" name="shield-outline"></ion-icon>
+          </ion-button>
+          <ion-button color="danger" (click)="removeUser(user.id)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <div class="empty-state" *ngIf="!isLoadingUsers && users.length === 0">
+    <ion-icon name="people-outline"></ion-icon>
+    <h3>No team members yet</h3>
+    <p>Invite your first team member to get started</p>
+    <ion-button *ngIf="canManageUsers()" (click)="openInviteModal()">
+      <ion-icon slot="start" name="person-add-outline"></ion-icon>
+      Invite User
+    </ion-button>
+  </div>
+
+  <div class="loading-state" *ngIf="isLoadingUsers">
+    <ion-spinner name="lines"></ion-spinner>
+    <p>Loading team members...</p>
+  </div>
+
+  <!-- Invite Modal -->
+  <ion-modal [isOpen]="isInviteModalOpen" (didDismiss)="closeInviteModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="closeInviteModal()">
+              <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+          <ion-title>Invite Team Member</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="sendInvite()" [disabled]="!inviteName || !inviteEmail || isLoading">
+              <ion-spinner *ngIf="isLoading" name="lines"></ion-spinner>
+              <span *ngIf="!isLoading">Send Invite</span>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding">
+        <div class="invite-form">
+          <p class="invite-info">Send an invitation to join your organization</p>
+
+          <ion-item>
+            <ion-label position="stacked">Full Name *</ion-label>
+            <ion-input
+              [(ngModel)]="inviteName"
+              type="text"
+              placeholder="John Doe"
+              [disabled]="isLoading">
+            </ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Email Address *</ion-label>
+            <ion-input
+              [(ngModel)]="inviteEmail"
+              type="email"
+              placeholder="john@example.com"
+              [disabled]="isLoading">
+            </ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Phone (Optional)</ion-label>
+            <ion-input
+              [(ngModel)]="invitePhone"
+              type="tel"
+              placeholder="+1 (555) 000-0000"
+              [disabled]="isLoading">
+            </ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Role</ion-label>
+            <ion-select [(ngModel)]="inviteRole" [disabled]="isLoading">
+              <ion-select-option value="user">User</ion-select-option>
+              <ion-select-option value="manager">Manager</ion-select-option>
+              <ion-select-option value="admin">Admin</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <div class="role-info">
+            <p *ngIf="inviteRole === 'user'">Users can view and edit data based on their permissions.</p>
+            <p *ngIf="inviteRole === 'manager'">Managers can manage team members and have full access to data.</p>
+            <p *ngIf="inviteRole === 'admin'">Admins have full access including user management and organization settings.</p>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>
