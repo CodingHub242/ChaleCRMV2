@@ -20,7 +20,8 @@ import {
   IonRefresher,
   IonRefresherContent,
   IonAvatar,
-  IonMenuButton
+  IonMenuButton,
+  IonSpinner
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { personAddOutline, mailOutline, callOutline, trashOutline, shieldOutline, peopleOutline, closeOutline } from 'ionicons/icons';
@@ -52,6 +53,7 @@ import { User } from '../../../models';
     IonRefresherContent,
     IonAvatar,
     IonMenuButton,
+    IonSpinner,
     CommonModule, 
     FormsModule
   ]

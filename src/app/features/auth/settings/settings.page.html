@@ -27,9 +27,9 @@
       <ion-avatar class="large-avatar">
         <div class="avatar-placeholder">{{ userInitials }}</div>
       </ion-avatar>
-      <p class="role-badge" *ngIf="authService.currentUser?.role">
+      <p class="role-badge" *ngIf="currentUser?.role">
         <ion-icon name="shield-outline"></ion-icon>
-        {{ authService.currentUser?.role | titlecase }}
+        {{ currentUser?.role | titlecase }}
       </p>
     </div>
 

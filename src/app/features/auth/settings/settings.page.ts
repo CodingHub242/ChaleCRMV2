@@ -17,7 +17,8 @@ import {
   IonSegmentButton,
   IonNote,
   IonMenuButton,
-  IonAvatar
+  IonAvatar,
+  IonSpinner
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { personOutline, businessOutline, saveOutline, shieldOutline } from 'ionicons/icons';
@@ -46,6 +47,7 @@ import { User, Organization } from '../../../models';
     IonNote,
     IonMenuButton,
     IonAvatar,
+    IonSpinner,
     CommonModule, 
     FormsModule
   ]
@@ -75,7 +77,7 @@ export class SettingsPage implements OnInit {
   orgWebsite = '';
 
   constructor(
-    private authService: AuthService
+    public authService: AuthService
   ) {
     addIcons({ personOutline, businessOutline, saveOutline, shieldOutline });
   }
@@ -176,6 +178,10 @@ export class SettingsPage implements OnInit {
 
   get isAdmin(): boolean {
     return this.authService.isAdmin;
+  }
+
+  get currentUser(): User | null {
+    return this.authService.currentUser;
   }
 
   get userInitials(): string {
