@@ -57,19 +57,19 @@ import { User } from '../../../models';
   ]
 })
 export class TeamInvitePage implements OnInit {
-  users: User[] = [];
-  isLoading = false;
-  isInviteModalOpen = false;
-  isLoadingUsers = false;
+  public users: User[] = [];
+  public isLoading = false;
+  public isInviteModalOpen = false;
+  public isLoadingUsers = false;
 
   // Invite form
-  inviteName = '';
-  inviteEmail = '';
-  invitePhone = '';
-  inviteRole = 'user';
+  public inviteName = '';
+  public inviteEmail = '';
+  public invitePhone = '';
+  public inviteRole = 'user';
 
   constructor(
-    private authService: AuthService
+    public authService: AuthService
   ) {
     addIcons({ 
       personAddOutline, 
@@ -187,6 +187,14 @@ export class TeamInvitePage implements OnInit {
       case 'manager': return 'Manager';
       default: return 'User';
     }
+  }
+
+  getUserInitials(user: User): string {
+    return user.name?.charAt(0)?.toUpperCase() || 'U';
+  }
+
+  get currentUserId(): number | undefined {
+    return this.authService.currentUser?.id;
   }
 
   canManageUsers(): boolean {

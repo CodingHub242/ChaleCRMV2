@@ -53,9 +53,9 @@ import { User, Organization } from '../../../models';
 export class SettingsPage implements OnInit {
   selectedSegment = 'profile';
   isLoading = false;
-  isSaving = false;
-  successMessage = '';
-  errorMessage = '';
+  public isSaving = false;
+  public successMessage = '';
+  public errorMessage = '';
 
   // Profile fields
   profileName = '';

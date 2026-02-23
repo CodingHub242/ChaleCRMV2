@@ -29,7 +29,7 @@
       <ion-item *ngFor="let user of users">
         <ion-avatar slot="start">
           <div class="avatar-placeholder">
-            {{ user.name?.charAt(0).toUpperCase() }}
+            {{ getUserInitials(user) }}
           </div>
         </ion-avatar>
         <ion-label>
@@ -41,7 +41,7 @@
           {{ getRoleLabel(user.role) }}
         </ion-badge>
         
-        <ion-buttons slot="end" *ngIf="canManageUsers() && user.id !== authService.currentUser?.id">
+        <ion-buttons slot="end" *ngIf="canManageUsers() && user.id !== currentUserId">
           <ion-button *ngIf="canManageRoles()" (click)="updateUserRole(user.id, user.role === 'admin' ? 'user' : 'admin')">
             <ion-icon slot="icon-only" name="shield-outline"></ion-icon>
           </ion-button>
