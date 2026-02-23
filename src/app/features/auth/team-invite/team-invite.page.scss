@@ -218,6 +218,29 @@ ion-modal > ion-content {
   }
 }
 
+// Modal header toolbar styling
+ion-modal ion-header ion-toolbar {
+  --background: #073336;
+  --color: white;
+  --border-width: 0;
+  
+  ion-title {
+    --color: white;
+    font-weight: 600;
+  }
+
+  ion-buttons {
+    ion-button {
+      --color: white;
+    }
+  }
+
+  .send-btn {
+    --color: #fa8d34;
+    font-weight: 600;
+  }
+}
+
 // Toolbar styling
 ion-toolbar {
   --background: #073336;
