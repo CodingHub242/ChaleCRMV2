@@ -107,7 +107,7 @@
                 <span>{{ deal.probability || 0 }}%</span>
               </div>
             </td>
-            <td>{{ deal.contact?.first_name ? deal.contact.first_name + ' ' + deal.contact.last_name : '-' }}</td>
+            <td>{{ deal.contact?.first_name ? deal.contact?.first_name + ' ' + deal.contact?.last_name : '-' }}</td>
             <td>{{ deal.company?.name || '-' }}</td>
             <td>{{ deal.expected_close_date ? (deal.expected_close_date | date:'mediumDate') : '-' }}</td>
             <td>
