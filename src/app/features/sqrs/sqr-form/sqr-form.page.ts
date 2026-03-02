@@ -30,6 +30,11 @@ export class SqrFormPage implements OnInit {
   customFields: CustomField[] = [];
   customFieldValues: { [key: string]: string } = {};
 
+  // Get custom fields for the component (type cast)
+  get sqrCustomFields(): any {
+    return this.sqr.custom_fields || [];
+  }
+
   sqr: Partial<Sqr> = {
     title: '',
     type: 'Complaint',

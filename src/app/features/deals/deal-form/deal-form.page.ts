@@ -51,6 +51,11 @@ export class DealFormPage implements OnInit {
   customFields: CustomField[] = [];
   customFieldValues: { [key: string]: string } = {};
 
+  // Get custom fields for the component (type cast)
+  get dealCustomFields(): any {
+    return this.deal.custom_fields || [];
+  }
+
   stages = ['Prospect', 'Client', 'Demo Requested', 'Demo Completed', 'Contract In-Review', 'Closed Won', 'Closed Lost'];
   currencies = ['GHS','USD', 'EUR', 'GBP', 'CAD', 'AUD'];
 

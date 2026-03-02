@@ -139,7 +139,7 @@
       <div class="form-section" *ngIf="customFields.length > 0">
         <app-custom-fields 
           [fields]="customFields"
-          [entityValues]="sqr.custom_fields || []"
+          [entityValues]="sqrCustomFields"
           (valuesChanged)="onCustomFieldValuesChanged($event)">
         </app-custom-fields>
       </div>

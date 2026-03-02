@@ -260,7 +260,7 @@
       </div>
       <app-custom-fields
         [fields]="customFields"
-        [entityValues]="deal.custom_fields || []"
+        [entityValues]="dealCustomFields"
         (valuesChanged)="onCustomFieldValuesChanged($event)"
       ></app-custom-fields>
     </div>
