@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Traits\ScopesByOrganization;
 use App\Models\DealGroup;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class DealGroupController extends Controller
 {
@@ -16,9 +17,12 @@ class DealGroupController extends Controller
         $organizationId = $this->getOrganizationId();
         
         $query = DealGroup::query();
-        if ($organizationId) {
+        
+        // Only filter if organization_id column exists and we have an org ID
+        if ($organizationId && Schema::hasColumn('deal_groups', 'organization_id')) {
             $query->where('organization_id', $organizationId);
         }
+        
         $groups = $query->orderBy('name')->get();
         
         return response()->json([
@@ -35,7 +39,11 @@ class DealGroupController extends Controller
             'color' => 'nullable|string|max:20',
         ]);
 
-        $validated['organization_id'] = $this->getOrganizationId();
+        $organizationId = $this->getOrganizationId();
+        if ($organizationId && Schema::hasColumn('deal_groups', 'organization_id')) {
+            $validated['organization_id'] = $organizationId;
+        }
+        
         $group = DealGroup::create($validated);
 
         return response()->json([
@@ -49,11 +57,11 @@ class DealGroupController extends Controller
     {
         $organizationId = $this->getOrganizationId();
         
-        $group = DealGroup::withCount(['deals']);
-        if ($organizationId) {
-            $group = $group->where('organization_id', $organizationId);
+        $query = DealGroup::withCount(['deals']);
+        if ($organizationId && Schema::hasColumn('deal_groups', 'organization_id')) {
+            $query->where('organization_id', $organizationId);
         }
-        $group = $group->findOrFail($id);
+        $group = $query->findOrFail($id);
         
         return response()->json([
             'success' => true,
@@ -65,11 +73,11 @@ class DealGroupController extends Controller
     {
         $organizationId = $this->getOrganizationId();
         
-        $group = DealGroup::query();
-        if ($organizationId) {
-            $group = $group->where('organization_id', $organizationId);
+        $query = DealGroup::query();
+        if ($organizationId && Schema::hasColumn('deal_groups', 'organization_id')) {
+            $query->where('organization_id', $organizationId);
         }
-        $group = $group->findOrFail($id);
+        $group = $query->findOrFail($id);
 
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255|unique:deal_groups,name,' . $id,
@@ -90,11 +98,11 @@ class DealGroupController extends Controller
     {
         $organizationId = $this->getOrganizationId();
         
-        $group = DealGroup::query();
-        if ($organizationId) {
-            $group = $group->where('organization_id', $organizationId);
+        $query = DealGroup::query();
+        if ($organizationId && Schema::hasColumn('deal_groups', 'organization_id')) {
+            $query->where('organization_id', $organizationId);
         }
-        $group = $group->findOrFail($id);
+        $group = $query->findOrFail($id);
         
         $group->delete();
 
@@ -109,11 +117,11 @@ class DealGroupController extends Controller
     {
         $organizationId = $this->getOrganizationId();
         
-        $group = DealGroup::query();
-        if ($organizationId) {
-            $group = $group->where('organization_id', $organizationId);
+        $query = DealGroup::query();
+        if ($organizationId && Schema::hasColumn('deal_groups', 'organization_id')) {
+            $query->where('organization_id', $organizationId);
         }
-        $group = $group->findOrFail($id);
+        $group = $query->findOrFail($id);
         
         $stages = ['Prospect', 'Client', 'Demo Requested', 'Demo Completed', 'Contract In-Review', 'Closed Won', 'Closed Lost'];
         

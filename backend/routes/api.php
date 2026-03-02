@@ -125,6 +125,7 @@ Route::patch('sqrs/{id}/status', [App\Http\Controllers\Api\SqrController::class,
 Route::apiResource('sqrs', App\Http\Controllers\Api\SqrController::class);
 
 // Deals
+Route::get('/deals/counts', [App\Http\Controllers\Api\DealController::class, 'counts']);
 Route::apiResource('deals', App\Http\Controllers\Api\DealController::class);
 Route::patch('deals/{id}/stage', [App\Http\Controllers\Api\DealController::class, 'updateStage']);
 

@@ -1016,4 +1016,11 @@ export class ApiService {
     httpParams = this.addOrganizationParams(httpParams);
     return this.http.get<ApiResponse<any>>(`${this.baseUrl}/deal-groups/${id}/stage-counts`, { params: httpParams });
   }
+
+  // Get overall deal counts by stage (when no group is selected)
+  getDealCounts(): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    httpParams = this.addOrganizationParams(httpParams);
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/deals/counts`, { params: httpParams });
+  }
 }

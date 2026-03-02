@@ -83,6 +83,7 @@ export class DealsListPage implements OnInit {
 
   ionViewWillEnter(): void {
     this.loadDeals();
+    this.loadStageCounts();
   }
 
   loadGroups(): void {
@@ -128,8 +129,24 @@ export class DealsListPage implements OnInit {
         }
       });
     } else {
-      // Reset counts for "All Deals"
-      this.tabs.forEach(tab => tab.count = 0);
+      // Load overall counts when no group is selected (All Deals)
+      this.api.getDealCounts().subscribe({
+        next: (response) => {
+          const counts = response.data;
+          this.tabs[0].count = counts.total || 0;
+          this.tabs[1].count = counts.prospect || 0;
+          this.tabs[2].count = counts.client || 0;
+          this.tabs[3].count = counts.demo_requested || 0;
+          this.tabs[4].count = counts.demo_completed || 0;
+          this.tabs[5].count = counts.contract_in_review || 0;
+          this.tabs[6].count = counts.closed_won || 0;
+          this.tabs[7].count = counts.closed_lost || 0;
+        },
+        error: () => {
+          // Reset counts on error
+          this.tabs.forEach(tab => tab.count = 0);
+        }
+      });
     }
   }
 
