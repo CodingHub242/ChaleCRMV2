@@ -37,13 +37,29 @@ class SqrController extends Controller
         ]);
     }
 
+    public function counts()
+    {
+        $counts = [
+            'new' => Sqr::where('status', 'Open')->count(),
+            'in_progress' => Sqr::where('status', 'In Progress')->count(),
+            'escalated' => Sqr::where('status', 'Escalated')->count(),
+            'closed' => Sqr::whereIn('status', ['Resolved', 'Closed'])->count(),
+            'total' => Sqr::count()
+        ];
+        
+        return response()->json([
+            'success' => true,
+            'data' => $counts
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'type' => 'required|string|in:Complaint,Feedback,Suggestion,Inquiry',
             'priority' => 'required|string|in:Low,Medium,High,Critical',
-            'status' => 'nullable|string|in:Open,In Progress,Resolved,Closed',
+            'status' => 'nullable|string|in:Open,In Progress,Escalated,Resolved,Closed',
             'description' => 'nullable|string',
             'contact_id' => 'nullable|integer|exists:contacts,id',
             'company_id' => 'nullable|integer|exists:companies,id',
@@ -78,7 +94,7 @@ class SqrController extends Controller
             'title' => 'sometimes|required|string|max:255',
             'type' => 'sometimes|required|string|in:Complaint,Feedback,Suggestion,Inquiry',
             'priority' => 'sometimes|required|string|in:Low,Medium,High,Critical',
-            'status' => 'nullable|string|in:Open,In Progress,Resolved,Closed',
+            'status' => 'nullable|string|in:Open,In Progress,Escalated,Resolved,Closed',
             'description' => 'nullable|string',
             'contact_id' => 'nullable|integer|exists:contacts,id',
             'company_id' => 'nullable|integer|exists:companies,id',
@@ -117,7 +133,7 @@ class SqrController extends Controller
         $sqr = Sqr::findOrFail($id);
 
         $validated = $request->validate([
-            'status' => 'required|string|in:Open,In Progress,Resolved,Closed',
+            'status' => 'required|string|in:Open,In Progress,Escalated,Resolved,Closed',
             'resolution_notes' => 'nullable|string',
         ]);
 

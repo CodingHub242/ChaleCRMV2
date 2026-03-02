@@ -37,7 +37,7 @@ export class SqrFormPage implements OnInit {
 
   types = ['Complaint', 'Feedback', 'Suggestion', 'Inquiry'];
   priorities = ['Low', 'Medium', 'High', 'Critical'];
-  statuses = ['Open', 'In Progress', 'Resolved', 'Closed'];
+  statuses = ['Open', 'In Progress', 'Escalated', 'Resolved', 'Closed'];
 
   constructor(
     private api: ApiService,

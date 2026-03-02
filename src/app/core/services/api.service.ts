@@ -983,4 +983,10 @@ export class ApiService {
   updateSqrStatus(id: number, data: { status: string; resolution_notes?: string }): Observable<ApiResponse<any>> {
     return this.http.patch<ApiResponse<any>>(`${this.baseUrl}/sqrs/${id}/status`, this.addOrganizationToBody(data));
   }
+
+  getSqrCounts(): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    httpParams = this.addOrganizationParams(httpParams);
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/sqrs/counts`, { params: httpParams });
+  }
 }

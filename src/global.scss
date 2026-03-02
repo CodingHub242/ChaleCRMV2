@@ -63,3 +63,63 @@
 .add-btn {
   --color: #fff;
 }
+
+/* Alert Button Styles - Zoho Bigin Theme */
+alert-controller-layout .alert-button-group {
+  padding: 8px 16px 16px;
+}
+
+/* Target all alerts with custom styling */
+ion-alert.bigin-alert {
+  .alert-head {
+    background: #073336;
+    
+    .alert-title {
+      color: #ffffff;
+    }
+  }
+  
+  .alert-message {
+    color: #1f2937;
+  }
+  
+  .alert-button-group {
+    padding: 8px 16px 16px;
+    
+    .alert-button {
+      background: transparent;
+      color: #073336;
+      font-weight: 600;
+      border-radius: 6px;
+      margin: 0 4px;
+      
+      &.alert-button-cancel {
+        background: transparent;
+        color: #073336;
+      }
+      
+      &.alert-button-save,
+      &.alert-button-ok {
+        background: #073336;
+        color: #ffffff;
+      }
+      
+      &:last-child:not(:first-child) {
+        background: #073336;
+        color: #ffffff;
+        margin-left: 8px;
+      }
+    }
+  }
+}
+
+/* Generic alert button styling */
+.alert-button {
+  color: #073336 !important;
+  font-weight: 600;
+  
+  &:last-child {
+    background: #073336 !important;
+    color: #ffffff !important;
+  }
+}

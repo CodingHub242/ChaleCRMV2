@@ -6,7 +6,15 @@ import { RouterModule } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { Sqr } from '../../../models';
 import { addIcons } from 'ionicons';
-import { warning, chatbubbles, helpCircle, add, trash, create, chevronBack, chevronForward, chevronDown, alertCircle, bulb, person, trashOutline } from 'ionicons/icons';
+import { warning, chatbubbles, helpCircle, add, trash, create, chevronBack, chevronForward, chevronDown, alertCircle, bulb, person, trashOutline, documents, time, checkmarkCircle, arrowUpCircle } from 'ionicons/icons';
+
+interface TabCount {
+  key: string;
+  label: string;
+  icon: string;
+  count: number;
+  status: string;
+}
 
 @Component({
   selector: 'app-sqrs-list',
@@ -22,14 +30,28 @@ export class SqrsListPage implements OnInit {
   currentPage = 1;
   hasMore = true;
   statusFilter = '';
+  activeTab = 'all';
 
-  statusOptions = [
-    { value: '', label: 'All Status' },
-    { value: 'Open', label: 'Open' },
-    { value: 'In Progress', label: 'In Progress' },
-    { value: 'Resolved', label: 'Resolved' },
-    { value: 'Closed', label: 'Closed' }
+  // Tab configuration with counts
+  tabs: TabCount[] = [
+    { key: 'all', label: 'All Tickets', icon: 'documents', count: 0, status: '' },
+    { key: 'new', label: 'New', icon: 'alert-circle', count: 0, status: 'Open' },
+    { key: 'in_progress', label: 'In Progress', icon: 'time', count: 0, status: 'In Progress' },
+    { key: 'escalated', label: 'Escalated', icon: 'arrow-up-circle', count: 0, status: 'Escalated' },
+    { key: 'closed', label: 'Closed', icon: 'checkmark-circle', count: 0, status: 'Closed' }
   ];
+
+  // Filter options for dropdown
+  filterOptions = [
+    { value: '', label: 'All SQR Tickets' },
+    { value: 'Open', label: 'All New Tickets' },
+    { value: 'In Progress', label: 'All In Progress' },
+    { value: 'Escalated', label: 'All Escalated' },
+    { value: 'Resolved', label: 'All Resolved' },
+    { value: 'Closed', label: 'All Closed' }
+  ];
+
+  selectedFilter = '';
 
   private priorityColors: { [key: string]: string } = {
     'Low': '#4caf50',
@@ -49,11 +71,29 @@ export class SqrsListPage implements OnInit {
     private api: ApiService,
     private alertController: AlertController
   ) {
-    addIcons({ trashOutline,warning, chatbubbles, helpCircle, add, trash, create, chevronBack, chevronForward, chevronDown, alertCircle, bulb: alertCircle, person });
+    addIcons({ trashOutline, warning, chatbubbles, helpCircle, add, trash, create, chevronBack, chevronForward, chevronDown, alertCircle, bulb: alertCircle, person, documents, time, checkmarkCircle, arrowUpCircle });
   }
 
   ngOnInit(): void {
+    this.loadSqrCounts();
     this.loadSqrs();
+  }
+
+  loadSqrCounts(): void {
+    this.api.getSqrCounts().subscribe({
+      next: (response) => {
+        const counts = response.data;
+        // Update tab counts
+        this.tabs[0].count = counts.total || 0;
+        this.tabs[1].count = counts.new || 0;
+        this.tabs[2].count = counts.in_progress || 0;
+        this.tabs[3].count = counts.escalated || 0;
+        this.tabs[4].count = counts.closed || 0;
+      },
+      error: () => {
+        // Keep default counts on error
+      }
+    });
   }
 
   loadSqrs(loadMore = false): void {
@@ -64,11 +104,20 @@ export class SqrsListPage implements OnInit {
       this.currentPage = 1;
     }
 
+    // Determine status filter based on active tab or dropdown
+    let statusParam = this.statusFilter;
+    if (!statusParam && this.activeTab !== 'all') {
+      const activeTabObj = this.tabs.find(t => t.key === this.activeTab);
+      if (activeTabObj) {
+        statusParam = activeTabObj.status;
+      }
+    }
+
     this.api.getSqrs({ 
       page: this.currentPage, 
       per_page: 20,
       search: this.searchQuery,
-      status: this.statusFilter
+      status: statusParam
     }).subscribe({
       next: (response) => {
         if (loadMore) {
@@ -86,6 +135,13 @@ export class SqrsListPage implements OnInit {
     });
   }
 
+  onTabClick(tabKey: string): void {
+    this.activeTab = tabKey;
+    // Clear status filter when switching tabs
+    this.statusFilter = '';
+    this.loadSqrs();
+  }
+
   onSearch(event: SearchbarCustomEvent): void {
     this.searchQuery = event.detail.value || '';
     this.loadSqrs();
@@ -93,17 +149,66 @@ export class SqrsListPage implements OnInit {
 
   onStatusFilterChange(event: any): void {
     this.statusFilter = event.detail.value;
+    // Update active tab based on filter
+    if (this.statusFilter === 'Open') {
+      this.activeTab = 'new';
+    } else if (this.statusFilter === 'In Progress') {
+      this.activeTab = 'in_progress';
+    } else if (this.statusFilter === 'Escalated') {
+      this.activeTab = 'escalated';
+    } else if (this.statusFilter === 'Closed' || this.statusFilter === 'Resolved') {
+      this.activeTab = 'closed';
+    } else {
+      this.activeTab = 'all';
+    }
+    this.loadSqrs();
+  }
+
+  onFilterChange(event: any): void {
+    this.selectedFilter = event.detail.value;
+    // Map filter to status
+    if (this.selectedFilter === 'All SQR Tickets') {
+      this.statusFilter = '';
+      this.activeTab = 'all';
+    } else if (this.selectedFilter === 'All New Tickets') {
+      this.statusFilter = 'Open';
+      this.activeTab = 'new';
+    } else if (this.selectedFilter === 'All In Progress') {
+      this.statusFilter = 'In Progress';
+      this.activeTab = 'in_progress';
+    } else if (this.selectedFilter === 'All Escalated') {
+      this.statusFilter = 'Escalated';
+      this.activeTab = 'escalated';
+    } else if (this.selectedFilter === 'All Resolved') {
+      this.statusFilter = 'Resolved';
+      this.activeTab = 'closed';
+    } else if (this.selectedFilter === 'All Closed') {
+      this.statusFilter = 'Closed';
+      this.activeTab = 'closed';
+    } else {
+      this.statusFilter = '';
+      this.activeTab = 'all';
+    }
     this.loadSqrs();
   }
 
   loadMore(event: any): void {
     if (this.hasMore) {
       this.currentPage++;
+      
+      let statusParam = this.statusFilter;
+      if (!statusParam && this.activeTab !== 'all') {
+        const activeTabObj = this.tabs.find(t => t.key === this.activeTab);
+        if (activeTabObj) {
+          statusParam = activeTabObj.status;
+        }
+      }
+
       this.api.getSqrs({ 
         page: this.currentPage, 
         per_page: 20,
         search: this.searchQuery,
-        status: this.statusFilter
+        status: statusParam
       }).subscribe({
         next: (response) => {
           this.sqrs = [...this.sqrs, ...response.data];
@@ -131,10 +236,15 @@ export class SqrsListPage implements OnInit {
     const statusMap: { [key: string]: string } = {
       'Open': 'status-open',
       'In Progress': 'status-progress',
+      'Escalated': 'status-escalated',
       'Resolved': 'status-resolved',
       'Closed': 'status-closed'
     };
     return statusMap[status] || 'status-open';
+  }
+
+  isTabActive(tabKey: string): boolean {
+    return this.activeTab === tabKey;
   }
 
   async deleteSqr(sqr: Sqr): Promise<void> {
@@ -150,6 +260,7 @@ export class SqrsListPage implements OnInit {
             this.api.deleteSqr(sqr.id).subscribe({
               next: () => {
                 this.loadSqrs();
+                this.loadSqrCounts();
               }
             });
           }

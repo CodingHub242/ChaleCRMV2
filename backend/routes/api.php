@@ -122,6 +122,7 @@ Route::get('enrichment/providers', [App\Http\Controllers\Api\EnrichmentControlle
 // SQR (Service Quality Requests)
 Route::apiResource('sqrs', App\Http\Controllers\Api\SqrController::class);
 Route::patch('sqrs/{id}/status', [App\Http\Controllers\Api\SqrController::class, 'updateStatus']);
+Route::get('sqrs/counts', [App\Http\Controllers\Api\SqrController::class, 'counts']);
 
 // Activities
 Route::get('activities', [App\Http\Controllers\Api\ActivityController::class, 'index']);

@@ -317,11 +317,40 @@
   color: #ffffff !important;
   font-weight: 500;
 }
-.bigin-alert{
-  color:#073336;
 
-  button{
-    color:#073336;
-    --color:#073336;
+.bigin-alert {
+  color: #073336;
+
+  button {
+    color: #073336 !important;
+    --color: #073336 !important;
+  }
+}
+
+/* Target Ionic Alert Overlay */
+::ng-deep ion-alert {
+  .alert-head {
+    background: #073336;
+    
+    .alert-title {
+      color: #ffffff;
+    }
+  }
+  
+  .alert-button-group {
+    padding: 8px 16px 16px;
+    
+    .alert-button {
+      background: transparent;
+      color: #073336;
+      font-weight: 600;
+      
+      &:last-child {
+        background: #073336;
+        color: #ffffff;
+        border-radius: 6px;
+        margin-left: 8px;
+      }
+    }
   }
 }

@@ -3,31 +3,46 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>SQR</ion-title>
+    <ion-title>SQR Support</ion-title>
     <ion-buttons slot="end">
       <ion-button class="add-btn" routerLink="/sqrs/new">
         <ion-icon slot="icon-only" name="add"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <ion-toolbar class="search-toolbar">
-    <div class="filter-row">
-      <ion-searchbar 
-        placeholder="Search SQRs..." 
-        (ionChange)="onSearch($event)"
-        [value]="searchQuery"
-        class="bigin-search">
-      </ion-searchbar>
-      <ion-select 
-        interface="popover" 
-        placeholder="Status"
-        [value]="statusFilter"
-        (ionChange)="onStatusFilterChange($event)"
-        class="status-select">
-        <ion-select-option *ngFor="let option of statusOptions" [value]="option.value">
-          {{ option.label }}
-        </ion-select-option>
-      </ion-select>
+  
+  <!-- Filter Dropdown -->
+  <ion-toolbar class="filter-toolbar">
+    <ion-select 
+      interface="popover" 
+      placeholder="All SQR Tickets"
+      [value]="selectedFilter"
+      (ionChange)="onFilterChange($event)"
+      class="filter-select">
+      <ion-select-option *ngFor="let option of filterOptions" [value]="option.label">
+        {{ option.label }}
+      </ion-select-option>
+    </ion-select>
+    <ion-searchbar 
+      placeholder="Search SQRs..." 
+      (ionChange)="onSearch($event)"
+      [value]="searchQuery"
+      class="bigin-search">
+    </ion-searchbar>
+  </ion-toolbar>
+
+  <!-- Tabs -->
+  <ion-toolbar class="tabs-toolbar">
+    <div class="tabs-container">
+      <div 
+        *ngFor="let tab of tabs" 
+        class="tab-item" 
+        [class.active]="isTabActive(tab.key)"
+        (click)="onTabClick(tab.key)">
+        <ion-icon [name]="tab.icon" class="tab-icon"></ion-icon>
+        <span class="tab-label">{{ tab.label }}</span>
+        <span class="tab-count">{{ tab.count }}</span>
+      </div>
     </div>
   </ion-toolbar>
 </ion-header>
@@ -74,7 +89,7 @@
               <span class="sqr-title">{{ sqr.title }}</span>
             </td>
             <td>
-              <ion-badge class="type-badge" [class]="sqr.type.toLowerCase()">
+              <ion-badge class="type-badge" [class]="sqr.type?.toLowerCase() || 'default'">
                 {{ sqr.type }}
               </ion-badge>
             </td>
