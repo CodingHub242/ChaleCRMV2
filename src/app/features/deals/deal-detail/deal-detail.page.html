@@ -23,7 +23,7 @@
   <ion-toolbar class="stage-toolbar" *ngIf="deal">
     <div class="stage-progress-container">
       <div class="stage-track">
-        <div class="stage-fill" [style.width.%]="getStageProgress()" [style.background-color]="getStageColor()"></div>
+        <div class="stage-fill" [style.width.%]="getStageProgress()" [style.background-color]="getStageColor(deal.stage)"></div>
       </div>
       <div class="stage-nodes">
         <div 
@@ -33,7 +33,7 @@
           [class.completed]="isStageCompleted(stage)"
           [style.left.%]="getStagePosition(stage)"
           (click)="changeStage(stage)">
-          <div class="node-dot" [style.background-color]="isStageCompleted(stage) || deal.stage === stage ? getStageColor() : '#ccc'"></div>
+          <div class="node-dot" [style.background-color]="isStageCompleted(stage) || deal.stage === stage ? getStageColor(stage) : '#ccc'"></div>
           <span class="node-label">{{ stage }}</span>
         </div>
       </div>

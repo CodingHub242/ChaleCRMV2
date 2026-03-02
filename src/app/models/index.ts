@@ -596,6 +596,7 @@ export interface Sqr {
   assignee?: User;
   resolved_at?: string;
   resolution_notes?: string;
+  custom_fields?: CustomFieldValue[];
   created_at: string;
   updated_at: string;
 }

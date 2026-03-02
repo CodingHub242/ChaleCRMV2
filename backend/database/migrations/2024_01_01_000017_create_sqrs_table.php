@@ -13,7 +13,7 @@ class CreateSqrsTable extends Migration
             $table->string('title', 255);
             $table->enum('type', ['Complaint', 'Feedback', 'Suggestion', 'Inquiry'])->default('Complaint');
             $table->enum('priority', ['Low', 'Medium', 'High', 'Critical'])->default('Medium');
-            $table->enum('status', ['Open', 'In Progress', 'Resolved', 'Closed'])->default('Open');
+            $table->enum('status', ['Open', 'In Progress', 'Escalated', 'Resolved', 'Closed'])->default('Open');
             $table->text('description')->nullable();
             $table->unsignedBigInteger('contact_id')->nullable();
             $table->unsignedBigInteger('company_id')->nullable();

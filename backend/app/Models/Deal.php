@@ -18,6 +18,9 @@ class Deal extends Model
         'company_id',
         'group_id',
         'description',
+        'notes',
+        'organization_id',
+        'custom_fields',
     ];
 
     protected $casts = [
@@ -27,6 +30,8 @@ class Deal extends Model
         'contact_id' => 'integer',
         'company_id' => 'integer',
         'group_id' => 'integer',
+        'organization_id' => 'integer',
+        'custom_fields' => 'array',
     ];
 
     public function contact(): BelongsTo

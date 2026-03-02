@@ -258,8 +258,11 @@ export class DealDetailPage implements OnInit {
     return stageMap[stage] || 'stage-prospect';
   }
 
-  getStageColor(stage: string): string {
-    return this.stageColors[stage] || '#999';
+  getStageColor(stage?: string): string {
+    if (stage) {
+      return this.stageColors[stage] || '#999';
+    }
+    return this.stageColors[this.deal?.stage || 'Prospect'] || '#999';
   }
 
   formatDate(date: string): string {

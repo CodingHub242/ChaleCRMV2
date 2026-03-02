@@ -80,6 +80,7 @@ class SqrController extends Controller
             'company_id' => 'nullable|integer|exists:companies,id',
             'assigned_to' => 'nullable|integer',
             'resolution_notes' => 'nullable|string',
+            'custom_fields' => 'nullable|array',
         ]);
 
         $validated['organization_id'] = $this->getOrganizationId();
@@ -129,6 +130,7 @@ class SqrController extends Controller
             'assigned_to' => 'nullable|integer',
             'resolved_at' => 'nullable|date',
             'resolution_notes' => 'nullable|string',
+            'custom_fields' => 'nullable|array',
         ]);
 
         // Auto-set resolved_at when status is changed to Resolved or Closed
