@@ -36,7 +36,8 @@
           </div>
           <div class="deal-probability" *ngIf="deal.probability">
             <span class="label">Probability:</span>
-            <span class="probability" [style.color]="getProbabilityColor(deal.probability)">
+            <span class="probability" style="color: burlywood;
+    font-weight: 700;" [style.color]="getProbabilityColor(deal.probability)">
               {{ deal.probability }}%
             </span>
           </div>

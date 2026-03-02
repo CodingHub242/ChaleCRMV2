@@ -55,7 +55,7 @@
   h3 {
     font-size: 14px;
     font-weight: 600;
-    color: #666;
+    color: #e0e0e0a3;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin: 0;
@@ -134,7 +134,7 @@
     height: 44px;
     min-width: 44px;
     border-radius: 50%;
-    background: #667eea;
+    background: #073336;
     color: #fff;
     display: flex;
     align-items: center;
@@ -326,9 +326,10 @@
     
     &.active {
       border-bottom-color: #073336;
+      color:#073336;
       
       ion-icon, span {
-        color: #667eea;
+        color: #073336;
       }
     }
   }
@@ -437,7 +438,7 @@
   }
   
   .save-note-btn {
-    --background: #667eea;
+    --background: #073336;
     --color: #fff;
   }
 }
