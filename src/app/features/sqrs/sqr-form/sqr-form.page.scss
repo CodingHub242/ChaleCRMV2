@@ -38,7 +38,9 @@
     border-bottom: none;
   }
 }
-
+ion-button{
+  --background:#073336;
+}
 .section-header {
   display: flex;
   align-items: center;
