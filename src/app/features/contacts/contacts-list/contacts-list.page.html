@@ -24,6 +24,15 @@
 </ion-header>
 
 <ion-content class="bigin-content">
+  <!-- Sync Loading Overlay -->
+  <div *ngIf="isSyncing" class="sync-overlay">
+    <div class="sync-content">
+      <ion-spinner name="lines" color="primary"></ion-spinner>
+      <p>Syncing contacts from Chale App...</p>
+      <span class="sync-subtitle">Please wait while we fetch and import contacts</span>
+    </div>
+  </div>
+
   <div class="table-container">
     <!-- Loading State -->
     <div *ngIf="isLoading && contacts.length === 0" class="loading-state">

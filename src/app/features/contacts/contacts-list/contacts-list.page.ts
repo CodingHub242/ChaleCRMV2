@@ -19,6 +19,7 @@ import { briefcase,add, trash, create, mail, document, close, eye, download, che
 export class ContactsListPage implements OnInit {
   contacts: Contact[] = [];
   isLoading = true;
+  isSyncing = false;
   searchQuery = '';
   currentPage = 1;
   hasMore = true;
@@ -100,8 +101,10 @@ export class ContactsListPage implements OnInit {
   }
 
   performSync(): void {
+    this.isSyncing = true;
     this.api.syncContacts().subscribe({
       next: async (response) => {
+        this.isSyncing = false;
         const toast = await this.toastController.create({
           message: `Sync complete! ${response.data?.synced || 0} new contacts synced, ${response.data?.skipped || 0} skipped.`,
           duration: 3000,
@@ -112,6 +115,7 @@ export class ContactsListPage implements OnInit {
         this.loadContacts(); // Reload to show new contacts
       },
       error: async () => {
+        this.isSyncing = false;
         const toast = await this.toastController.create({
           message: 'Sync failed. Please try again.',
           duration: 3000,

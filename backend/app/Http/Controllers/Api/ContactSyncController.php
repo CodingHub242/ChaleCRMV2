@@ -149,8 +149,17 @@ class ContactSyncController extends Controller
         
         foreach ($externalContacts as $externalContact) {
             try {
-                // Validate required fields
-                if (empty($externalContact['email'])) {
+                // Validate required fields - skip if email is null, empty, or not set
+                $email = $externalContact['email'] ?? null;
+                
+                // Skip if email is null, empty string, or the string "null"
+                if (empty($email) || $email === 'null' || $email === 'NULL') {
+                    $skipped++;
+                    continue;
+                }
+                
+                // Also skip if email is invalid format
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                     $skipped++;
                     continue;
                 }
