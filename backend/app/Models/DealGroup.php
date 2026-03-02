@@ -12,10 +12,12 @@ class DealGroup extends Model
         'description',
         'color',
         'is_default',
+        'organization_id',
     ];
 
     protected $casts = [
         'is_default' => 'boolean',
+        'organization_id' => 'integer',
     ];
 
     public function deals(): HasMany

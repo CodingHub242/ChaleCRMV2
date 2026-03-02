@@ -3,14 +3,23 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Traits\ScopesByOrganization;
 use App\Models\DealGroup;
 use Illuminate\Http\Request;
 
 class DealGroupController extends Controller
 {
+    use ScopesByOrganization;
+    
     public function index()
     {
-        $groups = DealGroup::orderBy('name')->get();
+        $organizationId = $this->getOrganizationId();
+        
+        $query = DealGroup::query();
+        if ($organizationId) {
+            $query->where('organization_id', $organizationId);
+        }
+        $groups = $query->orderBy('name')->get();
         
         return response()->json([
             'success' => true,
@@ -26,6 +35,7 @@ class DealGroupController extends Controller
             'color' => 'nullable|string|max:20',
         ]);
 
+        $validated['organization_id'] = $this->getOrganizationId();
         $group = DealGroup::create($validated);
 
         return response()->json([
@@ -37,7 +47,13 @@ class DealGroupController extends Controller
 
     public function show(int $id)
     {
-        $group = DealGroup::withCount(['deals'])->findOrFail($id);
+        $organizationId = $this->getOrganizationId();
+        
+        $group = DealGroup::withCount(['deals']);
+        if ($organizationId) {
+            $group = $group->where('organization_id', $organizationId);
+        }
+        $group = $group->findOrFail($id);
         
         return response()->json([
             'success' => true,
@@ -47,7 +63,13 @@ class DealGroupController extends Controller
 
     public function update(Request $request, int $id)
     {
-        $group = DealGroup::findOrFail($id);
+        $organizationId = $this->getOrganizationId();
+        
+        $group = DealGroup::query();
+        if ($organizationId) {
+            $group = $group->where('organization_id', $organizationId);
+        }
+        $group = $group->findOrFail($id);
 
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255|unique:deal_groups,name,' . $id,
@@ -66,9 +88,14 @@ class DealGroupController extends Controller
 
     public function destroy(int $id)
     {
-        $group = DealGroup::findOrFail($id);
+        $organizationId = $this->getOrganizationId();
         
-        // Don't delete if has deals - just detach
+        $group = DealGroup::query();
+        if ($organizationId) {
+            $group = $group->where('organization_id', $organizationId);
+        }
+        $group = $group->findOrFail($id);
+        
         $group->delete();
 
         return response()->json([
@@ -80,7 +107,13 @@ class DealGroupController extends Controller
     // Get deals count by stage for a group
     public function stageCounts(int $id)
     {
-        $group = DealGroup::findOrFail($id);
+        $organizationId = $this->getOrganizationId();
+        
+        $group = DealGroup::query();
+        if ($organizationId) {
+            $group = $group->where('organization_id', $organizationId);
+        }
+        $group = $group->findOrFail($id);
         
         $stages = ['Prospect', 'Client', 'Demo Requested', 'Demo Completed', 'Contract In-Review', 'Closed Won', 'Closed Lost'];
         
