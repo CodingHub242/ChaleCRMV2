@@ -346,7 +346,7 @@ export class DealsListPage implements OnInit {
 
   async deleteLead(deal: Deal): Promise<void> {
     const alert = await this.alertController.create({
-      header: 'Delete Deal',
+      header: 'Delete Lead',
       message: `Are you sure you want to delete "${deal.name}"?`,
       buttons: [
         { text: 'Cancel', role: 'cancel' },
