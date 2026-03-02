@@ -37,15 +37,15 @@
               {{ getContactInitials() }}
             </div>
             <div class="info">
-              <div class="name">{{ sqr.contact.first_name }} {{ sqr.contact.last_name }}</div>
+              <div class="name">{{ sqr.contact?.first_name }} {{ sqr.contact?.last_name }}</div>
               <div class="subtitle">Contact</div>
               <div class="detail" *ngIf="sqr.contact.email">
                 <ion-icon name="mail-outline"></ion-icon>
-                {{ sqr.contact.email }}
+                {{ sqr.contact?.email }}
               </div>
               <div class="detail" *ngIf="sqr.contact.phone">
                 <ion-icon name="call-outline"></ion-icon>
-                {{ sqr.contact.phone }}
+                {{ sqr.contact?.phone }}
               </div>
             </div>
           </div>
@@ -66,15 +66,15 @@
               {{ getCompanyInitials() }}
             </div>
             <div class="info">
-              <div class="name">{{ sqr.company.name }}</div>
+              <div class="name">{{ sqr.company?.name }}</div>
               <div class="subtitle">Company</div>
               <div class="detail" *ngIf="sqr.company.email">
                 <ion-icon name="mail-outline"></ion-icon>
-                {{ sqr.company.email }}
+                {{ sqr.company?.email }}
               </div>
               <div class="detail" *ngIf="sqr.company.phone">
                 <ion-icon name="call-outline"></ion-icon>
-                {{ sqr.company.phone }}
+                {{ sqr.company?.phone }}
               </div>
             </div>
           </div>

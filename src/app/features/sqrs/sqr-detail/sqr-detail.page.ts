@@ -12,7 +12,8 @@ import {
   chevronForward, checkmarkCircle, closeCircle, playCircle, play, cloudUpload,
   personOutline, businessOutline, locationOutline, flagOutline, calendarOutline,
   chatbubbleOutline, listOutline, fileTrayStacked, pricetagOutline, chatbox, locate,
-  addCircle, arrowUpCircle
+  addCircle, arrowUpCircle,
+  trashOutline
 } from 'ionicons/icons';
 
 interface TabItem {
@@ -72,7 +73,7 @@ export class SqrDetailPage implements OnInit {
     private modalController: ModalController
   ) {
     addIcons({
-      time, documentText, call, mail, folder, pricetag, ticket, send, createOutline, trash,
+      time, trashOutline,documentText, call, mail, folder, pricetag, ticket, send, createOutline, trash,
       chevronForward, checkmarkCircle, closeCircle, playCircle, play, cloudUpload,
       personOutline, businessOutline, locationOutline, flagOutline, calendarOutline,
       chatbubbleOutline, listOutline, fileTrayStacked, pricetagOutline, chatbox, locate,
