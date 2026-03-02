@@ -29,6 +29,13 @@ export class SqrFormPage implements OnInit {
   // Custom fields
   customFields: CustomField[] = [];
   customFieldValues: { [key: string]: string } = {};
+  showAddCustomField = false;
+  newCustomField = {
+    label: '',
+    type: 'text',
+    required: false,
+    optionsText: ''
+  };
 
   // Get custom fields for the component (type cast)
   get sqrCustomFields(): any {
@@ -185,5 +192,43 @@ export class SqrFormPage implements OnInit {
 
   onCustomFieldValuesChanged(values: { [key: string]: string }): void {
     this.customFieldValues = values;
+  }
+
+  openAddCustomField(): void {
+    this.showAddCustomField = true;
+    this.newCustomField = {
+      label: '',
+      type: 'text',
+      required: false,
+      optionsText: ''
+    };
+  }
+
+  addCustomField(module: string): void {
+    if (!this.newCustomField.label) return;
+
+    const fieldData: Partial<CustomField> = {
+      name: this.newCustomField.label.toLowerCase().replace(/\s+/g, '_'),
+      label: this.newCustomField.label,
+      type: this.newCustomField.type as any,
+      required: this.newCustomField.required,
+      module: module as any,
+      display_order: this.customFields.length + 1,
+      options: this.newCustomField.type === 'select' && this.newCustomField.optionsText
+        ? this.newCustomField.optionsText.split(',').map((o: string) => o.trim())
+        : []
+    };
+
+    this.api.createCustomField(fieldData).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.customFields.push(response.data);
+          this.showAddCustomField = false;
+        }
+      },
+      error: (err) => {
+        console.error('Error creating custom field:', err);
+      }
+    });
   }
 }
