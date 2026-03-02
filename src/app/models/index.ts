@@ -115,7 +115,7 @@ export interface Deal {
   description?: string;
   created_at: string;
   updated_at: string;
-  custom_fields?: CustomFieldValue[];
+  custom_fields?: CustomFieldValue[] | { [key: string]: string };
 }
 
 // Deal Group Model
@@ -596,7 +596,7 @@ export interface Sqr {
   assignee?: User;
   resolved_at?: string;
   resolution_notes?: string;
-  custom_fields?: CustomFieldValue[];
+  custom_fields?: CustomFieldValue[] | { [key: string]: string };
   created_at: string;
   updated_at: string;
 }

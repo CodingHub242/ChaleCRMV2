@@ -279,6 +279,9 @@ export class DealFormPage implements OnInit {
       return;
     }
 
+    // Set custom_fields from customFieldValues
+    this.deal.custom_fields = this.customFieldValues;
+
     const request = this.isEditing && this.dealId
       ? this.api.updateDeal(this.dealId, this.deal)
       : this.api.createDeal(this.deal as any);

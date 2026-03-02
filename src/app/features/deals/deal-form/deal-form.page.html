@@ -260,7 +260,7 @@
       </div>
       <app-custom-fields
         [fields]="customFields"
-        [values]="customFieldValues"
+        [entityValues]="deal.custom_fields || []"
         (valuesChanged)="onCustomFieldValuesChanged($event)"
       ></app-custom-fields>
     </div>
@@ -270,7 +270,7 @@
       <div class="no-custom-fields">
         <ion-icon name="pricetag-outline"></ion-icon>
         <p>No custom fields configured for Deals</p>
-        <ion-button size="small" routerLink="/settings/custom-fields" queryParams="{module: 'deal'}">
+        <ion-button size="small" [routerLink]="['/settings/custom-fields']" [queryParams]="{module: 'deal'}">
           <ion-icon name="add" slot="start"></ion-icon>
           Add Custom Fields
         </ion-button>

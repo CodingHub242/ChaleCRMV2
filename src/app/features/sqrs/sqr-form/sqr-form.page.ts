@@ -129,6 +129,9 @@ export class SqrFormPage implements OnInit {
 
     this.isSaving = true;
 
+    // Set custom_fields from customFieldValues
+    this.sqr.custom_fields = this.customFieldValues;
+
     try {
     //   const loading = await this.loadingController.create({
     //     message: 'Saving...',

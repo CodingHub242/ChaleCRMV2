@@ -20,7 +20,8 @@ import { CustomField, CustomFieldValue } from '../../../models';
             [type]="'text'" 
             [(ngModel)]="fieldValues[field.name]" 
             [name]="field.name"
-            [required]="field.required">
+            [required]="field.required"
+            (ionBlur)="onValueChange()">
           </ion-input>
         </ion-item>
 
@@ -31,7 +32,8 @@ import { CustomField, CustomFieldValue } from '../../../models';
             [(ngModel)]="fieldValues[field.name]" 
             [name]="field.name"
             [required]="field.required"
-            rows="3">
+            rows="3"
+            (ionBlur)="onValueChange()">
           </ion-textarea>
         </ion-item>
 
@@ -42,7 +44,8 @@ import { CustomField, CustomFieldValue } from '../../../models';
             [type]="'number'" 
             [(ngModel)]="fieldValues[field.name]" 
             [name]="field.name"
-            [required]="field.required">
+            [required]="field.required"
+            (ionBlur)="onValueChange()">
           </ion-input>
         </ion-item>
 
@@ -53,7 +56,8 @@ import { CustomField, CustomFieldValue } from '../../../models';
             [(ngModel)]="fieldValues[field.name]" 
             [name]="field.name"
             [required]="field.required"
-            presentation="date">
+            presentation="date"
+            (ionBlur)="onValueChange()">
           </ion-datetime>
         </ion-item>
 
@@ -64,7 +68,8 @@ import { CustomField, CustomFieldValue } from '../../../models';
             [(ngModel)]="fieldValues[field.name]" 
             [name]="field.name"
             [required]="field.required"
-            interface="popover">
+            interface="popover"
+            (ionChange)="onValueChange()">
             <ion-select-option *ngFor="let option of field.options" [value]="option">
               {{ option }}
             </ion-select-option>
@@ -79,7 +84,8 @@ import { CustomField, CustomFieldValue } from '../../../models';
             [name]="field.name"
             [required]="field.required"
             multiple="true"
-            interface="popover">
+            interface="popover"
+            (ionChange)="onValueChange()">
             <ion-select-option *ngFor="let option of field.options" [value]="option">
               {{ option }}
             </ion-select-option>
@@ -91,7 +97,8 @@ import { CustomField, CustomFieldValue } from '../../../models';
           <ion-checkbox 
             [(ngModel)]="fieldValues[field.name]" 
             [name]="field.name"
-            [required]="field.required">
+            [required]="field.required"
+            (ionChange)="onValueChange()">
           </ion-checkbox>
           <ion-label>{{ field.label }}{{ field.required ? ' *' : '' }}</ion-label>
         </div>
@@ -99,7 +106,7 @@ import { CustomField, CustomFieldValue } from '../../../models';
         <!-- Radio Buttons -->
         <div *ngIf="field.type === 'radio'" class="radio-field">
           <ion-label>{{ field.label }}{{ field.required ? ' *' : '' }}</ion-label>
-          <ion-radio-group [(ngModel)]="fieldValues[field.name]" [name]="field.name">
+          <ion-radio-group [(ngModel)]="fieldValues[field.name]" [name]="field.name" (ionChange)="onValueChange()">
             <ion-item *ngFor="let option of field.options" lines="none">
               <ion-radio [value]="option" slot="start"></ion-radio>
               <ion-label>{{ option }}</ion-label>
@@ -167,7 +174,10 @@ export class CustomFieldsComponent {
     // Initialize field values from existing entity values
     if (this.entityValues && this.entityValues.length > 0) {
       this.entityValues.forEach(val => {
-        this.fieldValues[`field_${val.field_id}`] = val.value;
+        // Support both field_id (numeric) and field name based values
+        if (val.field_id) {
+          this.fieldValues[`field_${val.field_id}`] = val.value;
+        }
       });
     }
   }
@@ -175,7 +185,9 @@ export class CustomFieldsComponent {
   ngOnChanges(): void {
     if (this.entityValues && this.entityValues.length > 0) {
       this.entityValues.forEach(val => {
-        this.fieldValues[`field_${val.field_id}`] = val.value;
+        if (val.field_id) {
+          this.fieldValues[`field_${val.field_id}`] = val.value;
+        }
       });
     }
   }

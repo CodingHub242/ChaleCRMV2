@@ -2,9 +2,10 @@
   --background: #ffffff;
   --border-color: #e0e0e0;
   
-  ion-toolbar {
-    --background: #ffffff;
+   ion-toolbar{
+    --background: #073336;
     --border-color: #e0e0e0;
+    --color: #e3e3e3;
     --min-height: 56px;
     
     ion-title {
@@ -31,7 +32,7 @@
 .stage-progress-container {
   position: relative;
   width: 100%;
-  padding-top: 12px;
+  padding: 18px;
 }
 
 .stage-track {
