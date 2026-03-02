@@ -20,7 +20,7 @@
 .status-progress-container {
   position: relative;
   width: 100%;
-  padding-top: 20px;
+  padding: 10px;
 }
 
 .status-track {
@@ -63,13 +63,14 @@
   }
   
   .node-label {
-    font-size: 8px;
+    font-size: 9px;
     color: #999;
     white-space: nowrap;
     display: block;
     max-width: 50px;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-top:-35px;
   }
   
   &.active .node-dot {
