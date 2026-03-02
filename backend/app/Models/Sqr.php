@@ -18,6 +18,7 @@ class Sqr extends Model
         'assigned_to',
         'resolved_at',
         'resolution_notes',
+        'organization_id',
     ];
 
     protected $casts = [
@@ -25,6 +26,7 @@ class Sqr extends Model
         'company_id' => 'integer',
         'assigned_to' => 'integer',
         'resolved_at' => 'datetime',
+        'organization_id' => 'integer',
     ];
 
     public function contact(): BelongsTo

@@ -586,7 +586,7 @@ export interface Sqr {
   title: string;
   type: 'Complaint' | 'Feedback' | 'Suggestion' | 'Inquiry';
   priority: 'Low' | 'Medium' | 'High' | 'Critical';
-  status: 'Open' | 'In Progress' | 'Resolved' | 'Closed';
+  status: 'Open' | 'In Progress' | 'Escalated' | 'Resolved' | 'Closed';
   description?: string;
   contact_id?: number;
   contact?: Contact;

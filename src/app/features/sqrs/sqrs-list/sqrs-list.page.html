@@ -84,7 +84,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let sqr of sqrs" [routerLink]="['/sqrs', sqr.id]" class="table-row">
+          <tr *ngFor="let sqr of sqrs" [routerLink]="['/sqrs/view', sqr.id]" class="table-row">
             <td>
               <span class="sqr-title">{{ sqr.title }}</span>
             </td>

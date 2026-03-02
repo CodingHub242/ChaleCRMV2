@@ -342,6 +342,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/sqrs/sqr-form/sqr-form.page').then(m => m.SqrFormPage)
       },
       {
+        path: 'sqrs/view/:id',
+        loadComponent: () => import('./features/sqrs/sqr-detail/sqr-detail.page').then(m => m.SqrDetailPage)
+      },
+      {
         path: 'sqrs/:id',
         loadComponent: () => import('./features/sqrs/sqr-form/sqr-form.page').then(m => m.SqrFormPage)
       },

@@ -3,17 +3,25 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Traits\ScopesByOrganization;
 use App\Models\Sqr;
 use Illuminate\Http\Request;
 
 class SqrController extends Controller
 {
+    use ScopesByOrganization;
+    
     public function index(Request $request)
     {
         $perPage = $request->input('per_page', 15);
         $search = $request->input('search', '');
+        $organizationId = $this->getOrganizationId();
         
         $query = Sqr::with(['contact', 'company', 'assignee']);
+        
+        if ($organizationId) {
+            $query->where('organization_id', $organizationId);
+        }
         
         if ($search) {
             $query->where(function($q) use ($search) {
@@ -39,12 +47,19 @@ class SqrController extends Controller
 
     public function counts()
     {
+        $organizationId = $this->getOrganizationId();
+        
+        $query = Sqr::query();
+        if ($organizationId) {
+            $query->where('organization_id', $organizationId);
+        }
+        
         $counts = [
-            'new' => Sqr::where('status', 'Open')->count(),
-            'in_progress' => Sqr::where('status', 'In Progress')->count(),
-            'escalated' => Sqr::where('status', 'Escalated')->count(),
-            'closed' => Sqr::whereIn('status', ['Resolved', 'Closed'])->count(),
-            'total' => Sqr::count()
+            'new' => (clone $query)->where('status', 'Open')->count(),
+            'in_progress' => (clone $query)->where('status', 'In Progress')->count(),
+            'escalated' => (clone $query)->where('status', 'Escalated')->count(),
+            'closed' => (clone $query)->whereIn('status', ['Resolved', 'Closed'])->count(),
+            'total' => $query->count()
         ];
         
         return response()->json([
@@ -67,6 +82,7 @@ class SqrController extends Controller
             'resolution_notes' => 'nullable|string',
         ]);
 
+        $validated['organization_id'] = $this->getOrganizationId();
         $sqr = Sqr::create($validated);
 
         return response()->json([
@@ -78,7 +94,13 @@ class SqrController extends Controller
 
     public function show(int $id)
     {
-        $sqr = Sqr::with(['contact', 'company', 'assignee'])->findOrFail($id);
+        $organizationId = $this->getOrganizationId();
+        
+        $sqr = Sqr::with(['contact', 'company', 'assignee']);
+        if ($organizationId) {
+            $sqr = $sqr->where('organization_id', $organizationId);
+        }
+        $sqr = $sqr->findOrFail($id);
         
         return response()->json([
             'success' => true,
@@ -88,7 +110,13 @@ class SqrController extends Controller
 
     public function update(Request $request, int $id)
     {
-        $sqr = Sqr::findOrFail($id);
+        $organizationId = $this->getOrganizationId();
+        
+        $sqr = Sqr::query();
+        if ($organizationId) {
+            $sqr = $sqr->where('organization_id', $organizationId);
+        }
+        $sqr = $sqr->findOrFail($id);
 
         $validated = $request->validate([
             'title' => 'sometimes|required|string|max:255',
@@ -119,7 +147,13 @@ class SqrController extends Controller
 
     public function destroy(int $id)
     {
-        $sqr = Sqr::findOrFail($id);
+        $organizationId = $this->getOrganizationId();
+        
+        $sqr = Sqr::query();
+        if ($organizationId) {
+            $sqr = $sqr->where('organization_id', $organizationId);
+        }
+        $sqr = $sqr->findOrFail($id);
         $sqr->delete();
 
         return response()->json([
@@ -130,7 +164,13 @@ class SqrController extends Controller
 
     public function updateStatus(Request $request, int $id)
     {
-        $sqr = Sqr::findOrFail($id);
+        $organizationId = $this->getOrganizationId();
+        
+        $sqr = Sqr::query();
+        if ($organizationId) {
+            $sqr = $sqr->where('organization_id', $organizationId);
+        }
+        $sqr = $sqr->findOrFail($id);
 
         $validated = $request->validate([
             'status' => 'required|string|in:Open,In Progress,Escalated,Resolved,Closed',

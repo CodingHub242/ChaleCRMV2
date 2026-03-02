@@ -1,0 +1,338 @@
+<ion-header class="bigin-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="router.navigate(['/sqrs'])">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ sqr?.title || 'SQR Details' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="sendEmail()" class="send-btn">
+        <ion-icon slot="icon-only" name="send-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="editSqr()">
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="deleteSqr()" color="danger">
+        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="detail-container" *ngIf="!isLoading && sqr">
+    <!-- Main Split Layout -->
+    <div class="split-layout">
+      <!-- Left Sidebar - Contact Info -->
+      <div class="left-panel">
+        <div class="contact-card">
+          <div class="card-header">
+            <h3>Related To</h3>
+          </div>
+          
+          <!-- Contact -->
+          <div class="related-item" *ngIf="sqr.contact">
+            <div class="avatar">
+              {{ getContactInitials() }}
+            </div>
+            <div class="info">
+              <div class="name">{{ sqr.contact.first_name }} {{ sqr.contact.last_name }}</div>
+              <div class="subtitle">Contact</div>
+              <div class="detail" *ngIf="sqr.contact.email">
+                <ion-icon name="mail-outline"></ion-icon>
+                {{ sqr.contact.email }}
+              </div>
+              <div class="detail" *ngIf="sqr.contact.phone">
+                <ion-icon name="call-outline"></ion-icon>
+                {{ sqr.contact.phone }}
+              </div>
+            </div>
+          </div>
+          
+          <div class="related-item empty" *ngIf="!sqr.contact">
+            <div class="avatar">
+              <ion-icon name="person-outline"></ion-icon>
+            </div>
+            <div class="info">
+              <div class="name">No Contact</div>
+              <div class="subtitle">Click edit to add</div>
+            </div>
+          </div>
+
+          <!-- Company -->
+          <div class="related-item" *ngIf="sqr.company">
+            <div class="avatar company">
+              {{ getCompanyInitials() }}
+            </div>
+            <div class="info">
+              <div class="name">{{ sqr.company.name }}</div>
+              <div class="subtitle">Company</div>
+              <div class="detail" *ngIf="sqr.company.email">
+                <ion-icon name="mail-outline"></ion-icon>
+                {{ sqr.company.email }}
+              </div>
+              <div class="detail" *ngIf="sqr.company.phone">
+                <ion-icon name="call-outline"></ion-icon>
+                {{ sqr.company.phone }}
+              </div>
+            </div>
+          </div>
+
+          <div class="related-item empty" *ngIf="!sqr.company">
+            <div class="avatar company">
+              <ion-icon name="business-outline"></ion-icon>
+            </div>
+            <div class="info">
+              <div class="name">No Company</div>
+              <div class="subtitle">Click edit to add</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SQR Info Card -->
+        <div class="info-card">
+          <div class="card-header">
+            <h3>SQR Information</h3>
+          </div>
+          
+          <div class="info-row">
+            <span class="label">Type</span>
+            <span class="value">
+              <ion-badge class="type-badge" [class]="sqr.type?.toLowerCase() || 'default'">
+                {{ sqr.type }}
+              </ion-badge>
+            </span>
+          </div>
+          
+          <div class="info-row">
+            <span class="label">Priority</span>
+            <span class="value">
+              <ion-badge class="priority-badge" [style.background-color]="getPriorityColor(sqr.priority || 'Medium')">
+                {{ sqr.priority }}
+              </ion-badge>
+            </span>
+          </div>
+          
+          <div class="info-row">
+            <span class="label">Status</span>
+            <span class="value">
+              <ion-badge class="status-badge" [class]="getStatusClass(sqr.status || 'Open')">
+                {{ sqr.status }}
+              </ion-badge>
+            </span>
+          </div>
+          
+          <div class="info-row">
+            <span class="label">Created</span>
+            <span class="value">{{ formatDate(sqr.created_at) }}</span>
+          </div>
+          
+          <div class="info-row" *ngIf="sqr.updated_at">
+            <span class="label">Last Updated</span>
+            <span class="value">{{ formatDate(sqr.updated_at) }}</span>
+          </div>
+          
+          <div class="info-row" *ngIf="sqr.resolved_at">
+            <span class="label">Resolved</span>
+            <span class="value">{{ formatDate(sqr.resolved_at) }}</span>
+          </div>
+        </div>
+
+        <!-- Description Card -->
+        <div class="description-card" *ngIf="sqr.description">
+          <div class="card-header">
+            <h3>Description</h3>
+          </div>
+          <p>{{ sqr.description }}</p>
+        </div>
+
+        <!-- Assigned To Card -->
+        <div class="assignee-card" *ngIf="sqr.assignee">
+          <div class="card-header">
+            <h3>Assigned To</h3>
+          </div>
+          <div class="assignee-info">
+            <div class="avatar">
+              {{ sqr.assignee.name?.charAt(0) || '?' }}
+            </div>
+            <div class="info">
+              <div class="name">{{ sqr.assignee.name }}</div>
+              <div class="subtitle">{{ sqr.assignee.role || 'User' }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resolution Card -->
+        <div class="resolution-card" *ngIf="sqr.resolution_notes">
+          <div class="card-header">
+            <h3>Resolution</h3>
+          </div>
+          <p>{{ sqr.resolution_notes }}</p>
+        </div>
+      </div>
+
+      <!-- Right Panel - Tabs -->
+      <div class="right-panel">
+        <!-- Tab Bar -->
+        <div class="tab-bar">
+          <div 
+            *ngFor="let tab of tabs" 
+            class="tab-item" 
+            [class.active]="isTabActive(tab.key)"
+            (click)="onTabClick(tab.key)">
+            <ion-icon [name]="tab.icon"></ion-icon>
+            <span>{{ tab.label }}</span>
+          </div>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+          <!-- Timeline Tab -->
+          <div class="tab-pane" *ngIf="activeTab === 'timeline'">
+            <div class="timeline">
+              <div class="timeline-item" *ngFor="let item of timelineItems">
+                <div class="timeline-icon" [style.background-color]="item.color">
+                  <ion-icon [name]="item.icon"></ion-icon>
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-title">{{ item.title }}</div>
+                  <div class="timeline-date">{{ formatDate(item.date) }}</div>
+                </div>
+              </div>
+              
+              <div class="empty-timeline" *ngIf="timelineItems.length === 0">
+                <ion-icon name="time-outline"></ion-icon>
+                <p>No activity yet</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes Tab -->
+          <div class="tab-pane" *ngIf="activeTab === 'notes'">
+            <div class="notes-section">
+              <div class="add-note">
+                <ion-textarea 
+                  [(ngModel)]="notes" 
+                  placeholder="Add a note..."
+                  rows="4"
+                ></ion-textarea>
+                <ion-button 
+                  (click)="saveNote()" 
+                  [disabled]="!notes.trim() || isSavingNote"
+                  class="save-note-btn">
+                  <ion-spinner *ngIf="isSavingNote" name="circular"></ion-spinner>
+                  {{ isSavingNote ? 'Saving...' : 'Save Note' }}
+                </ion-button>
+              </div>
+              
+              <div class="notes-list" *ngIf="sqr.description">
+                <h4>All Notes</h4>
+                <div class="note-item">
+                  <p>{{ sqr.description }}</p>
+                  <span class="note-date">{{ formatDate(sqr.updated_at) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Activities Tab -->
+          <div class="tab-pane" *ngIf="activeTab === 'activities'">
+            <div class="activities-section">
+              <div class="loading" *ngIf="isLoadingActivities">
+                <ion-spinner name="lines"></ion-spinner>
+                <p>Loading activities...</p>
+              </div>
+              
+              <div class="activity-list" *ngIf="!isLoadingActivities && activities.length > 0">
+                <div class="activity-item" *ngFor="let activity of activities">
+                  <div class="activity-icon">
+                    <ion-icon [name]="activity.type === 'call' ? 'call' : activity.type === 'meeting' ? 'calendar' : 'document-text'"></ion-icon>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-title">{{ activity.title }}</div>
+                    <div class="activity-desc" *ngIf="activity.description">{{ activity.description }}</div>
+                    <div class="activity-date">{{ formatDate(activity.created_at) }}</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="empty" *ngIf="!isLoadingActivities && activities.length === 0">
+                <ion-icon name="play-circle-outline"></ion-icon>
+                <p>No activities yet</p>
+                <ion-button size="small" routerLink="/tasks/new">
+                  <ion-icon name="add" slot="start"></ion-icon>
+                  Add Activity
+                </ion-button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Emails Tab -->
+          <div class="tab-pane" *ngIf="activeTab === 'emails'">
+            <div class="emails-section">
+              <div class="empty">
+                <ion-icon name="mail-outline"></ion-icon>
+                <p>No emails sent yet</p>
+                <ion-button size="small" (click)="sendEmail()">
+                  <ion-icon name="send" slot="start"></ion-icon>
+                  Send Email
+                </ion-button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stage History Tab -->
+          <div class="tab-pane" *ngIf="activeTab === 'history'">
+            <div class="history-section">
+              <div class="empty">
+                <ion-icon name="list-outline"></ion-icon>
+                <p>No stage history available</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Files Tab -->
+          <div class="tab-pane" *ngIf="activeTab === 'files'">
+            <div class="files-section">
+              <div class="empty">
+                <ion-icon name="folder-outline"></ion-icon>
+                <p>No files attached</p>
+                <ion-button size="small">
+                  <ion-icon name="cloud-upload-outline" slot="start"></ion-icon>
+                  Upload File
+                </ion-button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Products Tab -->
+          <div class="tab-pane" *ngIf="activeTab === 'products'">
+            <div class="products-section">
+              <div class="empty">
+                <ion-icon name="pricetag-outline"></ion-icon>
+                <p>No products linked</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tickets Tab -->
+          <div class="tab-pane" *ngIf="activeTab === 'tickets'">
+            <div class="tickets-section">
+              <div class="empty">
+                <ion-icon name="ticket-outline"></ion-icon>
+                <p>No related tickets</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Loading SQR...</p>
+  </div>
+</ion-content>
