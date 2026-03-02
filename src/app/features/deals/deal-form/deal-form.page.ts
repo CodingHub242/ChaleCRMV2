@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, AlertController, LoadingController, ModalController } from '@ionic/angular';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { IonToggle,IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonButtons, IonMenuButton, IonIcon, IonRow, IonCol, IonModal, IonLabel, IonItem, IonDatetime } from '@ionic/angular/standalone';
 import { ApiService } from '../../../core/services/api.service';
 import { Deal, Contact, Company, CustomField } from '../../../models';
@@ -19,7 +19,7 @@ interface DealGroup {
 @Component({
   selector: 'app-deal-form',
   standalone: true,
-  imports: [IonToggle,CommonModule, FormsModule, IonicModule, CustomFieldsComponent],
+  imports: [IonToggle,CommonModule, FormsModule, IonicModule, RouterModule, CustomFieldsComponent],
   templateUrl: './deal-form.page.html',
   styleUrls: ['./deal-form.page.scss']
 })
