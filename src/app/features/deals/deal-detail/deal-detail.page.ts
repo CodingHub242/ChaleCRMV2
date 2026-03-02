@@ -13,7 +13,8 @@ import {
   personOutline, businessOutline, locationOutline, flagOutline, calendarOutline,
   chatbubbleOutline, listOutline, fileTrayStacked, pricetagOutline, chatbox, locate,
   addCircle, arrowUpCircle,
-  trashOutline, briefcase, trendingUp, trophy, analytics, cash
+  trashOutline, briefcase, trendingUp, trophy, analytics, cash,
+  videocamOutline
 } from 'ionicons/icons';
 
 interface TabItem {
@@ -95,7 +96,7 @@ export class DealDetailPage implements OnInit {
       chevronForward, checkmarkCircle, closeCircle, playCircle, play, cloudUpload,
       personOutline, businessOutline, locationOutline, flagOutline, calendarOutline,
       chatbubbleOutline, listOutline, fileTrayStacked, pricetagOutline, chatbox, locate,
-      addCircle, arrowUpCircle,
+      addCircle, arrowUpCircle,videocamOutline,
       person, business, add, chevronBack, chevronDown, linkOutline, briefcase, trendingUp, trophy, analytics, cash
     });
   }
