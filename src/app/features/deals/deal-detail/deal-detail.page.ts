@@ -355,9 +355,9 @@ export class DealDetailPage implements OnInit {
   }
 
   getProbabilityColor(probability: number): string {
-    if (probability >= 70) return '#4caf50';
-    if (probability >= 40) return '#ff9800';
-    return '#f44336';
+    if (probability >= 70) return '#fff';
+    if (probability >= 40) return '#fff';
+    return 'burlywood';
   }
 
   private async showAlert(title: string, message: string): Promise<void> {
