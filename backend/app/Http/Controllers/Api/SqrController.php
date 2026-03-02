@@ -17,7 +17,7 @@ class SqrController extends Controller
         $search = $request->input('search', '');
         $organizationId = $this->getOrganizationId();
         
-        $query = Sqr::with(['contact', 'company', 'assignee']);
+        $query = Sqr::with(['contact', 'company', 'assignee', 'owner', 'creator']);
         
         if ($organizationId) {
             $query->where('organization_id', $organizationId);
@@ -84,11 +84,20 @@ class SqrController extends Controller
         ]);
 
         $validated['organization_id'] = $this->getOrganizationId();
+        
+        // Set created_by to current user
+        $validated['created_by'] = auth()->id();
+        
+        // If assigned_to is provided, also set owner_id
+        if (!empty($validated['assigned_to'])) {
+            $validated['owner_id'] = $validated['assigned_to'];
+        }
+        
         $sqr = Sqr::create($validated);
 
         return response()->json([
             'success' => true,
-            'data' => $sqr->load(['contact', 'company', 'assignee']),
+            'data' => $sqr->load(['contact', 'company', 'assignee', 'owner', 'creator']),
             'message' => 'SQR created successfully'
         ], 201);
     }
@@ -97,7 +106,7 @@ class SqrController extends Controller
     {
         $organizationId = $this->getOrganizationId();
         
-        $sqr = Sqr::with(['contact', 'company', 'assignee']);
+        $sqr = Sqr::with(['contact', 'company', 'assignee', 'owner', 'creator', 'updater']);
         if ($organizationId) {
             $sqr = $sqr->where('organization_id', $organizationId);
         }
@@ -138,11 +147,19 @@ class SqrController extends Controller
             $validated['resolved_at'] = now();
         }
 
+        // Set updated_by to current user
+        $validated['updated_by'] = auth()->id();
+        
+        // If assigned_to is being set for the first time (was null), also set owner_id
+        if (!empty($validated['assigned_to']) && empty($sqr->assigned_to)) {
+            $validated['owner_id'] = $validated['assigned_to'];
+        }
+
         $sqr->update($validated);
 
         return response()->json([
             'success' => true,
-            'data' => $sqr->load(['contact', 'company', 'assignee']),
+            'data' => $sqr->load(['contact', 'company', 'assignee', 'owner', 'creator', 'updater']),
             'message' => 'SQR updated successfully'
         ]);
     }
@@ -183,11 +200,14 @@ class SqrController extends Controller
             $validated['resolved_at'] = now();
         }
 
+        // Set updated_by to current user
+        $validated['updated_by'] = auth()->id();
+        
         $sqr->update($validated);
 
         return response()->json([
             'success' => true,
-            'data' => $sqr->load(['contact', 'company', 'assignee']),
+            'data' => $sqr->load(['contact', 'company', 'assignee', 'owner', 'creator', 'updater']),
             'message' => 'SQR status updated successfully'
         ]);
     }

@@ -149,9 +149,19 @@
             <span class="value">{{ formatDate(sqr.created_at) }}</span>
           </div>
           
+          <div class="info-row" *ngIf="sqr.creator">
+            <span class="label">Created By</span>
+            <span class="value">{{ sqr.creator.name }}</span>
+          </div>
+          
           <div class="info-row" *ngIf="sqr.updated_at">
             <span class="label">Last Updated</span>
             <span class="value">{{ formatDate(sqr.updated_at) }}</span>
+          </div>
+          
+          <div class="info-row" *ngIf="sqr.updater">
+            <span class="label">Updated By</span>
+            <span class="value">{{ sqr.updater.name }}</span>
           </div>
           
           <div class="info-row" *ngIf="sqr.resolved_at">
@@ -169,17 +179,26 @@
         </div>
 
         <!-- Assigned To Card -->
-        <div class="assignee-card" *ngIf="sqr.assignee">
+        <div class="assignee-card" *ngIf="sqr.assignee || sqr.owner">
           <div class="card-header">
             <h3>Assigned To</h3>
           </div>
-          <div class="assignee-info">
+          <div class="assignee-info" *ngIf="sqr.assignee">
             <div class="avatar">
               {{ sqr.assignee.name?.charAt(0) || '?' }}
             </div>
             <div class="info">
               <div class="name">{{ sqr.assignee.name }}</div>
               <div class="subtitle">{{ sqr.assignee.role || 'User' }}</div>
+            </div>
+          </div>
+          <div class="owner-info" *ngIf="sqr.owner && !sqr.assignee">
+            <div class="avatar owner">
+              {{ sqr.owner.name?.charAt(0) || '?' }}
+            </div>
+            <div class="info">
+              <div class="name">{{ sqr.owner.name }}</div>
+              <div class="subtitle">Owner</div>
             </div>
           </div>
         </div>

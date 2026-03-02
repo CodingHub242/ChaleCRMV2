@@ -594,6 +594,12 @@ export interface Sqr {
   company?: Company;
   assigned_to?: number;
   assignee?: User;
+  owner_id?: number;
+  owner?: User;
+  created_by?: number;
+  creator?: User;
+  updated_by?: number;
+  updater?: User;
   resolved_at?: string;
   resolution_notes?: string;
   custom_fields?: CustomFieldValue[] | { [key: string]: string };

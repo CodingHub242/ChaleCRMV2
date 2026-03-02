@@ -16,16 +16,22 @@ class Sqr extends Model
         'contact_id',
         'company_id',
         'assigned_to',
+        'owner_id',
         'resolved_at',
         'resolution_notes',
         'organization_id',
         'custom_fields',
+        'created_by',
+        'updated_by',
     ];
 
     protected $casts = [
         'contact_id' => 'integer',
         'company_id' => 'integer',
         'assigned_to' => 'integer',
+        'owner_id' => 'integer',
+        'created_by' => 'integer',
+        'updated_by' => 'integer',
         'resolved_at' => 'datetime',
         'organization_id' => 'integer',
         'custom_fields' => 'array',
@@ -44,5 +50,20 @@ class Sqr extends Model
     public function assignee(): BelongsTo
     {
         return $this->belongsTo(ZohoUser::class, 'assigned_to');
+    }
+
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(ZohoUser::class, 'owner_id');
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(ZohoUser::class, 'created_by');
+    }
+
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(ZohoUser::class, 'updated_by');
     }
 }

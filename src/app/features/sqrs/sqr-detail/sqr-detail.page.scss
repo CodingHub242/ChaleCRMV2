@@ -191,6 +191,46 @@
   }
 }
 
+.owner-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+  margin-top: 12px;
+  
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e09027 0%, #f5a623 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    
+    &.owner {
+      background: linear-gradient(135deg, #e09027 0%, #f5a623 100%);
+    }
+  }
+  
+  .info {
+    .name {
+      font-weight: 600;
+      color: #1a1a2e;
+      font-size: 13px;
+    }
+    
+    .subtitle {
+      font-size: 11px;
+      color: #e09027;
+      font-weight: 500;
+    }
+  }
+}
+
 .card-header {
   margin-bottom: 16px;
   
