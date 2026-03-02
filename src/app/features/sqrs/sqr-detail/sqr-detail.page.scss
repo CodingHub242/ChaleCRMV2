@@ -7,8 +7,8 @@
   
   ion-toolbar.status-toolbar {
     --background: #fafafa;
-    --min-height: 70px;
-    padding: 8px 16px;
+    --min-height: 60px;
+    padding: 6px 8px;
   }
 }
 
@@ -26,8 +26,8 @@
 .status-track {
   position: absolute;
   top: 28px;
-  left: 10%;
-  right: 10%;
+  left: 8%;
+  right: 8%;
   height: 4px;
   background: #e0e0e0;
   border-radius: 2px;
@@ -52,21 +52,24 @@
   text-align: center;
   
   .node-dot {
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
     background: #ccc;
-    margin: 0 auto 4px;
+    margin: 0 auto 2px;
     border: 2px solid #fff;
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     transition: background-color 0.3s ease;
   }
   
   .node-label {
-    font-size: 10px;
+    font-size: 8px;
     color: #999;
     white-space: nowrap;
     display: block;
+    max-width: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   
   &.active .node-dot {

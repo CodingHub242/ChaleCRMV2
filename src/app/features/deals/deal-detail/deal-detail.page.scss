@@ -23,23 +23,23 @@
 
 // Stage Progress Bar
 .stage-toolbar {
-  --min-height: 70px;
+  --min-height: 60px;
   --background: #fafafa;
-  padding: 8px 16px;
+  padding: 6px 8px;
 }
 
 .stage-progress-container {
   position: relative;
   width: 100%;
-  padding-top: 20px;
+  padding-top: 16px;
 }
 
 .stage-track {
   position: absolute;
-  top: 28px;
-  left: 8%;
-  right: 8%;
-  height: 4px;
+  top: 22px;
+  left: 4%;
+  right: 4%;
+  height: 3px;
   background: #e0e0e0;
   border-radius: 2px;
 }
@@ -63,24 +63,25 @@
   text-align: center;
   
   .node-dot {
-    width: 14px;
-    height: 14px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background: #ccc;
-    margin: 0 auto 4px;
+    margin: 0 auto 2px;
     border: 2px solid #fff;
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     transition: background-color 0.3s ease;
   }
   
   .node-label {
-    font-size: 9px;
+    font-size: 7px;
     color: #999;
     white-space: nowrap;
     display: block;
-    max-width: 60px;
+    max-width: 45px;
     overflow: hidden;
     text-overflow: ellipsis;
+    line-height: 1.2;
   }
   
   &.active .node-dot {
