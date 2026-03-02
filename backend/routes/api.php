@@ -124,6 +124,9 @@ Route::get('sqrs/counts', [App\Http\Controllers\Api\SqrController::class, 'count
 Route::patch('sqrs/{id}/status', [App\Http\Controllers\Api\SqrController::class, 'updateStatus']);
 Route::apiResource('sqrs', App\Http\Controllers\Api\SqrController::class);
 
+// Custom Fields
+Route::apiResource('custom-fields', App\Http\Controllers\Api\CustomFieldController::class);
+
 // Deals
 Route::get('/deals/counts', [App\Http\Controllers\Api\DealController::class, 'counts']);
 Route::apiResource('deals', App\Http\Controllers\Api\DealController::class);
