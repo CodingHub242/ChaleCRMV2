@@ -120,9 +120,9 @@ Route::post('enrichment/enrich', [App\Http\Controllers\Api\EnrichmentController:
 Route::get('enrichment/providers', [App\Http\Controllers\Api\EnrichmentController::class, 'providers']);
 
 // SQR (Service Quality Requests)
-Route::apiResource('sqrs', App\Http\Controllers\Api\SqrController::class);
-Route::patch('sqrs/{id}/status', [App\Http\Controllers\Api\SqrController::class, 'updateStatus']);
 Route::get('sqrs/counts', [App\Http\Controllers\Api\SqrController::class, 'counts']);
+Route::patch('sqrs/{id}/status', [App\Http\Controllers\Api\SqrController::class, 'updateStatus']);
+Route::apiResource('sqrs', App\Http\Controllers\Api\SqrController::class);
 
 // Deals
 Route::apiResource('deals', App\Http\Controllers\Api\DealController::class);
