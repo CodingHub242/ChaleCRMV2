@@ -97,12 +97,29 @@
       </table>
 
       <!-- Pagination Info -->
-      <div class="pagination-info">
-        <span>Showing {{ contacts.length }} contacts</span>
+      <div class="pagination-controls">
+        <div class="pagination-info">
+          Showing {{ contacts.length }} of {{ totalContacts }} contacts
+        </div>
+        <div class="page-controls" *ngIf="totalPages > 1">
+          <ion-button 
+            fill="clear" 
+            [disabled]="currentPage === 1"
+            (click)="prevPage()">
+            <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
+          </ion-button>
+          <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
+          <ion-button 
+            fill="clear" 
+            [disabled]="currentPage === totalPages"
+            (click)="nextPage()">
+            <ion-icon slot="icon-only" name="chevron-forward"></ion-icon>
+          </ion-button>
+        </div>
       </div>
 
       <!-- Infinite Scroll -->
-      <ion-infinite-scroll (ionInfinite)="loadMore($event)" *ngIf="hasMore">
+      <ion-infinite-scroll (ionInfinite)="loadMore($event)" *ngIf="hasMore && currentPage < totalPages">
         <ion-infinite-scroll-content
           loading-spinner="lines-small"
           loading-text="Loading more...">

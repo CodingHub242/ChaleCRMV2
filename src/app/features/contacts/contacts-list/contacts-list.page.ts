@@ -22,6 +22,8 @@ export class ContactsListPage implements OnInit {
   isSyncing = false;
   searchQuery = '';
   currentPage = 1;
+  totalPages = 1;
+  totalContacts = 0;
   hasMore = true;
 
   private avatarColors = [
@@ -147,6 +149,9 @@ export class ContactsListPage implements OnInit {
           this.contacts = response.data;
         }
         this.hasMore = response.current_page < response.last_page;
+        this.currentPage = response.current_page;
+        this.totalPages = response.last_page;
+        this.totalContacts = response.total;
         this.isLoading = false;
       },
       error: () => {
@@ -154,6 +159,38 @@ export class ContactsListPage implements OnInit {
         this.contacts = [];
       }
     });
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
+      this.currentPage = page;
+      this.isLoading = true;
+      this.api.getContacts({ 
+        page: this.currentPage, 
+        per_page: 20,
+        search: this.searchQuery 
+      }).subscribe({
+        next: (response) => {
+          this.contacts = response.data;
+          this.hasMore = response.current_page < response.last_page;
+          this.currentPage = response.current_page;
+          this.totalPages = response.last_page;
+          this.totalContacts = response.total;
+          this.isLoading = false;
+        },
+        error: () => {
+          this.isLoading = false;
+        }
+      });
+    }
+  }
+
+  nextPage(): void {
+    this.goToPage(this.currentPage + 1);
+  }
+
+  prevPage(): void {
+    this.goToPage(this.currentPage - 1);
   }
 
   onSearch(event: SearchbarCustomEvent): void {
