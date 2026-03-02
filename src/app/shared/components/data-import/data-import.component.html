@@ -5,8 +5,12 @@
         <ion-icon slot="icon-only" name="close"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>
+    <ion-title *ngIf="entityType!='deal'">
       Import {{ entityType | titlecase }}s
+    </ion-title>
+
+     <ion-title *ngIf="entityType=='deal'">
+      Import Leads
     </ion-title>
     <ion-buttons slot="end" *ngIf="currentStep !== 'importing'">
       <ion-button (click)="onCancel()">Cancel</ion-button>
