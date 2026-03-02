@@ -1,39 +1,73 @@
 .bigin-header {
   --background: #073336;
-    --border-color: #e0e0e0;
-    --color: #e3e3e3;
+  --border-color: #e0e0e0;
+  --color: #e3e3e3;
 }
 
 .bigin-header ion-title {
   font-weight: 600;
 }
 
-.progress-fill.qualification[_ngcontent-ng-c1148797889] {
-    background: linear-gradient(90deg, #073336, #f5576c) !important;
-}
-
 .search-toolbar {
   --background: #ffffff;
   --padding-start: 16px;
   --padding-end: 16px;
-  padding-bottom: 8px;
+  padding: 12px 16px;
 }
 
-.bigin-search {
-  --background: #f5f7fa;
-  --border-radius: 10px;
-  --box-shadow: none;
-  --placeholder-color: #999;
-  padding: 0;
+.search-row {
+  display: flex;
+  gap: 12px;
+}
+
+.search-input-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: #f5f7fa;
+  border-radius: 10px;
+  padding: 0 12px;
+  position: relative;
+}
+
+.search-icon {
+  color: #999;
+  font-size: 18px;
+  margin-right: 8px;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 10px 0;
+  font-size: 14px;
+  outline: none;
+  color: #333;
+  
+  &::placeholder {
+    color: #999;
+  }
+}
+
+.clear-icon {
+  color: #999;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px;
+  
+  &:hover {
+    color: #666;
+  }
 }
 
 .bigin-content {
   --background: #f5f7fa;
 }
 
-.deals-container {
+.table-container {
   padding: 16px;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -128,50 +162,73 @@
   height: 44px;
 }
 
-// Deals Grid
-.deals-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 16px;
-}
-
-// Deal Card
-.deal-card {
+// Table Styles
+.table-wrapper {
   background: white;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
-  cursor: pointer;
   overflow: hidden;
 }
 
-.deal-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 16px 16px 0;
-}
-
-.deal-info {
-  flex: 1;
+.bigin-table {
+  width: 100%;
+  border-collapse: collapse;
+  
+  thead {
+    background: #f8f9fa;
+    
+    th {
+      text-align: left;
+      padding: 14px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #e9ecef;
+      white-space: nowrap;
+    }
+  }
+  
+  tbody {
+    .table-row {
+      cursor: pointer;
+      transition: background 0.2s ease;
+      
+      &:hover {
+        background: #f8f9fa;
+      }
+      
+      td {
+        padding: 12px 16px;
+        font-size: 13px;
+        color: #333;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+      }
+    }
+  }
 }
 
 .deal-name {
-  margin: 0;
-  font-size: 16px;
   font-weight: 600;
   color: #1a1a2e;
-  margin-bottom: 8px;
+}
+
+.amount {
+  font-weight: 600;
+  color: #e09027;
+}
+
+.currency {
+  font-size: 12px;
+  color: #999;
+  margin-left: 4px;
 }
 
 .stage-badge {
-  font-size: 11px;
-  font-weight: 500;
+  font-size: 10px;
+  font-weight: 600;
   padding: 4px 10px;
   border-radius: 12px;
 }
@@ -184,117 +241,58 @@
 .stage-badge.closed-won { background: #c8e6c9; color: #2e7d32; }
 .stage-badge.closed-lost { background: #ffcdd2; color: #c62828; }
 
-.more-btn {
-  --color: #999;
-}
-
-// Card Amount
-.card-amount {
-  padding: 12px 16px;
-}
-
-.amount {
-  font-size: 28px;
-  font-weight: 700;
-  color: #e09027;
-}
-
-.currency {
-  font-size: 14px;
-  color: #999;
-  margin-left: 4px;
-}
-
-// Card Body
-.card-body {
-  padding: 0 16px;
+.probability-cell {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 8px;
 }
 
-.info-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  color: #666;
-}
-
-.info-row ion-icon {
-  font-size: 16px;
-  color: #999;
-  flex-shrink: 0;
-}
-
-// Card Footer
-.card-footer {
-  padding: 16px;
-  background: #fafafa;
-  border-top: 1px solid #f0f0f0;
-  margin-top: 12px;
-}
-
-.progress-section {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 8px;
-}
-
-.progress-bar {
-  flex: 1;
-  height: 6px;
+.mini-progress {
+  width: 60px;
+  height: 4px;
   background: #e0e0e0;
-  border-radius: 3px;
+  border-radius: 2px;
   overflow: hidden;
 }
 
-.progress-fill {
+.mini-progress-fill {
   height: 100%;
-  border-radius: 3px;
-  background: linear-gradient(90deg, #e09027, #013d41);
+  background: #e09027;
+  border-radius: 2px;
 }
 
-.progress-fill.new { background: linear-gradient(90deg, #667eea, #764ba2); }
-.progress-fill.qualification { background: linear-gradient(90deg, #f093fb, #f5576c); }
-.progress-fill.needs-analysis { background: linear-gradient(90deg, #a8edea, #fed6e3); }
-.progress-fill.proposal { background: linear-gradient(90deg, #fa709a, #fee140); }
-.progress-fill.negotiation { background: linear-gradient(90deg, #43e97b, #38f9d7); }
-.progress-fill.closed-won { background: linear-gradient(90deg, #11998e, #38ef7d); }
-.progress-fill.closed-lost { background: linear-gradient(90deg, #eb3349, #f45c43); }
-
-.probability {
-  font-size: 12px;
-  font-weight: 600;
-  color: #e09027;
-}
-
-.owner {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: #999;
-}
-
-.owner ion-icon {
-  font-size: 16px;
+.pagination-info {
+  padding: 12px 16px;
+  text-align: center;
+  font-size: 13px;
+  color: #666;
+  border-top: 1px solid #f0f0f0;
 }
 
 // Add Button
 .add-btn {
+  --color: #e09027;
+  font-weight: 600;
+}
+
+.import-btn {
   --color: #fff;
   font-weight: 600;
+  margin-right: 8px;
 }
 
 // Responsive
 @media (max-width: 768px) {
-  .deals-grid {
-    grid-template-columns: 1fr;
+  .search-row {
+    flex-direction: column;
   }
   
   .stats-bar {
     flex-wrap: wrap;
+  }
+  
+  .bigin-table {
+    display: block;
+    overflow-x: auto;
   }
 }

@@ -124,6 +124,10 @@ Route::apiResource('sqrs', App\Http\Controllers\Api\SqrController::class);
 Route::patch('sqrs/{id}/status', [App\Http\Controllers\Api\SqrController::class, 'updateStatus']);
 Route::get('sqrs/counts', [App\Http\Controllers\Api\SqrController::class, 'counts']);
 
+// Deals
+Route::apiResource('deals', App\Http\Controllers\Api\DealController::class);
+Route::patch('deals/{id}/stage', [App\Http\Controllers\Api\DealController::class, 'updateStage']);
+
 // Activities
 Route::get('activities', [App\Http\Controllers\Api\ActivityController::class, 'index']);
 Route::get('activities/recent', [App\Http\Controllers\Api\ActivityController::class, 'recent']);

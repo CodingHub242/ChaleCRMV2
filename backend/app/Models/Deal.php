@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class Deal extends Model
+{
+    protected $fillable = [
+        'name',
+        'amount',
+        'currency',
+        'stage',
+        'probability',
+        'expected_close_date',
+        'contact_id',
+        'company_id',
+        'description',
+    ];
+
+    protected $casts = [
+        'amount' => 'decimal:2',
+        'probability' => 'integer',
+        'expected_close_date' => 'date',
+        'contact_id' => 'integer',
+        'company_id' => 'integer',
+    ];
+
+    public function contact(): BelongsTo
+    {
+        return $this->belongsTo(Contact::class);
+    }
+
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class);
+    }
+}
