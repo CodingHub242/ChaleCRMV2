@@ -63,7 +63,7 @@ export class ContactsListPage implements OnInit {
           const now = new Date();
           const hoursSinceLastSync = (now.getTime() - lastSyncDate.getTime()) / (1000 * 60 * 60);
           
-          // Prompt if never synced (lastSync is null/empty) or more than 24 hours ago
+          // Prompt if more than 24 hours ago
           if (hoursSinceLastSync > 24) {
             this.promptSync(syncedCount);
           }
