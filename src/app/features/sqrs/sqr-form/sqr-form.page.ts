@@ -4,14 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule, AlertController, LoadingController } from '@ionic/angular';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
-import { Sqr, Contact, Company, User } from '../../../models';
+import { Sqr, Contact, Company, User, CustomField, CustomFieldValue } from '../../../models';
+import { CustomFieldsComponent } from '../../../shared/components/custom-fields/custom-fields.component';
 import { addIcons } from 'ionicons';
 import { warning, alertCircle, person, business, add, chevronBack, chevronDown, linkOutline, personAdd } from 'ionicons/icons';
 
 @Component({
   selector: 'app-sqr-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule, RouterModule],
+  imports: [CommonModule, FormsModule, IonicModule, RouterModule, CustomFieldsComponent],
   templateUrl: './sqr-form.page.html',
   styleUrls: ['./sqr-form.page.scss']
 })
@@ -24,6 +25,10 @@ export class SqrFormPage implements OnInit {
   contacts: Contact[] = [];
   companies: Company[] = [];
   assignees: User[] = [];
+
+  // Custom fields
+  customFields: CustomField[] = [];
+  customFieldValues: { [key: string]: string } = {};
 
   sqr: Partial<Sqr> = {
     title: '',
@@ -55,6 +60,7 @@ export class SqrFormPage implements OnInit {
     this.loadContacts();
     this.loadCompanies();
     this.loadAssignees();
+    this.loadCustomFields();
     
     const id = this.route.snapshot.paramMap.get('id');
     if (id && id !== 'new') {
@@ -62,6 +68,14 @@ export class SqrFormPage implements OnInit {
       this.sqrId = +id;
       this.loadSqr();
     }
+  }
+
+  loadCustomFields(): void {
+    this.api.getCustomFields('sqr').subscribe({
+      next: (response) => {
+        this.customFields = response.data || [];
+      }
+    });
   }
 
   loadContacts(): void {
@@ -159,5 +173,9 @@ export class SqrFormPage implements OnInit {
       buttons: ['OK']
     });
     await alert.present();
+  }
+
+  onCustomFieldValuesChanged(values: { [key: string]: string }): void {
+    this.customFieldValues = values;
   }
 }

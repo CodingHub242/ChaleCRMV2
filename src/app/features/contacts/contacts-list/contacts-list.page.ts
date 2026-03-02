@@ -7,7 +7,7 @@ import { ApiService } from '../../../core/services/api.service';
 import { Contact } from '../../../models';
 import { DataImportComponent } from '../../../shared/components/data-import/data-import.component';
 import { addIcons } from 'ionicons';
-import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, cloudUploadOutline } from 'ionicons/icons';
+import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, cloudUploadOutline, trashOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-contacts-list',
@@ -39,7 +39,7 @@ export class ContactsListPage implements OnInit {
     private alertController: AlertController,
     private modalController: ModalController
   ) {
-     addIcons({cloudUploadOutline})
+     addIcons({cloudUploadOutline,trashOutline});
   }
 
   ngOnInit(): void {

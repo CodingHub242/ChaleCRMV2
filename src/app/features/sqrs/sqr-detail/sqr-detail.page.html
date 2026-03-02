@@ -18,6 +18,27 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+  
+  <!-- Status Progress Bar -->
+  <ion-toolbar class="status-toolbar" *ngIf="sqr">
+    <div class="status-progress-container">
+      <div class="status-track">
+        <div class="status-fill" [style.width.%]="getStatusProgress()" [style.background-color]="getStatusColor()"></div>
+      </div>
+      <div class="status-nodes">
+        <div 
+          *ngFor="let status of statusFlow" 
+          class="status-node" 
+          [class.active]="sqr.status === status"
+          [class.completed]="isStatusCompleted(status)"
+          [style.left.%]="getStatusPosition(status)"
+          (click)="changeStatus(status)">
+          <div class="node-dot" [style.background-color]="isStatusCompleted(status) || sqr.status === status ? getStatusColor() : '#ccc'"></div>
+          <span class="node-label">{{ status }}</span>
+        </div>
+      </div>
+    </div>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content class="bigin-content">

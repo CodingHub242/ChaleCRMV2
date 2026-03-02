@@ -4,10 +4,88 @@
   --background: #073336;
   --border-color: #e0e0e0;
   --color: #e3e3e3;
+  
+  ion-toolbar.status-toolbar {
+    --background: #fafafa;
+    --min-height: 70px;
+    padding: 8px 16px;
+  }
 }
 
 .bigin-header ion-title {
   font-weight: 600;
+}
+
+// Status Progress Bar
+.status-progress-container {
+  position: relative;
+  width: 100%;
+  padding-top: 20px;
+}
+
+.status-track {
+  position: absolute;
+  top: 28px;
+  left: 10%;
+  right: 10%;
+  height: 4px;
+  background: #e0e0e0;
+  border-radius: 2px;
+}
+
+.status-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.status-nodes {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+}
+
+.status-node {
+  position: absolute;
+  transform: translateX(-50%);
+  cursor: pointer;
+  text-align: center;
+  
+  .node-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ccc;
+    margin: 0 auto 4px;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    transition: background-color 0.3s ease;
+  }
+  
+  .node-label {
+    font-size: 10px;
+    color: #999;
+    white-space: nowrap;
+    display: block;
+  }
+  
+  &.active .node-dot {
+    transform: scale(1.3);
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.3);
+  }
+  
+  &.active .node-label {
+    color: #333;
+    font-weight: 600;
+  }
+  
+  &.completed .node-label {
+    color: #666;
+  }
+  
+  &:hover .node-dot {
+    transform: scale(1.2);
+  }
 }
 
 .bigin-content {

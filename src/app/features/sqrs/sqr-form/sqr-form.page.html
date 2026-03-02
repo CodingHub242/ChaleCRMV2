@@ -135,6 +135,14 @@
         </div>
       </div>
 
+      <!-- Custom Fields -->
+      <app-custom-fields 
+        *ngIf="customFields.length > 0"
+        [fields]="customFields"
+        [entityValues]="sqr.custom_fields || []"
+        (valuesChanged)="onCustomFieldValuesChanged($event)">
+      </app-custom-fields>
+
       <!-- Action Buttons -->
       <div class="form-actions">
         <ion-button expand="block" class="cancel-btn" fill="outline" (click)="router.navigate(['/sqrs'])">

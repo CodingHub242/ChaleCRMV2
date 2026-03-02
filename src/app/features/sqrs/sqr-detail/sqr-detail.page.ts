@@ -65,6 +65,17 @@ export class SqrDetailPage implements OnInit {
   // Stage history
   stageHistory: any[] = [];
 
+  // Status flow for progress bar
+  statusFlow = ['Open', 'In Progress', 'Escalated', 'Resolved', 'Closed'];
+  
+  statusColors: { [key: string]: string } = {
+    'Open': '#2196F3',
+    'In Progress': '#FF9800',
+    'Escalated': '#F44336',
+    'Resolved': '#4CAF50',
+    'Closed': '#9E9E9E'
+  };
+
   constructor(
     private api: ApiService,
     public router: Router,
@@ -311,6 +322,52 @@ export class SqrDetailPage implements OnInit {
       header: title,
       message: message,
       buttons: ['OK']
+    });
+    await alert.present();
+  }
+
+  // Status progress bar methods
+  getStatusProgress(): number {
+    const currentIndex = this.statusFlow.indexOf(this.sqr?.status || 'Open');
+    return ((currentIndex + 1) / this.statusFlow.length) * 100;
+  }
+
+  getStatusColor(): string {
+    return this.statusColors[this.sqr?.status || 'Open'] || '#2196F3';
+  }
+
+  getStatusPosition(status: string): number {
+    const index = this.statusFlow.indexOf(status);
+    return (index / (this.statusFlow.length - 1)) * 100;
+  }
+
+  isStatusCompleted(status: string): boolean {
+    const currentIndex = this.statusFlow.indexOf(this.sqr?.status || 'Open');
+    const statusIndex = this.statusFlow.indexOf(status);
+    return statusIndex < currentIndex;
+  }
+
+  async changeStatus(newStatus: string): Promise<void> {
+    if (newStatus === this.sqr?.status) return;
+    
+    const alert = await this.alertController.create({
+      header: 'Change Status',
+      message: `Change status to "${newStatus}"?`,
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Change',
+          handler: () => {
+            this.api.updateSqrStatus(this.sqrId!, { status: newStatus }).subscribe({
+              next: (response) => {
+                if (response.success) {
+                  this.loadSqr();
+                }
+              }
+            });
+          }
+        }
+      ]
     });
     await alert.present();
   }

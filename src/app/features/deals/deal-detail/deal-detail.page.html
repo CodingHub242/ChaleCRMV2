@@ -18,6 +18,27 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+  
+  <!-- Stage Progress Bar -->
+  <ion-toolbar class="stage-toolbar" *ngIf="deal">
+    <div class="stage-progress-container">
+      <div class="stage-track">
+        <div class="stage-fill" [style.width.%]="getStageProgress()" [style.background-color]="getStageColor()"></div>
+      </div>
+      <div class="stage-nodes">
+        <div 
+          *ngFor="let stage of stageFlow" 
+          class="stage-node" 
+          [class.active]="deal.stage === stage"
+          [class.completed]="isStageCompleted(stage)"
+          [style.left.%]="getStagePosition(stage)"
+          (click)="changeStage(stage)">
+          <div class="node-dot" [style.background-color]="isStageCompleted(stage) || deal.stage === stage ? getStageColor() : '#ccc'"></div>
+          <span class="node-label">{{ stage }}</span>
+        </div>
+      </div>
+    </div>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content class="bigin-content">

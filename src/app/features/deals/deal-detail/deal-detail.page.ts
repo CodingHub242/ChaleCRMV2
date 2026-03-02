@@ -80,6 +80,9 @@ export class DealDetailPage implements OnInit {
     'Closed Lost': '#F44336'
   };
 
+  // Stage flow for progress bar
+  stageFlow = ['Prospect', 'Client', 'Demo Requested', 'Demo Completed', 'Contract In-Review', 'Closed Won', 'Closed Lost'];
+
   constructor(
     private api: ApiService,
     public router: Router,
@@ -365,6 +368,49 @@ export class DealDetailPage implements OnInit {
       header: title,
       message: message,
       buttons: ['OK']
+    });
+    await alert.present();
+  }
+
+  // Stage progress bar methods
+  getStageProgress(): number {
+    const currentIndex = this.stageFlow.indexOf(this.deal?.stage || 'Prospect');
+    if (currentIndex === -1) return 0;
+    return ((currentIndex + 1) / this.stageFlow.length) * 100;
+  }
+
+  getStagePosition(stage: string): number {
+    const index = this.stageFlow.indexOf(stage);
+    return (index / (this.stageFlow.length - 1)) * 100;
+  }
+
+  isStageCompleted(stage: string): boolean {
+    const currentIndex = this.stageFlow.indexOf(this.deal?.stage || 'Prospect');
+    const stageIndex = this.stageFlow.indexOf(stage);
+    return stageIndex < currentIndex && currentIndex > 0;
+  }
+
+  async changeStage(newStage: string): Promise<void> {
+    if (newStage === this.deal?.stage) return;
+    
+    const alert = await this.alertController.create({
+      header: 'Change Stage',
+      message: `Change stage to "${newStage}"?`,
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Change',
+          handler: () => {
+            this.api.updateDealStage(this.dealId!, newStage).subscribe({
+              next: (response) => {
+                if (response.success) {
+                  this.loadDeal();
+                }
+              }
+            });
+          }
+        }
+      ]
     });
     await alert.present();
   }
