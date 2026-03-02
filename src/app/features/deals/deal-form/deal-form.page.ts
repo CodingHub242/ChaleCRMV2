@@ -38,7 +38,7 @@ export class DealFormPage implements OnInit {
 
   showDatePicker = false;
 
-  stages = ['New', 'Qualification', 'Needs Analysis', 'Proposal', 'Negotiation', 'Closed Won', 'Closed Lost'];
+  stages = ['Prospect', 'Client', 'Demo Requested', 'Demo Completed', 'Contract In-Review', 'Closed Won', 'Closed Lost'];
   currencies = ['GHS','USD', 'EUR', 'GBP', 'CAD', 'AUD'];
 
   constructor(
