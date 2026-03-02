@@ -308,7 +308,7 @@
       </div>
 
       <div class="inline-actions">
-        <ion-button fill="clear" (click)="showAddCustomField = false">Cancel</ion-button>
+        <ion-button fill="clear" style="--background:transparent;--color:gray;color:gray;" (click)="showAddCustomField = false">Cancel</ion-button>
         <ion-button (click)="addCustomField('deal')" [disabled]="!newCustomField.label">
           <ion-icon name="add" slot="start"></ion-icon>
           Add Field
