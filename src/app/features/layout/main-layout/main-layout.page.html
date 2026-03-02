@@ -32,11 +32,6 @@
 
         <ion-item-divider>Bigin CRM</ion-item-divider>
 
-        <ion-item button routerLink="/team" routerLinkActive="active" routerDirection="root" (click)="closeSidebarOnMobile()">
-          <ion-icon slot="start" name="people-outline"></ion-icon>
-          <ion-label>Team</ion-label>
-        </ion-item>
-
         <ion-item button routerLink="/contacts" routerLinkActive="active" routerDirection="root" (click)="closeSidebarOnMobile()">
           <ion-icon slot="start" name="people-outline"></ion-icon>
           <ion-label>Contacts</ion-label>
@@ -135,14 +130,21 @@
           <ion-icon slot="start" name="trending-up-outline"></ion-icon>
           <ion-label>Forecasting</ion-label>
         </ion-item>
+
+
       </ion-list>
     </div>
 
     <div class="menu-footer">
+      <ion-item button routerLink="/team" routerLinkActive="active" routerDirection="root" (click)="closeSidebarOnMobile()">
+        <ion-icon slot="start" name="people-outline"></ion-icon>
+        <ion-label>Team</ion-label>
+      </ion-item>
       <ion-item button routerLink="/settings" routerLinkActive="active" routerDirection="root" (click)="closeSidebarOnMobile()" lines="none">
         <ion-icon slot="start" name="settings-outline"></ion-icon>
         <ion-label>Settings</ion-label>
       </ion-item>
+
       <ion-item button (click)="logout()" lines="none">
         <ion-icon slot="start" name="log-out-outline"></ion-icon>
         <ion-label>Logout</ion-label>
