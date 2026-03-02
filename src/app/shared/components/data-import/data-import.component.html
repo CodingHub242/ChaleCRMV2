@@ -78,13 +78,15 @@
     <div class="step-content" *ngIf="currentStep === 'mapping'">
       <div class="mapping-section">
         <h3>Map Your Data</h3>
-        <p>Match your file columns to {{ entityType }} fields</p>
+        <p *ngIf="entityType === 'deal'">Match your file columns to lead fields</p>
+        <p *ngIf="entityType != 'deal'">Match your file columns to {{ entityType }} fields</p>
         
         <div class="mapping-table">
           <div class="mapping-header">
             <span>Your Column</span>
             <span></span>
-            <span>{{ entityType | titlecase }} Field</span>
+            <span *ngIf="entityType === 'deal'">Lead Field</span>
+            <span *ngIf="entityType != 'deal'">{{ entityType | titlecase }} Field</span>
           </div>
           <div class="mapping-row" *ngFor="let mapping of fieldMappings">
             <ion-select 
