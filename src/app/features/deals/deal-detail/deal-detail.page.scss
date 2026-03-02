@@ -2,36 +2,49 @@
   --background: #ffffff;
   --border-color: #e0e0e0;
   
+  //  ion-toolbar{
+  //   --background: #073336;
+  //   --border-color: #e0e0e0;
+  //   --color: #e3e3e3;
+  //   --min-height: 56px;
+    
+  //   ion-title {
+  //     font-weight: 600;
+  //     font-size: 18px;
+  //     //color: #333;
+  //   }
+    
+  //   ion-buttons {
+  //     ion-button {
+  //       --color: #666;
+  //     }
+  //   }
+  // }
+
    ion-toolbar{
     --background: #073336;
     --border-color: #e0e0e0;
     --color: #e3e3e3;
-    --min-height: 56px;
-    
-    ion-title {
-      font-weight: 600;
-      font-size: 18px;
-      //color: #333;
-    }
-    
-    ion-buttons {
-      ion-button {
-        --color: #666;
-      }
-    }
+     --min-height: 56px;
+  }
+  
+  ion-toolbar.status-toolbar {
+    --background: #fafafa;
+    --min-height: 60px;
+    padding: 6px 8px;
   }
 }
 
 // Stage Progress Bar
-.stage-toolbar {
-  --background: #ffffff;
-  --border-color: #e0e0e0;
-  --min-height: 60px;
-    color: #333;
-    --color:#333;
-  --background: #fafafa;
-  padding: 6px 8px;
-}
+// .stage-toolbar {
+//   --background: #ffffff;
+//   --border-color: #e0e0e0;
+//   --min-height: 60px;
+//     color: #333;
+//     --color:#333;
+//   --background: #fafafa;
+//   padding: 6px 8px;
+// }
 
 .stage-progress-container {
   position: relative;
