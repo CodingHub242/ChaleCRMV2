@@ -252,6 +252,31 @@
       </div>
     </div>
 
+    <!-- Custom Fields Section -->
+    <div class="form-section" *ngIf="customFields.length > 0">
+      <div class="form-section-header">
+        <ion-icon name="pricetag-outline"></ion-icon>
+        <h3>Custom Fields</h3>
+      </div>
+      <app-custom-fields
+        [fields]="customFields"
+        [values]="customFieldValues"
+        (valuesChanged)="onCustomFieldValuesChanged($event)"
+      ></app-custom-fields>
+    </div>
+
+    <!-- No Custom Fields Message -->
+    <div class="form-section" *ngIf="customFields.length === 0">
+      <div class="no-custom-fields">
+        <ion-icon name="pricetag-outline"></ion-icon>
+        <p>No custom fields configured for Deals</p>
+        <ion-button size="small" routerLink="/settings/custom-fields" queryParams="{module: 'deal'}">
+          <ion-icon name="add" slot="start"></ion-icon>
+          Add Custom Fields
+        </ion-button>
+      </div>
+    </div>
+
      <!-- Action Buttons -->
       <div class="form-actions">
         <ion-button expand="block" class="cancel-btn" fill="outline" (click)="router.navigate(['/deals'])">
