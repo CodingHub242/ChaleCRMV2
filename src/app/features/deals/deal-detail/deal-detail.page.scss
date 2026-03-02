@@ -24,7 +24,11 @@
 
 // Stage Progress Bar
 .stage-toolbar {
+  --background: #ffffff;
+  --border-color: #e0e0e0;
   --min-height: 60px;
+    color: #333;
+    --color:#333;
   --background: #fafafa;
   padding: 6px 8px;
 }
