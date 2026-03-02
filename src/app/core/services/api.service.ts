@@ -181,6 +181,19 @@ export class ApiService {
     return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/contacts/${id}`, { params: httpParams });
   }
 
+  // ==================== CONTACT SYNC (External API - Chale App) ====================
+  syncContacts(): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    httpParams = this.addOrganizationParams(httpParams);
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/contacts/sync`, {}, { params: httpParams });
+  }
+
+  getSyncStatus(): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    httpParams = this.addOrganizationParams(httpParams);
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/contacts/sync/status`, { params: httpParams });
+  }
+
   // Companies
   getCompanies(params?: { page?: number; per_page?: number; search?: string }): Observable<PaginatedResponse<Company>> {
     let httpParams = new HttpParams();

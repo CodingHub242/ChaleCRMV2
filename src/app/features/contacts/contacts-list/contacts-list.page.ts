@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, SearchbarCustomEvent, AlertController, ModalController } from '@ionic/angular';
+import { IonicModule, SearchbarCustomEvent, AlertController, ModalController, ToastController } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { Contact } from '../../../models';
 import { DataImportComponent } from '../../../shared/components/data-import/data-import.component';
 import { addIcons } from 'ionicons';
-import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, cloudUploadOutline, trashOutline } from 'ionicons/icons';
+import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, cloudUploadOutline, trashOutline, syncOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-contacts-list',
@@ -37,9 +37,10 @@ export class ContactsListPage implements OnInit {
   constructor(
     private api: ApiService, 
     private alertController: AlertController,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private toastController: ToastController
   ) {
-     addIcons({cloudUploadOutline,trashOutline});
+     addIcons({cloudUploadOutline,trashOutline,syncOutline});
   }
 
   ngOnInit(): void {
@@ -48,6 +49,78 @@ export class ContactsListPage implements OnInit {
 
   ionViewWillEnter(): void {
     this.loadContacts();
+    this.checkAndPromptSync();
+  }
+
+  checkAndPromptSync(): void {
+    this.api.getSyncStatus().subscribe({
+      next: (response) => {
+        const lastSync = response.data?.last_sync;
+        const syncedCount = response.data?.synced_count || 0;
+        
+        if (lastSync) {
+          const lastSyncDate = new Date(lastSync);
+          const now = new Date();
+          const hoursSinceLastSync = (now.getTime() - lastSyncDate.getTime()) / (1000 * 60 * 60);
+          
+          // Prompt if never synced (lastSync is null/empty) or more than 24 hours ago
+          if (hoursSinceLastSync > 24) {
+            this.promptSync(syncedCount);
+          }
+        } else {
+          // Never synced before, prompt the user
+          this.promptSync(0);
+        }
+      },
+      error: () => {
+        // If we can't get status, don't bother the user
+      }
+    });
+  }
+
+  async promptSync(existingSyncedCount: number): Promise<void> {
+    const message = existingSyncedCount > 0 
+      ? `You have ${existingSyncedCount} contacts synced from Chale App. Would you like to sync now to get the latest contacts?`
+      : 'You have not synced contacts from Chale App yet. Would you like to sync now?';
+
+    const alert = await this.alertController.create({
+      header: 'Sync Contacts',
+      message: message,
+      buttons: [
+        { text: 'Not Now', role: 'cancel' },
+        {
+          text: 'Sync Now',
+          handler: () => {
+            this.performSync();
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  performSync(): void {
+    this.api.syncContacts().subscribe({
+      next: async (response) => {
+        const toast = await this.toastController.create({
+          message: `Sync complete! ${response.data?.synced || 0} new contacts synced, ${response.data?.skipped || 0} skipped.`,
+          duration: 3000,
+          color: 'success',
+          position: 'top'
+        });
+        await toast.present();
+        this.loadContacts(); // Reload to show new contacts
+      },
+      error: async () => {
+        const toast = await this.toastController.create({
+          message: 'Sync failed. Please try again.',
+          duration: 3000,
+          color: 'danger',
+          position: 'top'
+        });
+        await toast.present();
+      }
+    });
   }
 
   loadContacts(loadMore = false): void {

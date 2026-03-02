@@ -76,6 +76,10 @@ Route::post('contacts/{id}/send-email', [App\Http\Controllers\Api\EmailControlle
 // Contacts
 Route::apiResource('contacts', App\Http\Controllers\Api\ContactController::class);
 
+// Contact Sync from External API (Chale App)
+Route::get('contacts/sync/status', [App\Http\Controllers\Api\ContactSyncController::class, 'status']);
+Route::post('contacts/sync', [App\Http\Controllers\Api\ContactSyncController::class, 'sync']);
+
 // Companies
 Route::apiResource('companies', App\Http\Controllers\Api\CompanyController::class);
 
