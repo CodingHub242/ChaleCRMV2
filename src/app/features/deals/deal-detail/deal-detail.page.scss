@@ -1,0 +1,598 @@
+.bigin-header {
+  --background: #ffffff;
+  --border-color: #e0e0e0;
+  
+  ion-toolbar {
+    --background: #ffffff;
+    --border-color: #e0e0e0;
+    --min-height: 56px;
+    
+    ion-title {
+      font-weight: 600;
+      font-size: 18px;
+      color: #333;
+    }
+    
+    ion-buttons {
+      ion-button {
+        --color: #666;
+      }
+    }
+  }
+}
+
+.bigin-content {
+  --background: #f5f5f5;
+}
+
+.detail-container {
+  height: 100%;
+  overflow: hidden;
+}
+
+.split-layout {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+}
+
+// Left Panel
+.left-panel {
+  width: 340px;
+  min-width: 340px;
+  background: #ffffff;
+  border-right: 1px solid #e0e0e0;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card-header {
+  margin-bottom: 12px;
+  
+  h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+  }
+}
+
+// Deal Value Card
+.value-card {
+  background: linear-gradient(135deg, #073336 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 20px;
+  color: #fff;
+  
+  .deal-amount {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  
+  .deal-probability, .expected-close {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-top: 8px;
+    opacity: 0.9;
+    
+    .label {
+      opacity: 0.8;
+    }
+    
+    .probability {
+      font-weight: 600;
+    }
+    
+    .date {
+      font-weight: 500;
+    }
+  }
+}
+
+// Contact Card
+.contact-card, .info-card, .description-card, .owner-card {
+  background: #fafafa;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid #eee;
+}
+
+.related-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: #fff;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #eee;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  &.empty {
+    background: #f5f5f5;
+    border-style: dashed;
+    
+    .avatar {
+      background: #ddd;
+    }
+  }
+  
+  .avatar {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    border-radius: 50%;
+    background: #667eea;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 16px;
+    
+    &.company {
+      background: #764ba2;
+    }
+    
+    ion-icon {
+      font-size: 20px;
+    }
+  }
+  
+  .info {
+    flex: 1;
+    min-width: 0;
+    
+    .name {
+      font-weight: 600;
+      font-size: 15px;
+      color: #333;
+      margin-bottom: 2px;
+    }
+    
+    .subtitle {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 4px;
+    }
+    
+    .detail {
+      font-size: 12px;
+      color: #666;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+      
+      ion-icon {
+        font-size: 12px;
+        color: #888;
+      }
+    }
+  }
+}
+
+// Info Card
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  .label {
+    font-size: 13px;
+    color: #666;
+  }
+  
+  .value {
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+  }
+}
+
+.stage-badge, .group-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #fff !important;
+}
+
+.no-group {
+  color: #999;
+  font-style: italic;
+  font-size: 12px;
+}
+
+// Description Card
+.description-card {
+  p {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.5;
+    margin: 0;
+    white-space: pre-wrap;
+  }
+}
+
+// Owner Card
+.owner-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #4caf50;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  
+  .info {
+    .name {
+      font-weight: 600;
+      font-size: 14px;
+      color: #333;
+    }
+    
+    .subtitle {
+      font-size: 12px;
+      color: #888;
+    }
+  }
+}
+
+// Right Panel
+.right-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+// Tab Bar
+.tab-bar {
+  display: flex;
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  overflow-x: auto;
+  padding: 0 8px;
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .tab-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 16px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    
+    ion-icon {
+      font-size: 16px;
+      color: #888;
+    }
+    
+    span {
+      font-size: 13px;
+      color: #666;
+      font-weight: 500;
+    }
+    
+    &:hover {
+      background: #f5f5f5;
+    }
+    
+    &.active {
+      border-bottom-color: #073336;
+      
+      ion-icon, span {
+        color: #667eea;
+      }
+    }
+  }
+}
+
+// Tab Content
+.tab-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.tab-pane {
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+// Timeline
+.timeline {
+  max-width: 600px;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 16px;
+  padding-bottom: 24px;
+  position: relative;
+  
+  &:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 32px;
+    bottom: 0;
+    width: 2px;
+    background: #e0e0e0;
+  }
+  
+  .timeline-icon {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    ion-icon {
+      font-size: 14px;
+      color: #fff;
+    }
+  }
+  
+  .timeline-content {
+    .timeline-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 4px;
+    }
+    
+    .timeline-date {
+      font-size: 12px;
+      color: #888;
+    }
+  }
+}
+
+.empty-timeline {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+  
+  ion-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+  }
+  
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+// Notes Section
+.notes-section {
+  max-width: 600px;
+}
+
+.add-note {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 24px;
+  
+  ion-textarea {
+    --background: #f5f5f5;
+    --border-radius: 8px;
+    --padding: 12px;
+    margin-bottom: 12px;
+  }
+  
+  .save-note-btn {
+    --background: #667eea;
+    --color: #fff;
+  }
+}
+
+.notes-list {
+  h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 12px;
+  }
+  
+  .note-item {
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    border: 1px solid #e0e0e0;
+    
+    p {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.5;
+      margin: 0 0 8px;
+      white-space: pre-wrap;
+    }
+    
+    .note-date {
+      font-size: 11px;
+      color: #999;
+    }
+  }
+}
+
+// Activities Section
+.activities-section, .emails-section, .products-section, .quotes-section, .files-section {
+  max-width: 600px;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+  
+  ion-spinner {
+    margin-bottom: 12px;
+  }
+  
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.activity-item {
+  display: flex;
+  gap: 12px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  
+  .activity-icon {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    ion-icon {
+      font-size: 16px;
+      color: #666;
+    }
+  }
+  
+  .activity-content {
+    flex: 1;
+    
+    .activity-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 4px;
+    }
+    
+    .activity-desc {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+    
+    .activity-date {
+      font-size: 11px;
+      color: #999;
+    }
+  }
+}
+
+.empty {
+  text-align: center;
+  padding: 60px 40px;
+  color: #999;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  
+  ion-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+  }
+  
+  p {
+    margin: 0 0 16px;
+    font-size: 14px;
+  }
+  
+  ion-button {
+    --background: #073336;
+    --color: #fff;
+  }
+}
+
+// Loading State
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #999;
+  
+  ion-spinner {
+    margin-bottom: 16px;
+  }
+  
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .split-layout {
+    flex-direction: column;
+  }
+  
+  .left-panel {
+    width: 100%;
+    min-width: 100%;
+    max-height: 50vh;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .right-panel {
+    flex: 1;
+  }
+  
+  .tab-bar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+}

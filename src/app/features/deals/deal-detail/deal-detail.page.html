@@ -1,0 +1,335 @@
+<ion-header class="bigin-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="router.navigate(['/deals'])">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ deal?.name || 'Deal Details' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="sendEmail()" class="send-btn">
+        <ion-icon slot="icon-only" name="send-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="editDeal()">
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="deleteDeal()" color="danger">
+        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="detail-container" *ngIf="!isLoading && deal">
+    <!-- Main Split Layout -->
+    <div class="split-layout">
+      <!-- Left Sidebar - Contact Info -->
+      <div class="left-panel">
+        <!-- Deal Value Card -->
+        <div class="value-card">
+          <div class="card-header">
+            <h3>Deal Value</h3>
+          </div>
+          <div class="deal-amount">
+            {{ formatCurrency(deal.amount) }}
+          </div>
+          <div class="deal-probability" *ngIf="deal.probability">
+            <span class="label">Probability:</span>
+            <span class="probability" [style.color]="getProbabilityColor(deal.probability)">
+              {{ deal.probability }}%
+            </span>
+          </div>
+          <div class="expected-close" *ngIf="deal.expected_close_date">
+            <span class="label">Expected Close:</span>
+            <span class="date">{{ formatDate(deal.expected_close_date) }}</span>
+          </div>
+        </div>
+
+        <!-- Contact Card -->
+        <div class="contact-card">
+          <div class="card-header">
+            <h3>Related To</h3>
+          </div>
+          
+          <!-- Contact -->
+          <div class="related-item" *ngIf="deal.contact">
+            <div class="avatar">
+              {{ getContactInitials() }}
+            </div>
+            <div class="info">
+              <div class="name">{{ deal.contact?.first_name }} {{ deal.contact?.last_name }}</div>
+              <div class="subtitle">Contact</div>
+              <div class="detail" *ngIf="deal.contact.email">
+                <ion-icon name="mail-outline"></ion-icon>
+                {{ deal.contact?.email }}
+              </div>
+              <div class="detail" *ngIf="deal.contact.phone">
+                <ion-icon name="call-outline"></ion-icon>
+                {{ deal.contact?.phone }}
+              </div>
+            </div>
+          </div>
+          
+          <div class="related-item empty" *ngIf="!deal.contact">
+            <div class="avatar">
+              <ion-icon name="person-outline"></ion-icon>
+            </div>
+            <div class="info">
+              <div class="name">No Contact</div>
+              <div class="subtitle">Click edit to add</div>
+            </div>
+          </div>
+
+          <!-- Company -->
+          <div class="related-item" *ngIf="deal.company">
+            <div class="avatar company">
+              {{ getCompanyInitials() }}
+            </div>
+            <div class="info">
+              <div class="name">{{ deal.company?.name }}</div>
+              <div class="subtitle">Company</div>
+              <div class="detail" *ngIf="deal.company.email">
+                <ion-icon name="mail-outline"></ion-icon>
+                {{ deal.company?.email }}
+              </div>
+              <div class="detail" *ngIf="deal.company.phone">
+                <ion-icon name="call-outline"></ion-icon>
+                {{ deal.company?.phone }}
+              </div>
+            </div>
+          </div>
+
+          <div class="related-item empty" *ngIf="!deal.company">
+            <div class="avatar company">
+              <ion-icon name="business-outline"></ion-icon>
+            </div>
+            <div class="info">
+              <div class="name">No Company</div>
+              <div class="subtitle">Click edit to add</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Deal Info Card -->
+        <div class="info-card">
+          <div class="card-header">
+            <h3>Deal Information</h3>
+          </div>
+          
+          <div class="info-row">
+            <span class="label">Stage</span>
+            <span class="value">
+              <ion-badge class="stage-badge" [class]="getStageClass(deal.stage || 'Prospect')" [style.background-color]="getStageColor(deal.stage || 'Prospect')">
+                {{ deal.stage }}
+              </ion-badge>
+            </span>
+          </div>
+          
+          <div class="info-row">
+            <span class="label">Pipeline Group</span>
+            <span class="value" *ngIf="deal.group">
+              <span class="group-badge" [style.background-color]="deal.group.color || '#666'">
+                {{ deal.group.name }}
+              </span>
+            </span>
+            <span class="value" *ngIf="!deal.group">
+              <span class="no-group">No Group</span>
+            </span>
+          </div>
+          
+          <div class="info-row">
+            <span class="label">Currency</span>
+            <span class="value">{{ deal.currency || 'GHS' }}</span>
+          </div>
+          
+          <div class="info-row">
+            <span class="label">Created</span>
+            <span class="value">{{ formatDate(deal.created_at) }}</span>
+          </div>
+          
+          <div class="info-row" *ngIf="deal.updated_at">
+            <span class="label">Last Updated</span>
+            <span class="value">{{ formatDate(deal.updated_at) }}</span>
+          </div>
+        </div>
+
+        <!-- Description Card -->
+        <div class="description-card" *ngIf="deal.description">
+          <div class="card-header">
+            <h3>Description</h3>
+          </div>
+          <p>{{ deal.description }}</p>
+        </div>
+
+        <!-- Owner Card -->
+        <div class="owner-card" *ngIf="deal.owner">
+          <div class="card-header">
+            <h3>Owner</h3>
+          </div>
+          <div class="owner-info">
+            <div class="avatar">
+              {{ deal.owner.name?.charAt(0) || '?' }}
+            </div>
+            <div class="info">
+              <div class="name">{{ deal.owner.name }}</div>
+              <div class="subtitle">{{ deal.owner.role || 'User' }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel - Tabs -->
+      <div class="right-panel">
+        <!-- Tab Bar -->
+        <div class="tab-bar">
+          <div 
+            *ngFor="let tab of tabs" 
+            class="tab-item" 
+            [class.active]="isTabActive(tab.key)"
+            (click)="onTabClick(tab.key)">
+            <ion-icon [name]="tab.icon"></ion-icon>
+            <span>{{ tab.label }}</span>
+          </div>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+          <!-- Timeline Tab -->
+          <div class="tab-pane" *ngIf="activeTab === 'timeline'">
+            <div class="timeline">
+              <div class="timeline-item" *ngFor="let item of timelineItems">
+                <div class="timeline-icon" [style.background-color]="item.color">
+                  <ion-icon [name]="item.icon"></ion-icon>
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-title">{{ item.title }}</div>
+                  <div class="timeline-date">{{ formatDate(item.date) }}</div>
+                </div>
+              </div>
+              
+              <div class="empty-timeline" *ngIf="timelineItems.length === 0">
+                <ion-icon name="time-outline"></ion-icon>
+                <p>No activity yet</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes Tab -->
+          <div class="tab-pane" *ngIf="activeTab === 'notes'">
+            <div class="notes-section">
+              <div class="add-note">
+                <ion-textarea 
+                  [(ngModel)]="notes" 
+                  placeholder="Add a note..."
+                  rows="4"
+                ></ion-textarea>
+                <ion-button 
+                  (click)="saveNote()" 
+                  [disabled]="!notes.trim() || isSavingNote"
+                  class="save-note-btn">
+                  <ion-spinner *ngIf="isSavingNote" name="circular"></ion-spinner>
+                  {{ isSavingNote ? 'Saving...' : 'Save Note' }}
+                </ion-button>
+              </div>
+              
+              <div class="notes-list" *ngIf="deal.description">
+                <h4>All Notes</h4>
+                <div class="note-item">
+                  <p>{{ deal.description }}</p>
+                  <span class="note-date">{{ formatDate(deal.updated_at) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Activities Tab -->
+          <div class="tab-pane" *ngIf="activeTab === 'activities'">
+            <div class="activities-section">
+              <div class="loading" *ngIf="isLoadingActivities">
+                <ion-spinner name="lines"></ion-spinner>
+                <p>Loading activities...</p>
+              </div>
+              
+              <div class="activity-list" *ngIf="!isLoadingActivities && activities.length > 0">
+                <div class="activity-item" *ngFor="let activity of activities">
+                  <div class="activity-icon">
+                    <ion-icon [name]="activity.type === 'call' ? 'call' : activity.type === 'meeting' ? 'calendar' : 'document-text'"></ion-icon>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-title">{{ activity.title }}</div>
+                    <div class="activity-desc" *ngIf="activity.description">{{ activity.description }}</div>
+                    <div class="activity-date">{{ formatDate(activity.created_at) }}</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="empty" *ngIf="!isLoadingActivities && activities.length === 0">
+                <ion-icon name="play-circle-outline"></ion-icon>
+                <p>No activities yet</p>
+                <ion-button size="small" routerLink="/tasks/new">
+                  <ion-icon name="add" slot="start"></ion-icon>
+                  Add Activity
+                </ion-button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Emails Tab -->
+          <div class="tab-pane" *ngIf="activeTab === 'emails'">
+            <div class="emails-section">
+              <div class="empty">
+                <ion-icon name="mail-outline"></ion-icon>
+                <p>No emails sent yet</p>
+                <ion-button size="small" (click)="sendEmail()">
+                  <ion-icon name="send" slot="start"></ion-icon>
+                  Send Email
+                </ion-button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Products Tab -->
+          <div class="tab-pane" *ngIf="activeTab === 'products'">
+            <div class="products-section">
+              <div class="empty">
+                <ion-icon name="pricetag-outline"></ion-icon>
+                <p>No products linked</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quotes Tab -->
+          <div class="tab-pane" *ngIf="activeTab === 'quotes'">
+            <div class="quotes-section">
+              <div class="empty">
+                <ion-icon name="document-text-outline"></ion-icon>
+                <p>No quotes created</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Files Tab -->
+          <div class="tab-pane" *ngIf="activeTab === 'files'">
+            <div class="files-section">
+              <div class="empty">
+                <ion-icon name="folder-outline"></ion-icon>
+                <p>No files attached</p>
+                <ion-button size="small">
+                  <ion-icon name="cloud-upload-outline" slot="start"></ion-icon>
+                  Upload File
+                </ion-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Loading Deal...</p>
+  </div>
+</ion-content>

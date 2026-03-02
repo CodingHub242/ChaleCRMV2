@@ -135,7 +135,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let deal of deals" [routerLink]="['/deals', deal.id]" class="table-row">
+          <tr *ngFor="let deal of deals" [routerLink]="['/deals/view', deal.id]" class="table-row">
             <td>
               <span class="deal-name">{{ deal.name }}</span>
             </td>

@@ -25,6 +25,7 @@ import { CompanyFormPage } from './features/companies/company-form/company-form.
 // // Deals
 import { DealsListPage } from './features/deals/deals-list/deals-list.page';
 import { DealFormPage } from './features/deals/deal-form/deal-form.page';
+import { DealDetailPage } from './features/deals/deal-detail/deal-detail.page';
 
 // // Tasks
 import { TasksListPage } from './features/tasks/tasks-list/tasks-list.page';
@@ -140,6 +141,10 @@ export const routes: Routes = [
       {
         path: 'deals/new',
         component: DealFormPage
+      },
+      {
+        path: 'deals/view/:id',
+        component: DealDetailPage
       },
       {
         path: 'deals/:id',
