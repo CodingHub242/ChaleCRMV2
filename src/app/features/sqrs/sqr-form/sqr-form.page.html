@@ -136,12 +136,25 @@
       </div>
 
       <!-- Custom Fields -->
-      <app-custom-fields 
-        *ngIf="customFields.length > 0"
-        [fields]="customFields"
-        [entityValues]="sqr.custom_fields || []"
-        (valuesChanged)="onCustomFieldValuesChanged($event)">
-      </app-custom-fields>
+      <div class="form-section" *ngIf="customFields.length > 0">
+        <app-custom-fields 
+          [fields]="customFields"
+          [entityValues]="sqr.custom_fields || []"
+          (valuesChanged)="onCustomFieldValuesChanged($event)">
+        </app-custom-fields>
+      </div>
+
+      <!-- No Custom Fields Message -->
+      <div class="form-section" *ngIf="customFields.length === 0">
+        <div class="no-custom-fields">
+          <ion-icon name="pricetag-outline"></ion-icon>
+          <p>No custom fields configured for SQR</p>
+          <ion-button size="small" routerLink="/settings/custom-fields" queryParams="{module: 'sqr'}">
+            <ion-icon name="add" slot="start"></ion-icon>
+            Add Custom Fields
+          </ion-button>
+        </div>
+      </div>
 
       <!-- Action Buttons -->
       <div class="form-actions">

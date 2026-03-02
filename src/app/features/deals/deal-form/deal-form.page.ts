@@ -5,9 +5,10 @@ import { IonicModule, AlertController, LoadingController, ModalController } from
 import { Router, ActivatedRoute } from '@angular/router';
 import { IonToggle,IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonButtons, IonMenuButton, IonIcon, IonRow, IonCol, IonModal, IonLabel, IonItem, IonDatetime } from '@ionic/angular/standalone';
 import { ApiService } from '../../../core/services/api.service';
-import { Deal, Contact, Company } from '../../../models';
+import { Deal, Contact, Company, CustomField } from '../../../models';
+import { CustomFieldsComponent } from '../../../shared/components/custom-fields/custom-fields.component';
 import { addIcons } from 'ionicons';
-import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, layers, time, checkmarkCircle, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, personOutline, flagOutline, locationOutline, folder } from 'ionicons/icons';
+import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, layers, time, checkmarkCircle, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, personOutline, flagOutline, locationOutline, folder, pricetagOutline } from 'ionicons/icons';
 
 interface DealGroup {
   id: number;
@@ -18,7 +19,7 @@ interface DealGroup {
 @Component({
   selector: 'app-deal-form',
   standalone: true,
-  imports: [IonToggle,CommonModule, FormsModule, IonicModule],
+  imports: [IonToggle,CommonModule, FormsModule, IonicModule, CustomFieldsComponent],
   templateUrl: './deal-form.page.html',
   styleUrls: ['./deal-form.page.scss']
 })
@@ -46,6 +47,10 @@ export class DealFormPage implements OnInit {
 
   showDatePicker = false;
 
+  // Custom fields
+  customFields: CustomField[] = [];
+  customFieldValues: { [key: string]: string } = {};
+
   stages = ['Prospect', 'Client', 'Demo Requested', 'Demo Completed', 'Contract In-Review', 'Closed Won', 'Closed Lost'];
   currencies = ['GHS','USD', 'EUR', 'GBP', 'CAD', 'AUD'];
 
@@ -57,13 +62,14 @@ export class DealFormPage implements OnInit {
     private loadingController: LoadingController,
     private modalController: ModalController
   ) {
-      addIcons({personOutline,locationOutline,flagOutline,briefcase,notificationsOutline,settingsOutline,trophyOutline,trendingUp,cash,chevronBack,chevronForward,chevronDown,alertCircle, add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter,checkmarkCircle,cloudUpload,layers,time,person,logOut,list,calendar,analytics,people,flag,folderOpen,ellipse,business,callOutline,chatbubbleOutline,calendarOutline,folder});
+      addIcons({personOutline,locationOutline,flagOutline,briefcase,notificationsOutline,settingsOutline,trophyOutline,trendingUp,cash,chevronBack,chevronForward,chevronDown,alertCircle, add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter,checkmarkCircle,cloudUpload,layers,time,person,logOut,list,calendar,analytics,people,flag,folderOpen,ellipse,business,callOutline,chatbubbleOutline,calendarOutline,folder,pricetagOutline});
     }
 
   ngOnInit(): void {
     this.loadContacts();
     this.loadCompanies();
     this.loadGroups();
+    this.loadCustomFields();
 
     
     const id = this.route.snapshot.paramMap.get('id');
@@ -107,6 +113,18 @@ export class DealFormPage implements OnInit {
         this.groups = response.data || [];
       }
     });
+  }
+
+  loadCustomFields(): void {
+    this.api.getCustomFields('deal').subscribe({
+      next: (response) => {
+        this.customFields = response.data || [];
+      }
+    });
+  }
+
+  onCustomFieldValuesChanged(values: { [key: string]: string }): void {
+    this.customFieldValues = values;
   }
 
   loadDeal(): void {
