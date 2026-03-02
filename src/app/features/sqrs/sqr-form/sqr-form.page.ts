@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule, AlertController, LoadingController } from '@ionic/angular';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
-import { Sqr, Contact, Company } from '../../../models';
+import { Sqr, Contact, Company, User } from '../../../models';
 import { addIcons } from 'ionicons';
-import { warning, alertCircle, person, business, add, chevronBack, chevronDown, linkOutline } from 'ionicons/icons';
+import { warning, alertCircle, person, business, add, chevronBack, chevronDown, linkOutline, personAdd } from 'ionicons/icons';
 
 @Component({
   selector: 'app-sqr-form',
@@ -23,6 +23,7 @@ export class SqrFormPage implements OnInit {
   
   contacts: Contact[] = [];
   companies: Company[] = [];
+  assignees: User[] = [];
 
   sqr: Partial<Sqr> = {
     title: '',
@@ -32,6 +33,7 @@ export class SqrFormPage implements OnInit {
     description: '',
     contact_id: undefined,
     company_id: undefined,
+    assigned_to: undefined,
     resolution_notes: ''
   };
 
@@ -46,12 +48,13 @@ export class SqrFormPage implements OnInit {
     private alertController: AlertController,
     private loadingController: LoadingController
   ) {
-    addIcons({ linkOutline,warning, alertCircle, person, business, add, chevronBack, chevronDown });
+    addIcons({ linkOutline, personAdd, warning, alertCircle, person, business, add, chevronBack, chevronDown });
   }
 
   ngOnInit(): void {
     this.loadContacts();
     this.loadCompanies();
+    this.loadAssignees();
     
     const id = this.route.snapshot.paramMap.get('id');
     if (id && id !== 'new') {
@@ -73,6 +76,15 @@ export class SqrFormPage implements OnInit {
     this.api.getCompanies({ per_page: 100 }).subscribe({
       next: (response) => {
         this.companies = response.data;
+      }
+    });
+  }
+
+  loadAssignees(): void {
+    // Load organization users for assignment
+    this.api.getOrganizationUsers().subscribe({
+      next: (response) => {
+        this.assignees = response.data || [];
       }
     });
   }

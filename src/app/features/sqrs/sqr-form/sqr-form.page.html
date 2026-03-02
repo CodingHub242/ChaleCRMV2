@@ -105,6 +105,16 @@
               </ion-select-option>
             </ion-select>
           </div>
+
+          <div class="form-field full-width">
+            <ion-label>Assigned To</ion-label>
+            <ion-select [(ngModel)]="sqr.assigned_to" name="assigned_to" interface="popover" placeholder="Assign to team member">
+              <ion-select-option [value]="undefined">Unassigned</ion-select-option>
+              <ion-select-option *ngFor="let user of assignees" [value]="user.id">
+                {{ user.name }}
+              </ion-select-option>
+            </ion-select>
+          </div>
         </div>
       </div>
 
