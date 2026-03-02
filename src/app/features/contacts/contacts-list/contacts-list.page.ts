@@ -7,6 +7,7 @@ import { ApiService } from '../../../core/services/api.service';
 import { Contact } from '../../../models';
 import { DataImportComponent } from '../../../shared/components/data-import/data-import.component';
 import { addIcons } from 'ionicons';
+import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, cloudUploadOutline, trashOutline, syncOutline } from 'ionicons/icons';
 
 @Component({
@@ -25,6 +26,8 @@ export class ContactsListPage implements OnInit {
   totalPages = 1;
   totalContacts = 0;
   hasMore = true;
+
+  private searchSubject = new Subject<string>();
 
   private avatarColors = [
     'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -47,7 +50,13 @@ export class ContactsListPage implements OnInit {
   }
 
   ngOnInit(): void {
-    //this.loadContacts();
+    // Debounce search to avoid too many API calls
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(searchTerm => {
+      this.loadContacts();
+    });
   }
 
   ionViewWillEnter(): void {
@@ -195,7 +204,11 @@ export class ContactsListPage implements OnInit {
 
   onSearch(event: SearchbarCustomEvent): void {
     this.searchQuery = event.detail.value || '';
-    this.loadContacts();
+  }
+
+  onKeyUp(event: any): void {
+    this.searchQuery = event.target.value || '';
+    this.searchSubject.next(this.searchQuery);
   }
 
   loadMore(event: any): void {

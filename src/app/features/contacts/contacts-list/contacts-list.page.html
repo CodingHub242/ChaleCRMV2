@@ -16,7 +16,8 @@
   <ion-toolbar class="search-toolbar">
     <ion-searchbar 
       placeholder="Search by name, email, company..." 
-      (ionChange)="onSearch($event)"
+      (ionInput)="onSearch($event)"
+      (keyup)="onKeyUp($event)"
       [value]="searchQuery"
       class="bigin-search">
     </ion-searchbar>
