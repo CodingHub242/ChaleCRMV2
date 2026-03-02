@@ -93,7 +93,7 @@ export class DataImportComponent implements OnInit {
       { key: 'source', label: 'Source', type: 'text' }
     ],
     deal: [
-      { key: 'name', label: 'Deal Name', type: 'text' },
+      { key: 'name', label: 'Lead Name', type: 'text' },
       { key: 'amount', label: 'Amount', type: 'number' },
       { key: 'currency', label: 'Currency', type: 'text' },
       { key: 'stage', label: 'Stage', type: 'text' },
