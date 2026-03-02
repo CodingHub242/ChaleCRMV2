@@ -128,6 +128,10 @@ Route::get('sqrs/counts', [App\Http\Controllers\Api\SqrController::class, 'count
 Route::apiResource('deals', App\Http\Controllers\Api\DealController::class);
 Route::patch('deals/{id}/stage', [App\Http\Controllers\Api\DealController::class, 'updateStage']);
 
+// Deal Groups (for Sales Pipeline)
+Route::apiResource('deal-groups', App\Http\Controllers\Api\DealGroupController::class);
+Route::get('deal-groups/{id}/stage-counts', [App\Http\Controllers\Api\DealGroupController::class, 'stageCounts']);
+
 // Activities
 Route::get('activities', [App\Http\Controllers\Api\ActivityController::class, 'index']);
 Route::get('activities/recent', [App\Http\Controllers\Api\ActivityController::class, 'recent']);

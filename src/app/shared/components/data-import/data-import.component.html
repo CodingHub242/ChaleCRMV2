@@ -81,6 +81,25 @@
         <p *ngIf="entityType === 'deal'">Match your file columns to lead fields</p>
         <p *ngIf="entityType != 'deal'">Match your file columns to {{ entityType }} fields</p>
         
+        <!-- Group selector for deals -->
+        <div class="group-selector" *ngIf="entityType === 'deal'">
+          <div class="group-info">
+            <ion-icon name="folder-outline"></ion-icon>
+            <span>Pipeline Group</span>
+          </div>
+          <p class="group-help">Select a default group for all imported deals, or map a "Group Name" column above to assign deals to different groups.</p>
+          <ion-select 
+            [(ngModel)]="selectedGroupId" 
+            placeholder="Select default group (optional)"
+            interface="popover"
+            class="group-select">
+            <ion-select-option [value]="null">No default group</ion-select-option>
+            <ion-select-option *ngFor="let group of groups" [value]="group.id">
+              {{ group.name }}
+            </ion-select-option>
+          </ion-select>
+        </div>
+        
         <div class="mapping-table">
           <div class="mapping-header">
             <span>Your Column</span>

@@ -8,8 +8,8 @@
   font-weight: 600;
 }
 
-// Filter Toolbar
-.filter-toolbar {
+// Search Toolbar
+.search-toolbar {
   --background: #ffffff;
   --padding-start: 16px;
   --padding-end: 16px;
@@ -17,19 +17,9 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
-.filter-row {
+.search-row {
   display: flex;
   gap: 12px;
-  align-items: center;
-}
-
-.group-select {
-  --padding-start: 12px;
-  --padding-end: 12px;
-  min-width: 160px;
-  --background: #f5f7fa;
-  --border-radius: 10px;
-  font-size: 14px;
 }
 
 .search-input-wrapper {
@@ -73,7 +63,96 @@
   }
 }
 
-// Tabs Toolbar
+// Groups Toolbar (like Ghana Leads, USA Leads, etc.)
+.groups-toolbar {
+  --background: #f8f9fa;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.groups-container {
+  display: flex;
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 8px 0;
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.group-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  border-radius: 20px;
+  background: white;
+  border: 1px solid #e9ecef;
+  margin-right: 8px;
+  transition: all 0.2s ease;
+  min-width: fit-content;
+  
+  &:hover {
+    background: #f0f0f0;
+  }
+  
+  &.active {
+    background: #073336;
+    border-color: #073336;
+    
+    .group-name {
+      color: white;
+    }
+    
+    .group-icon {
+      color: white;
+    }
+  }
+  
+  &.add-group {
+    border-style: dashed;
+    background: transparent;
+    
+    &:hover {
+      background: rgba(7, 51, 54, 0.05);
+    }
+  }
+}
+
+.group-icon {
+  font-size: 16px;
+  color: #666;
+}
+
+.group-name {
+  font-size: 13px;
+  color: #333;
+  font-weight: 500;
+}
+
+.group-delete {
+  font-size: 14px;
+  color: #999;
+  margin-left: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  
+  .group-tab:hover & {
+    opacity: 1;
+  }
+  
+  &:hover {
+    color: #f44336;
+  }
+}
+
+// Stage Tabs Toolbar
 .tabs-toolbar {
   --background: #ffffff;
   --padding-start: 0;
@@ -97,7 +176,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 12px 14px;
+  padding: 12px 12px;
   cursor: pointer;
   white-space: nowrap;
   border-bottom: 2px solid transparent;
@@ -120,16 +199,7 @@
       background: #073336;
       color: white;
     }
-    
-    .tab-icon {
-      color: #073336;
-    }
   }
-}
-
-.tab-icon {
-  font-size: 16px;
-  color: #999;
 }
 
 .tab-label {
@@ -372,18 +442,21 @@
 
 // Responsive
 @media (max-width: 768px) {
-  .filter-row {
+  .search-row {
     flex-direction: column;
     gap: 8px;
   }
   
-  .group-select {
-    width: 100%;
-    min-width: unset;
+  .groups-container {
+    padding: 6px 8px;
   }
   
-  .search-input-wrapper {
-    width: 100%;
+  .group-tab {
+    padding: 6px 10px;
+  }
+  
+  .group-name {
+    font-size: 12px;
   }
   
   .tabs-container {
@@ -391,7 +464,7 @@
   }
   
   .tab-item {
-    padding: 12px 10px;
+    padding: 12px 8px;
   }
   
   .tab-label {

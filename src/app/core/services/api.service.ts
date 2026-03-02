@@ -989,4 +989,31 @@ export class ApiService {
     httpParams = this.addOrganizationParams(httpParams);
     return this.http.get<ApiResponse<any>>(`${this.baseUrl}/sqrs/counts`, { params: httpParams });
   }
+
+  // ==================== DEAL GROUPS (Sales Pipeline) ====================
+  getDealGroups(): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    httpParams = this.addOrganizationParams(httpParams);
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/deal-groups`, { params: httpParams });
+  }
+
+  createDealGroup(data: { name: string; description?: string; color?: string }): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/deal-groups`, this.addOrganizationToBody(data));
+  }
+
+  updateDealGroup(id: number, data: { name?: string; description?: string; color?: string }): Observable<ApiResponse<any>> {
+    return this.http.put<ApiResponse<any>>(`${this.baseUrl}/deal-groups/${id}`, this.addOrganizationToBody(data));
+  }
+
+  deleteDealGroup(id: number): Observable<ApiResponse<null>> {
+    let httpParams = new HttpParams();
+    httpParams = this.addOrganizationParams(httpParams);
+    return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/deal-groups/${id}`, { params: httpParams });
+  }
+
+  getDealGroupStageCounts(id: number): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    httpParams = this.addOrganizationParams(httpParams);
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/deal-groups/${id}/stage-counts`, { params: httpParams });
+  }
 }

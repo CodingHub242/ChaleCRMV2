@@ -182,6 +182,36 @@
             </div>
           </ng-template>
         </div>
+
+        <div class="form-field">
+          <label>Pipeline Group</label>
+          <div 
+            class="related-card" 
+            *ngIf="!deal.group_id; else selectedGroup"
+            (click)="showGroupPicker()"
+          >
+            <div class="avatar" style="background-color: #6366f1;">
+              <ion-icon name="folder-outline"></ion-icon>
+            </div>
+            <div class="info">
+              <div class="title">Select Pipeline</div>
+              <div class="subtitle">Optional</div>
+            </div>
+            <ion-icon class="arrow" name="chevron-forward-outline"></ion-icon>
+          </div>
+          <ng-template #selectedGroup>
+            <div class="related-card" (click)="showGroupPicker()">
+              <div class="avatar" style="background-color: #6366f1;">
+                <ion-icon name="folder-outline"></ion-icon>
+              </div>
+              <div class="info">
+                <div class="title">{{ getGroupName(deal.group_id) }}</div>
+                <div class="subtitle">Pipeline Group</div>
+              </div>
+              <ion-icon class="arrow" name="chevron-forward-outline"></ion-icon>
+            </div>
+          </ng-template>
+        </div>
       </div>
     </div>
 

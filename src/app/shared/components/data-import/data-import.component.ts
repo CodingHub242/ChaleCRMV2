@@ -6,7 +6,14 @@ import { ApiService } from '../../../core/services/api.service';
 import { IonContent, IonHeader, IonTitle, IonToolbar,IonSelect, IonButton, IonButtons, IonMenuButton, IonIcon, IonRow, IonCol, IonModal, IonLabel, IonItem, IonDatetime } from '@ionic/angular/standalone';
 import { firstValueFrom } from 'rxjs';
 import { addIcons } from 'ionicons';
-import { briefcase,add, trash, create, mail, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline } from 'ionicons/icons';
+import { briefcase,add, trash, create, mail, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, folder } from 'ionicons/icons';
+
+
+interface DealGroup {
+  id: number;
+  name: string;
+  color?: string;
+}
 
 
 export interface ImportField {
@@ -46,6 +53,10 @@ export class DataImportComponent implements OnInit {
   importProgress = 0;
   importResult: ImportResult | null = null;
 
+  // Deal groups for import
+  groups: DealGroup[] = [];
+  selectedGroupId: number | null = null;
+
   // Entity-specific field definitions
   fieldDefinitions: { [key: string]: { key: string; label: string; type: string }[] } = {
     company: [
@@ -82,7 +93,7 @@ export class DataImportComponent implements OnInit {
       { key: 'source', label: 'Source', type: 'text' }
     ],
     deal: [
-      { key: 'name', label: 'Lead Name', type: 'text' },
+      { key: 'name', label: 'Deal Name', type: 'text' },
       { key: 'amount', label: 'Amount', type: 'number' },
       { key: 'currency', label: 'Currency', type: 'text' },
       { key: 'stage', label: 'Stage', type: 'text' },
@@ -90,7 +101,8 @@ export class DataImportComponent implements OnInit {
       { key: 'expected_close_date', label: 'Expected Close Date', type: 'date' },
       { key: 'contact_id', label: 'Contact ID', type: 'number' },
       { key: 'company_id', label: 'Company ID', type: 'number' },
-      { key: 'description', label: 'Description', type: 'textarea' }
+      { key: 'description', label: 'Description', type: 'textarea' },
+      { key: 'group_name', label: 'Group Name', type: 'text' }
     ]
   };
 
@@ -103,6 +115,34 @@ export class DataImportComponent implements OnInit {
 
   ngOnInit() {
     this.initializeMappings();
+    if (this.entityType === 'deal') {
+      this.loadGroups();
+    }
+  }
+
+  loadGroups(): void {
+    this.api.getDealGroups().subscribe({
+      next: (response) => {
+        this.groups = response.data || [];
+      }
+    });
+  }
+
+  async createDealGroup(name: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this.api.createDealGroup({ name }).subscribe({
+        next: (response) => {
+          if (response.success) {
+            // Add to local groups
+            this.groups.push(response.data);
+            resolve(response.data.id);
+          } else {
+            reject(new Error(response.message));
+          }
+        },
+        error: (err) => reject(err)
+      });
+    });
   }
 
   initializeMappings() {
@@ -270,6 +310,36 @@ export class DataImportComponent implements OnInit {
     let failed = 0;
     const errors: string[] = [];
 
+    // For deals, pre-process group names to get group_ids
+    let groupIdMap: { [key: string]: number } = {};
+    if (this.entityType === 'deal') {
+      // Get all unique group names from the data
+      const groupNames = new Set<string>();
+      for (const row of this.rawData) {
+        const groupNameField = this.fieldMappings.find(m => m.appField === 'group_name');
+        if (groupNameField?.excelColumn && row[groupNameField.excelColumn]) {
+          groupNames.add(row[groupNameField.excelColumn]);
+        }
+      }
+      
+      // Create or find groups
+      for (const groupName of groupNames) {
+        // Check if group exists
+        const existingGroup = this.groups.find(g => g.name.toLowerCase() === groupName.toLowerCase());
+        if (existingGroup) {
+          groupIdMap[groupName.toLowerCase()] = existingGroup.id;
+        } else {
+          // Create new group
+          try {
+            const newGroupId = await this.createDealGroup(groupName);
+            groupIdMap[groupName.toLowerCase()] = newGroupId;
+          } catch (e) {
+            console.error('Failed to create group:', groupName, e);
+          }
+        }
+      }
+    }
+
     // Process one by one to avoid Promise.allSettled compatibility issues
     for (let i = 0; i < this.rawData.length; i++) {
       const row = this.rawData[i];
@@ -284,8 +354,23 @@ export class DataImportComponent implements OnInit {
           value = parseFloat(value) || 0;
         }
         
-        record[mapping.appField] = value;
+        // Skip group_name - we'll handle it separately
+        if (mapping.appField !== 'group_name') {
+          record[mapping.appField] = value;
+        }
       });
+
+      // Add group_id if group_name was provided
+      if (this.entityType === 'deal') {
+        const groupNameField = this.fieldMappings.find(m => m.appField === 'group_name');
+        if (groupNameField?.excelColumn && row[groupNameField.excelColumn]) {
+          const groupName = row[groupNameField.excelColumn];
+          record.group_id = groupIdMap[groupName.toLowerCase()] || null;
+        } else if (this.selectedGroupId) {
+          // Use selected default group
+          record.group_id = this.selectedGroupId;
+        }
+      }
 
       try {
         await this.createRecord(record);

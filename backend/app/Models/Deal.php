@@ -16,6 +16,7 @@ class Deal extends Model
         'expected_close_date',
         'contact_id',
         'company_id',
+        'group_id',
         'description',
     ];
 
@@ -25,6 +26,7 @@ class Deal extends Model
         'expected_close_date' => 'date',
         'contact_id' => 'integer',
         'company_id' => 'integer',
+        'group_id' => 'integer',
     ];
 
     public function contact(): BelongsTo
@@ -35,5 +37,10 @@ class Deal extends Model
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(DealGroup::class, 'group_id');
     }
 }

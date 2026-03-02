@@ -7,7 +7,13 @@ import { IonToggle,IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonBu
 import { ApiService } from '../../../core/services/api.service';
 import { Deal, Contact, Company } from '../../../models';
 import { addIcons } from 'ionicons';
-import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, personOutline, flagOutline, locationOutline } from 'ionicons/icons';
+import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, layers, time, checkmarkCircle, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, personOutline, flagOutline, locationOutline, folder } from 'ionicons/icons';
+
+interface DealGroup {
+  id: number;
+  name: string;
+  color?: string;
+}
 
 @Component({
   selector: 'app-deal-form',
@@ -22,17 +28,19 @@ export class DealFormPage implements OnInit {
   isLoading = false;
   contacts: Contact[] = [];
   companies: Company[] = [];
+  groups: DealGroup[] = [];
 
   deal: Partial<Deal> = {
     name: '',
     amount: 0,
     currency: 'GHS',
-    stage: 'New',
+    stage: 'Prospect',
     notes: '',
     probability: 10,
     expected_close_date: '',
     contact_id: undefined,
     company_id: undefined,
+    group_id: undefined,
     description: ''
   };
 
@@ -49,12 +57,13 @@ export class DealFormPage implements OnInit {
     private loadingController: LoadingController,
     private modalController: ModalController
   ) {
-      addIcons({personOutline,locationOutline,flagOutline,briefcase,notificationsOutline,settingsOutline,trophyOutline,trendingUp,cash,chevronBack,chevronForward,chevronDown,alertCircle, add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter,checkmarkCircle,cloudUpload,layers,time,person,logOut,list,calendar,analytics,people,flag,folderOpen,ellipse,business,callOutline,chatbubbleOutline,calendarOutline});
+      addIcons({personOutline,locationOutline,flagOutline,briefcase,notificationsOutline,settingsOutline,trophyOutline,trendingUp,cash,chevronBack,chevronForward,chevronDown,alertCircle, add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter,checkmarkCircle,cloudUpload,layers,time,person,logOut,list,calendar,analytics,people,flag,folderOpen,ellipse,business,callOutline,chatbubbleOutline,calendarOutline,folder});
     }
 
   ngOnInit(): void {
     this.loadContacts();
     this.loadCompanies();
+    this.loadGroups();
 
     
     const id = this.route.snapshot.paramMap.get('id');
@@ -74,7 +83,6 @@ export class DealFormPage implements OnInit {
     if(ev.detail.checked) this.showDatePicker = true;
 
     if(!ev.detail.checked) this.showDatePicker = false;
-    //this.showDatePicker = !this.showDatePicker;
   }
 
   loadContacts(): void {
@@ -89,6 +97,14 @@ export class DealFormPage implements OnInit {
     this.api.getCompanies({ per_page: 100 }).subscribe({
       next: (response) => {
         this.companies = response.data;
+      }
+    });
+  }
+
+  loadGroups(): void {
+    this.api.getDealGroups().subscribe({
+      next: (response) => {
+        this.groups = response.data || [];
       }
     });
   }
@@ -113,15 +129,15 @@ export class DealFormPage implements OnInit {
 
   onStageChange(): void {
     const stageProbabilities: { [key: string]: number } = {
-      'New': 10,
-      'Qualification': 20,
-      'Needs Analysis': 40,
-      'Proposal': 60,
-      'Negotiation': 80,
+      'Prospect': 10,
+      'Client': 20,
+      'Demo Requested': 40,
+      'Demo Completed': 60,
+      'Contract In-Review': 80,
       'Closed Won': 100,
       'Closed Lost': 0
     };
-    this.deal.probability = stageProbabilities[this.deal.stage || 'New'] || 10;
+    this.deal.probability = stageProbabilities[this.deal.stage || 'Prospect'] || 10;
   }
 
   async showContactPicker(): Promise<void> {
@@ -174,6 +190,31 @@ export class DealFormPage implements OnInit {
     await alert.present();
   }
 
+  async showGroupPicker(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Select Group',
+      buttons: [
+        ...this.groups.map(group => ({
+          text: group.name,
+          handler: () => {
+            this.deal.group_id = group.id;
+          }
+        })),
+        ...(this.deal.group_id ? [{
+          text: 'Remove Group',
+          handler: () => {
+            this.deal.group_id = undefined;
+          }
+        }] : []),
+        {
+          text: 'Cancel',
+          role: 'cancel' as const
+        }
+      ]
+    });
+    await alert.present();
+  }
+
   getContactName(contactId: number | undefined): string {
     if (!contactId) return '';
     const contact = this.contacts.find(c => c.id === contactId);
@@ -204,8 +245,14 @@ export class DealFormPage implements OnInit {
     return company.name.substring(0, 2).toUpperCase();
   }
 
+  getGroupName(groupId: number | undefined): string {
+    if (!groupId) return '';
+    const group = this.groups.find(g => g.id === groupId);
+    return group?.name || '';
+  }
+
   getStageClass(stage: string): string {
-    return stage?.toLowerCase().replace(/\s+/g, '-') || 'new';
+    return stage?.toLowerCase().replace(/\s+/g, '-') || 'prospect';
   }
 
   async save(): Promise<void> {
@@ -214,28 +261,20 @@ export class DealFormPage implements OnInit {
       return;
     }
 
-    // const loading = await this.loadingController.create({
-    //   message: 'Saving...'
-    // });
-    // await loading.present();
-
     const request = this.isEditing && this.dealId
       ? this.api.updateDeal(this.dealId, this.deal)
       : this.api.createDeal(this.deal as any);
 
     request.subscribe({
       next: (response) => {
-       // loading.dismiss();
         if (response.success) {
           this.router.navigate(['/deals']);
-          //refresh to load deals
           this.api.getDeals();
         } else {
           this.showAlert('Error', response.message);
         }
       },
       error: (error) => {
-      //  loading.dismiss();
         this.showAlert('Error', error.error?.message || 'Failed to save deal');
       }
     });

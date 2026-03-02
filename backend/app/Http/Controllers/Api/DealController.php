@@ -13,8 +13,9 @@ class DealController extends Controller
         $perPage = $request->input('per_page', 15);
         $search = $request->input('search', '');
         $stage = $request->input('stage', '');
+        $groupId = $request->input('group_id', '');
         
-        $query = Deal::with(['contact', 'company']);
+        $query = Deal::with(['contact', 'company', 'group']);
         
         if ($search) {
             $query->where(function($q) use ($search) {
@@ -25,6 +26,10 @@ class DealController extends Controller
         
         if ($stage) {
             $query->where('stage', $stage);
+        }
+        
+        if ($groupId) {
+            $query->where('group_id', $groupId);
         }
         
         $deals = $query->orderBy('created_at', 'desc')->paginate($perPage);
@@ -51,7 +56,8 @@ class DealController extends Controller
             'probability' => 'nullable|integer|min:0|max:100',
             'expected_close_date' => 'nullable|date',
             'contact_id' => 'nullable|integer|exists:contacts,id',
-            'company_id' => 'nullable|integer', // No foreign key check - allows import without company
+            'company_id' => 'nullable|integer',
+            'group_id' => 'nullable|integer|exists:deal_groups,id',
             'description' => 'nullable|string',
         ]);
 
@@ -59,14 +65,14 @@ class DealController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $deal->load(['contact', 'company']),
+            'data' => $deal->load(['contact', 'company', 'group']),
             'message' => 'Deal created successfully'
         ], 201);
     }
 
     public function show(int $id)
     {
-        $deal = Deal::with(['contact', 'company'])->findOrFail($id);
+        $deal = Deal::with(['contact', 'company', 'group'])->findOrFail($id);
         
         return response()->json([
             'success' => true,
@@ -86,7 +92,8 @@ class DealController extends Controller
             'probability' => 'nullable|integer|min:0|max:100',
             'expected_close_date' => 'nullable|date',
             'contact_id' => 'nullable|integer|exists:contacts,id',
-            'company_id' => 'nullable|integer', // No foreign key check - allows import without company
+            'company_id' => 'nullable|integer',
+            'group_id' => 'nullable|integer|exists:deal_groups,id',
             'description' => 'nullable|string',
         ]);
 
@@ -94,7 +101,7 @@ class DealController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $deal->load(['contact', 'company']),
+            'data' => $deal->load(['contact', 'company', 'group']),
             'message' => 'Deal updated successfully'
         ]);
     }

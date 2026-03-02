@@ -14,21 +14,9 @@
     </ion-buttons>
   </ion-toolbar>
   
-  <!-- Filter Row -->
-  <ion-toolbar class="filter-toolbar">
-    <div class="filter-row">
-      <!-- Group Filter Dropdown -->
-      <ion-select 
-        interface="popover" 
-        placeholder="All Groups"
-        [value]="selectedGroup"
-        (ionChange)="onGroupChange($event)"
-        class="group-select">
-        <ion-select-option *ngFor="let option of groupOptions" [value]="option.value">
-          {{ option.label }}
-        </ion-select-option>
-      </ion-select>
-
+  <!-- Search Row -->
+  <ion-toolbar class="search-toolbar">
+    <div class="search-row">
       <!-- Search Input -->
       <div class="search-input-wrapper">
         <ion-icon name="search-outline" class="search-icon"></ion-icon>
@@ -48,7 +36,41 @@
     </div>
   </ion-toolbar>
 
-  <!-- Pipeline Stage Tabs -->
+  <!-- Groups T Ghanaabs (like Leads, USA Leads, etc.) -->
+  <ion-toolbar class="groups-toolbar">
+    <div class="groups-container">
+      <!-- All Deals Tab -->
+      <div 
+        class="group-tab" 
+        [class.active]="selectedGroupId === null"
+        (click)="onGroupSelect(null)">
+        <ion-icon name="layers" class="group-icon"></ion-icon>
+        <span class="group-name">All Deals</span>
+      </div>
+      
+      <!-- Custom Groups -->
+      <div 
+        *ngFor="let group of groups" 
+        class="group-tab" 
+        [class.active]="selectedGroupId === group.id"
+        (click)="onGroupSelect(group.id)">
+        <ion-icon name="folder" class="group-icon"></ion-icon>
+        <span class="group-name">{{ group.name }}</span>
+        <ion-icon 
+          name="close-circle" 
+          class="group-delete"
+          (click)="deleteGroup(group); $event.stopPropagation()"></ion-icon>
+      </div>
+      
+      <!-- Add Group Button -->
+      <div class="group-tab add-group" (click)="createGroup()">
+        <ion-icon name="create-outline" class="group-icon"></ion-icon>
+        <span class="group-name">Add Group</span>
+      </div>
+    </div>
+  </ion-toolbar>
+
+  <!-- Stage Tabs (for the selected group) -->
   <ion-toolbar class="tabs-toolbar">
     <div class="tabs-container">
       <div 
@@ -56,7 +78,6 @@
         class="tab-item" 
         [class.active]="isTabActive(tab.key)"
         (click)="onTabClick(tab.key)">
-        <ion-icon [name]="tab.icon" class="tab-icon"></ion-icon>
         <span class="tab-label">{{ tab.label }}</span>
         <span class="tab-count">{{ tab.count }}</span>
       </div>
