@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonMenuButton, IonButton, IonIcon, IonSegment, IonSegmentButton, IonLabel, IonSelect, IonSelectOption, IonDatetime, IonModal, IonBadge, IonRefresher, IonRefresherContent } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonMenuButton, IonButton, IonIcon, IonSelect, IonSelectOption, IonInput, IonPopover, IonList, IonItem, IonLabel, IonSpinner, IonRefresher, IonRefresherContent } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { downloadOutline, filterOutline, refreshOutline, documentTextOutline, trendingUpOutline, peopleOutline, cashOutline, calendarOutline, closeOutline, chevronDownOutline, chevronUpOutline } from 'ionicons/icons';
+import { downloadOutline, filterOutline, refreshOutline, documentTextOutline, trendingUpOutline, peopleOutline, cashOutline, calendarOutline, closeOutline, chevronDownOutline, chevronUpOutline, gridOutline, documentOutline } from 'ionicons/icons';
 import { environment } from '../../../environments/environment';
 
 export interface ReportData {
@@ -34,14 +34,14 @@ export interface ReportConfig {
     IonMenuButton,
     IonButton,
     IonIcon,
-    IonSegment,
-    IonSegmentButton,
-    IonLabel,
     IonSelect,
     IonSelectOption,
-    IonDatetime,
-    IonModal,
-    IonBadge,
+    IonInput,
+    IonPopover,
+    IonList,
+    IonItem,
+    IonLabel,
+    IonSpinner,
     IonRefresher,
     IonRefresherContent
   ],
@@ -180,7 +180,9 @@ export class ReportsPage implements OnInit {
       calendarOutline,
       closeOutline,
       chevronDownOutline,
-      chevronUpOutline
+      chevronUpOutline,
+      gridOutline,
+      documentOutline
     });
   }
 

@@ -111,40 +111,43 @@
         <table class="report-table">
           <thead>
             <tr>
-              <th 
-="let col of                *ngFor selectedReport.columns" 
-                [class.sortable]="col.sortable"
-                (click)="col.sortable && sort(col.key)">
-                {{ col.label }}
-                <ion-icon 
-                  *ngIf="col.sortable" 
-                  [name]="getSortIcon(col.key)" 
-                  class="sort-icon">
-                </ion-icon>
-              </th>
+              <ng-container *ngFor="let col of selectedReport.columns">
+                <th 
+                  [class.sortable]="col.sortable"
+                  (click)="col.sortable && sort(col.key)">
+                  {{ col.label }}
+                  <ion-icon 
+                    *ngIf="col.sortable" 
+                    [name]="getSortIcon(col.key)" 
+                    class="sort-icon">
+                  </ion-icon>
+                </th>
+              </ng-container>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let row of reportData">
-              <td *ngFor="let col of selectedReport.columns">
-                <ng-container [ngSwitch]="col.type">
-                  <span *ngSwitchCase="'status'" 
-                    class="status-badge" 
-                    [ngClass]="getStatusClass(row[col.key])">
-                    {{ row[col.key] }}
-                  </span>
-                  <span *ngSwitchCase="'currency'" class="currency-value">
-                    {{ formatValue(row[col.key], col.type) }}
-                  </span>
-                  <span *ngSwitchCase="'number'" class="number-value">
-                    {{ formatValue(row[col.key], col.type) }}
-                  </span>
-                  <span *ngSwitchCase="'date'" class="date-value">
-                    {{ formatValue(row[col.key], col.type) }}
-                  </span>
-                  <span *ngSwitchDefault>{{ row[col.key] }}</span>
-                </ng-container>
-              </td>
+              <ng-container *ngFor="let col of selectedReport.columns">
+                <td>
+                  <ng-container [ngSwitch]="col.type">
+                    <span *ngSwitchCase="'status'" 
+                      class="status-badge" 
+                      [ngClass]="getStatusClass(row[col.key])">
+                      {{ row[col.key] }}
+                    </span>
+                    <span *ngSwitchCase="'currency'" class="currency-value">
+                      {{ formatValue(row[col.key], col.type || 'text') }}
+                    </span>
+                    <span *ngSwitchCase="'number'" class="number-value">
+                      {{ formatValue(row[col.key], col.type || 'text') }}
+                    </span>
+                    <span *ngSwitchCase="'date'" class="date-value">
+                      {{ formatValue(row[col.key], col.type || 'text') }}
+                    </span>
+                    <span *ngSwitchDefault>{{ row[col.key] }}</span>
+                  </ng-container>
+                </td>
+              </ng-container>
             </tr>
           </tbody>
         </table>
