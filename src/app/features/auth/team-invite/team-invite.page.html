@@ -5,6 +5,12 @@
     </ion-buttons>
     <ion-title>Team Members</ion-title>
     <ion-buttons slot="end">
+      <ion-button (click)="viewMode = 'table'" [class.active]="viewMode === 'table'">
+        <ion-icon slot="icon-only" name="list"></ion-icon>
+      </ion-button>
+      <ion-button (click)="viewMode = 'list'" [class.active]="viewMode === 'list'">
+        <ion-icon slot="icon-only" name="grid"></ion-icon>
+      </ion-button>
       <ion-button (click)="openInviteModal()" *ngIf="canManageUsers()">
         <ion-icon slot="start" name="person-add-outline"></ion-icon>
         Invite
@@ -24,33 +30,47 @@
     <p>Manage your team members and their access levels</p>
   </div>
 
-  <div class="users-list" *ngIf="!isLoadingUsers && users.length > 0">
-    <ion-list lines="full">
-      <ion-item *ngFor="let user of users">
-        <ion-avatar slot="start">
-          <div class="avatar-placeholder">
-            {{ getUserInitials(user) }}
-          </div>
-        </ion-avatar>
-        <ion-label>
-          <h3>{{ user.name }}</h3>
-          <p>{{ user.email }}</p>
-          <p *ngIf="user.phone" class="phone">{{ user.phone }}</p>
-        </ion-label>
-        <ion-badge [color]="getRoleBadgeColor(user.role)" slot="end">
-          {{ getRoleLabel(user.role) }}
-        </ion-badge>
-        
-        <ion-buttons slot="end" *ngIf="canManageUsers() && user.id !== currentUserId">
-          <ion-button *ngIf="canManageRoles()" (click)="updateUserRole(user.id, user.role === 'admin' ? 'user' : 'admin')">
-            <ion-icon slot="icon-only" name="shield-outline"></ion-icon>
-          </ion-button>
-          <ion-button color="danger" (click)="removeUser(user.id)">
-            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-      </ion-item>
-    </ion-list>
+  <div class="table-container" *ngIf="!isLoadingUsers && users.length > 0">
+    <table class="team-table">
+      <thead>
+        <tr>
+          <th>Member</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>
+            <div class="member-cell">
+              <ion-avatar class="table-avatar">
+                <div class="avatar-placeholder">{{ getUserInitials(user) }}</div>
+              </ion-avatar>
+              <span class="member-name">{{ user.name }}</span>
+            </div>
+          </td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.phone || '-' }}</td>
+          <td>
+            <ion-badge [color]="getRoleBadgeColor(user.role)">
+              {{ getRoleLabel(user.role) }}
+            </ion-badge>
+          </td>
+          <td>
+            <div class="action-buttons" *ngIf="canManageUsers() && user.id !== currentUserId">
+              <ion-button *ngIf="canManageRoles()" (click)="updateUserRole(user.id, user.role === 'admin' ? 'user' : 'admin')" size="small" fill="clear">
+                <ion-icon slot="icon-only" name="shield-outline"></ion-icon>
+              </ion-button>
+              <ion-button color="danger" (click)="removeUser(user.id)" size="small" fill="clear">
+                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+              </ion-button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
   <div class="empty-state" *ngIf="!isLoadingUsers && users.length === 0">

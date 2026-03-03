@@ -24,7 +24,7 @@ import {
   IonSpinner
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { personAddOutline, mailOutline, callOutline, trashOutline, shieldOutline, peopleOutline, closeOutline, chevronBack, chevronForward } from 'ionicons/icons';
+import { personAddOutline, mailOutline, callOutline, trashOutline, shieldOutline, peopleOutline, closeOutline, chevronBack, chevronForward, listOutline, gridOutline } from 'ionicons/icons';
 import { AuthService } from '../../../core/services/auth.service';
 import { User } from '../../../models';
 
@@ -70,6 +70,9 @@ export class TeamInvitePage implements OnInit {
   public total = 0;
   public lastPage = 1;
 
+  // View toggle
+  public viewMode: 'table' | 'list' = 'table';
+
   // Invite form
   public inviteName = '';
   public inviteEmail = '';
@@ -88,7 +91,9 @@ export class TeamInvitePage implements OnInit {
       peopleOutline,
       closeOutline,
       chevronBack,
-      chevronForward
+      chevronForward,
+      listOutline,
+      gridOutline
     });
   }
 
