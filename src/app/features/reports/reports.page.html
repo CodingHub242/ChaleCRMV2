@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>Reports</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="toggleFilters()" [color]="showFilters ? 'primary' : 'medium'">
+      <ion-button (click)="toggleFilters()" [color]="showFilters ? 'light' : 'medium'">
         <ion-icon slot="icon-only" name="filter-outline"></ion-icon>
       </ion-button>
       <ion-button (click)="loadReport()">
@@ -81,8 +81,8 @@
         </div>
         
         <div class="filter-actions">
-          <ion-button fill="clear" (click)="clearFilters()">Clear</ion-button>
-          <ion-button (click)="applyFilters()">Apply</ion-button>
+          <ion-button fill="clear" style="--color:#073336;" (click)="clearFilters()">Clear</ion-button>
+          <ion-button style="--background: #073336;--color: #fff;" (click)="applyFilters()">Apply</ion-button>
         </div>
       </div>
     </div>
