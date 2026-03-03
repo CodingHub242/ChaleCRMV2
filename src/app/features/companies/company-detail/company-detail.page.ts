@@ -94,7 +94,9 @@ export class CompanyDetailPage implements OnInit {
     // Load contacts for this company
     this.api.getContacts({ per_page: 100 }).subscribe({
       next: (response:any) => {
+        console.log(response.data['contacts']);
         this.contacts = response.data.contacts;
+        console.log(this.contacts);
         //response.data.filter(c => c.company_id === this.company?.id);
       }
     });
