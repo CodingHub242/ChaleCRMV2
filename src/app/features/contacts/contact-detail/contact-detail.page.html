@@ -13,10 +13,10 @@
       <ion-button (click)="makeCall()" *ngIf="contact?.phone">
         <ion-icon slot="icon-only" name="call-outline"></ion-icon>
       </ion-button>
-      <ion-button (click)="editContact()">
+      <ion-button style="--color:#fff;" (click)="editContact()">
         <ion-icon slot="icon-only" name="create-outline"></ion-icon>
       </ion-button>
-      <ion-button (click)="deleteContact()" color="danger">
+      <ion-button  style="--color:#fff;" (click)="deleteContact()" color="danger">
         <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
