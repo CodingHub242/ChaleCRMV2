@@ -14,7 +14,9 @@ import {
   flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, 
   cash, people, trophyOutline, callOutline, chatbubbleOutline, 
   calendarOutline, personOutline, flagOutline, sendOutline, call, locationOutline,
-  globeOutline, peopleOutline
+  globeOutline, peopleOutline,
+  createOutline,
+  trashOutline
 } from 'ionicons/icons';
 
 @Component({
@@ -53,7 +55,7 @@ export class CompanyDetailPage implements OnInit {
     private toastController: ToastController
   ) {
     addIcons({
-      personOutline, flagOutline, briefcase, notificationsOutline, settingsOutline,
+      personOutline, flagOutline, briefcase, notificationsOutline, settingsOutline,createOutline,trashOutline,
       trophyOutline, trendingUp, cash, chevronBack, chevronForward, chevronDown,
       alertCircle, add, trash, create, mail, document, close, eye, download,
       checkmark, arrowBack, arrowUp, arrowDown, filter, checkmarkCircle,
