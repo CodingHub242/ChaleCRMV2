@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonMenuButton, IonButton, IonIcon, IonSelect, IonSelectOption, IonInput, IonPopover, IonList, IonItem, IonLabel, IonSpinner, IonRefresher, IonRefresherContent } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { downloadOutline, filterOutline, refreshOutline, documentTextOutline, trendingUpOutline, peopleOutline, cashOutline, calendarOutline, closeOutline, chevronDownOutline, chevronUpOutline, gridOutline, documentOutline } from 'ionicons/icons';
-import { environment } from '../../../environments/environment';
+import { ApiService } from '../../core/services/api.service';
 
 export interface ReportData {
   id: number;
@@ -168,7 +167,7 @@ export class ReportsPage implements OnInit {
   // Summary stats
   summaryStats: { label: string; value: string | number; icon: string }[] = [];
 
-  constructor(private http: HttpClient) {
+  constructor(private api: ApiService) {
     addIcons({
       downloadOutline,
       filterOutline,
@@ -194,30 +193,179 @@ export class ReportsPage implements OnInit {
     this.isLoading = true;
     
     try {
-      // Try to fetch from API, fallback to mock data
-      const baseUrl = environment.apiUrl;
-      const endpoint = `${baseUrl}/${this.selectedReport.endpoint}`;
+      // Map report types to actual API endpoints
+      const endpointMap: Record<string, string> = {
+        'sales': 'deals',
+        'deals': 'deals',
+        'contacts': 'contacts',
+        'tasks': 'tasks',
+        'invoices': 'invoices',
+        'activity': 'activities'
+      };
       
-      this.http.get<any>(endpoint, { params: { date_range: this.dateRange } }).subscribe({
-        next: (data: any) => {
-          this.reportData = data.data || data || [];
-          this.calculateSummary();
-          this.isLoading = false;
-          if (event) event.target.complete();
-        },
-        error: () => {
-          // Use mock data for demonstration
+      const endpoint = endpointMap[this.selectedReport.id] || this.selectedReport.id;
+      
+      // Use the appropriate API method based on endpoint
+      switch (endpoint) {
+        case 'deals':
+          this.api.getDeals({ per_page: 100 }).subscribe({
+            next: (data: any) => {
+              this.reportData = this.transformData(data.data || [], 'deals');
+              this.calculateSummary();
+              this.isLoading = false;
+              if (event) event.target.complete();
+            },
+            error: () => {
+              this.reportData = this.getMockData();
+              this.calculateSummary();
+              this.isLoading = false;
+              if (event) event.target.complete();
+            }
+          });
+          break;
+          
+        case 'contacts':
+          this.api.getContacts({ per_page: 100 }).subscribe({
+            next: (data: any) => {
+              this.reportData = this.transformData(data.data || [], 'contacts');
+              this.calculateSummary();
+              this.isLoading = false;
+              if (event) event.target.complete();
+            },
+            error: () => {
+              this.reportData = this.getMockData();
+              this.calculateSummary();
+              this.isLoading = false;
+              if (event) event.target.complete();
+            }
+          });
+          break;
+          
+        case 'tasks':
+          this.api.getTasks({ per_page: 100 }).subscribe({
+            next: (data: any) => {
+              this.reportData = this.transformData(data.data || [], 'tasks');
+              this.calculateSummary();
+              this.isLoading = false;
+              if (event) event.target.complete();
+            },
+            error: () => {
+              this.reportData = this.getMockData();
+              this.calculateSummary();
+              this.isLoading = false;
+              if (event) event.target.complete();
+            }
+          });
+          break;
+          
+        case 'invoices':
+          this.api.getInvoices({ per_page: 100 }).subscribe({
+            next: (data: any) => {
+              this.reportData = this.transformData(data.data || [], 'invoices');
+              this.calculateSummary();
+              this.isLoading = false;
+              if (event) event.target.complete();
+            },
+            error: () => {
+              this.reportData = this.getMockData();
+              this.calculateSummary();
+              this.isLoading = false;
+              if (event) event.target.complete();
+            }
+          });
+          break;
+          
+        case 'activities':
+          this.api.getActivities({ per_page: 100 }).subscribe({
+            next: (data: any) => {
+              this.reportData = this.transformData(data.data || [], 'activities');
+              this.calculateSummary();
+              this.isLoading = false;
+              if (event) event.target.complete();
+            },
+            error: () => {
+              this.reportData = this.getMockData();
+              this.calculateSummary();
+              this.isLoading = false;
+              if (event) event.target.complete();
+            }
+          });
+          break;
+          
+        default:
           this.reportData = this.getMockData();
           this.calculateSummary();
           this.isLoading = false;
           if (event) event.target.complete();
-        }
-      });
+      }
     } catch (error) {
       this.reportData = this.getMockData();
       this.calculateSummary();
       this.isLoading = false;
       if (event) event.target.complete();
+    }
+  }
+
+  // Transform API data to match report columns
+  private transformData(data: any[], reportType: string): ReportData[] {
+    switch (reportType) {
+      case 'deals':
+        return data.map((item: any) => ({
+          id: item.id,
+          deal_name: item.title || item.name,
+          customer: item.contact?.first_name + ' ' + item.contact?.last_name || item.company?.name || '-',
+          amount: item.amount || 0,
+          stage: item.stage_name || item.stage || 'New',
+          closing_date: item.closing_date || item.expected_close_date,
+          owner: item.owner?.name || '-'
+        }));
+        
+      case 'contacts':
+        return data.map((item: any) => ({
+          id: item.id,
+          first_name: item.first_name,
+          last_name: item.last_name,
+          email: item.email,
+          phone: item.phone,
+          company: item.company?.name || '-',
+          created_at: item.created_at
+        }));
+        
+      case 'tasks':
+        return data.map((item: any) => ({
+          id: item.id,
+          subject: item.title || item.subject,
+          related_to: item.deal?.title || item.contact?.first_name || '-',
+          due_date: item.due_date,
+          status: item.status,
+          priority: item.priority || 'Normal',
+          assigned_to: item.assigned_to?.name || '-'
+        }));
+        
+      case 'invoices':
+        return data.map((item: any) => ({
+          id: item.id,
+          invoice_number: item.invoice_number || 'INV-' + item.id,
+          customer: item.customer?.name || item.contact?.first_name || '-',
+          amount: item.total || item.amount || 0,
+          status: item.status,
+          issue_date: item.issue_date || item.created_at,
+          due_date: item.due_date
+        }));
+        
+      case 'activities':
+        return data.map((item: any) => ({
+          id: item.id,
+          activity_type: item.type,
+          subject: item.title || item.subject,
+          related_to: item.deal?.title || item.contact?.first_name || '-',
+          due_date: item.due_date || item.scheduled_date,
+          status: item.status,
+          assigned_to: item.assigned_to?.name || '-'
+        }));
+        
+      default:
+        return data;
     }
   }
 
