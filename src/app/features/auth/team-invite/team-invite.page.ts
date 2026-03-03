@@ -24,7 +24,7 @@ import {
   IonSpinner
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { personAddOutline, mailOutline, callOutline, trashOutline, shieldOutline, peopleOutline, closeOutline } from 'ionicons/icons';
+import { personAddOutline, mailOutline, callOutline, trashOutline, shieldOutline, peopleOutline, closeOutline, chevronBack, chevronForward } from 'ionicons/icons';
 import { AuthService } from '../../../core/services/auth.service';
 import { User } from '../../../models';
 
@@ -64,6 +64,12 @@ export class TeamInvitePage implements OnInit {
   public isInviteModalOpen = false;
   public isLoadingUsers = false;
 
+  // Pagination
+  public currentPage = 1;
+  public perPage = 10;
+  public total = 0;
+  public lastPage = 1;
+
   // Invite form
   public inviteName = '';
   public inviteEmail = '';
@@ -80,7 +86,9 @@ export class TeamInvitePage implements OnInit {
       trashOutline, 
       shieldOutline, 
       peopleOutline,
-      closeOutline
+      closeOutline,
+      chevronBack,
+      chevronForward
     });
   }
 
@@ -90,15 +98,39 @@ export class TeamInvitePage implements OnInit {
 
   loadUsers(): void {
     this.isLoadingUsers = true;
-    this.authService.getOrganizationUsers().subscribe({
+    this.authService.getOrganizationUsers({ page: this.currentPage, per_page: this.perPage }).subscribe({
       next: (response) => {
-        this.users = response.data || [];
+        if (response.data) {
+          this.users = response.data;
+          // Extract pagination info from response
+          if ('meta' in response) {
+            const meta = (response as any).meta;
+            this.total = meta.total || 0;
+            this.lastPage = meta.last_page || 1;
+          }
+        } else {
+          this.users = [];
+        }
         this.isLoadingUsers = false;
       },
       error: () => {
         this.isLoadingUsers = false;
       }
     });
+  }
+
+  loadPage(page: number): void {
+    if (page < 1 || page > this.lastPage) return;
+    this.currentPage = page;
+    this.loadUsers();
+  }
+
+  nextPage(): void {
+    this.loadPage(this.currentPage + 1);
+  }
+
+  prevPage(): void {
+    this.loadPage(this.currentPage - 1);
   }
 
   openInviteModal(): void {

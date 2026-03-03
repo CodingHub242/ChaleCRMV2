@@ -121,8 +121,13 @@ export class ApiService {
     return this.http.put<ApiResponse<Organization>>(`${this.baseUrl}/organization`, data);
   }
 
-  getOrganizationUsers(): Observable<ApiResponse<User[]>> {
-    return this.http.get<ApiResponse<User[]>>(`${this.baseUrl}/organization/users`);
+  getOrganizationUsers(params?: { page?: number; per_page?: number }): Observable<ApiResponse<User[]>> {
+    let httpParams = new HttpParams();
+    if (params) {
+      if (params.page) httpParams = httpParams.set('page', params.page.toString());
+      if (params.per_page) httpParams = httpParams.set('per_page', params.per_page.toString());
+    }
+    return this.http.get<ApiResponse<User[]>>(`${this.baseUrl}/organization/users`, { params: httpParams });
   }
 
   inviteUser(data: { name: string; email: string; phone?: string; role?: string, organization_id?: number }): Observable<ApiResponse<any>> {

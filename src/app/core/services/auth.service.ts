@@ -180,8 +180,8 @@ export class AuthService {
   /**
    * Get all users in the current organization
    */
-  getOrganizationUsers(): Observable<any> {
-    return this.api.getOrganizationUsers();
+  getOrganizationUsers(params?: { page?: number; per_page?: number }): Observable<any> {
+    return this.api.getOrganizationUsers(params);
   }
 
   /**

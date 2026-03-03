@@ -126,7 +126,7 @@ class OrganizationController extends Controller
     /**
      * Get all users in the current user's organization.
      */
-    public function users()
+    public function users(Request $request)
     {
         $user = auth()->user();
         
@@ -137,13 +137,23 @@ class OrganizationController extends Controller
             ], 404);
         }
 
+        $perPage = $request->input('per_page', 15);
+        $page = $request->input('page', 1);
+
         $users = ZohoUser::where('organization_id', $user->organization_id)
             ->select('id', 'name', 'email', 'role', 'avatar', 'phone', 'created_at')
-            ->get();
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage, ['*'], 'page', $page);
 
         return response()->json([
             'success' => true,
-            'data' => $users
+            'data' => $users->items(),
+            'meta' => [
+                'current_page' => $users->currentPage(),
+                'per_page' => $users->perPage(),
+                'total' => $users->total(),
+                'last_page' => $users->lastPage()
+            ]
         ]);
     }
 

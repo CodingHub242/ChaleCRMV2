@@ -68,6 +68,17 @@
     <p>Loading team members...</p>
   </div>
 
+  <!-- Pagination Controls -->
+  <div class="pagination-controls" *ngIf="lastPage > 1 && !isLoadingUsers">
+    <ion-button size="small" (click)="prevPage()" [disabled]="currentPage === 1">
+      <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
+    </ion-button>
+    <span class="page-info">Page {{ currentPage }} of {{ lastPage }}</span>
+    <ion-button size="small" (click)="nextPage()" [disabled]="currentPage === lastPage">
+      <ion-icon slot="icon-only" name="chevron-forward"></ion-icon>
+    </ion-button>
+  </div>
+
 </ion-content>
 
 <!-- Invite Modal - outside ion-content -->
