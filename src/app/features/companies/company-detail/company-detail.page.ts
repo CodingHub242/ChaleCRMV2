@@ -73,9 +73,10 @@ export class CompanyDetailPage implements OnInit {
   loadCompany(id: number): void {
     this.isLoading = true;
     this.api.getCompany(id).subscribe({
-      next: (response) => {
+      next: (response:any) => {
         if (response.success) {
           this.company = response.data;
+          this.contacts = response.data.contacts;
         }
         this.isLoading = false;
       },
@@ -94,9 +95,9 @@ export class CompanyDetailPage implements OnInit {
     // Load contacts for this company
     this.api.getContacts({ per_page: 100 }).subscribe({
       next: (response:any) => {
-        console.log(response.data['contacts']);
-        this.contacts = response.data.contacts;
-        console.log(this.contacts);
+       // console.log(response.data['contacts']);
+        //this.contacts = response.data.contacts;
+       // console.log(this.contacts);
         //response.data.filter(c => c.company_id === this.company?.id);
       }
     });
