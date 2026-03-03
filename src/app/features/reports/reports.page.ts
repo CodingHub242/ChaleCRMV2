@@ -357,10 +357,10 @@ export class ReportsPage implements OnInit {
         return data.map((item: any) => ({
           id: item.id,
           activity_type: item.activity_type,
-          subject: item.title || item.subject_type,
+          subject: item.title || item.description,
           related_to: item.deal?.title || item.user?.name || '-',
           due_date: item.activity_date || item.scheduled_date,
-          status: item.status,
+          status: item.status || 'Completed',
           assigned_to: item.user?.name || '-'
         }));
         
