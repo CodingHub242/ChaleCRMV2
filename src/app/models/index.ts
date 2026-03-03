@@ -70,6 +70,7 @@ export interface Contact {
   created_at: string;
   updated_at: string;
   custom_fields?: CustomFieldValue[];
+  contacts?: Contact;
 }
 
 // Company Model
