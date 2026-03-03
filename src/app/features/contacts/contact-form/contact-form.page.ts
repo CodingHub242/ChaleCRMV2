@@ -7,7 +7,7 @@ import { ApiService } from '../../../core/services/api.service';
 import { Contact, Company, CustomField, CustomFieldValue } from '../../../models';
 import { addIcons } from 'ionicons';
 import { CustomFieldsComponent } from '../../../shared/components/custom-fields/custom-fields.component';
-import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, personOutline, flagOutline, optionsOutline } from 'ionicons/icons';
+import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, personOutline, flagOutline, optionsOutline, addCircleOutline, createOutline } from 'ionicons/icons';
 
 
 @Component({
@@ -28,6 +28,13 @@ export class ContactFormPage implements OnInit {
   customFields: CustomField[] = [];
   customFieldValues: CustomFieldValue[] = [];
   customFieldData: { [key: string]: string } = {};
+  showAddCustomField = false;
+  newCustomField: any = {
+    label: '',
+    type: 'text',
+    optionsText: '',
+    module: 'contacts'
+  };
   
   // Photo upload
   selectedFile: File | null = null;
@@ -61,7 +68,7 @@ export class ContactFormPage implements OnInit {
     private alertController: AlertController,
     private loadingController: LoadingController
   ) {
-     addIcons({personOutline,flagOutline,briefcase,notificationsOutline,settingsOutline,trophyOutline,trendingUp,cash,chevronBack,chevronForward,chevronDown,alertCircle, add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter,checkmarkCircle,cloudUpload,layers,time,person,logOut,list,calendar,analytics,people,flag,folderOpen,ellipse,business,callOutline,chatbubbleOutline,calendarOutline,optionsOutline});
+     addIcons({personOutline,flagOutline,briefcase,notificationsOutline,settingsOutline,trophyOutline,trendingUp,cash,chevronBack,chevronForward,chevronDown,alertCircle, add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter,checkmarkCircle,cloudUpload,layers,time,person,logOut,list,calendar,analytics,people,flag,folderOpen,ellipse,business,callOutline,chatbubbleOutline,calendarOutline,optionsOutline,addCircleOutline,createOutline});
   }
 
   ngOnInit(): void {
@@ -92,6 +99,49 @@ export class ContactFormPage implements OnInit {
 
   onCustomFieldChange(values: { [key: string]: string }): void {
     this.customFieldData = values;
+  }
+
+  openAddCustomField(): void {
+    this.showAddCustomField = true;
+    this.newCustomField = {
+      label: '',
+      type: 'text',
+      optionsText: '',
+      module: 'contacts'
+    };
+  }
+
+  addCustomField(): void {
+    if (!this.newCustomField.label) {
+      this.showAlert('Error', 'Please enter a field label');
+      return;
+    }
+
+    const fieldData: any = {
+      label: this.newCustomField.label,
+      type: this.newCustomField.type,
+      module: 'contacts',
+      required: false
+    };
+
+    // Parse options for select fields
+    if (this.newCustomField.type === 'select' && this.newCustomField.optionsText) {
+      fieldData.options = this.newCustomField.optionsText.split(',').map((opt: string) => opt.trim());
+    }
+
+    this.api.createCustomField(fieldData).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.customFields.push(response.data);
+          this.showAddCustomField = false;
+          this.showAlert('Success', 'Custom field added successfully');
+        }
+      },
+      error: (err) => {
+        console.error('Error creating custom field:', err);
+        this.showAlert('Error', 'Failed to create custom field');
+      }
+    });
   }
 
   loadCompanies(): void {

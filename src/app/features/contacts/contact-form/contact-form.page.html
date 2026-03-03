@@ -137,6 +137,67 @@
           [entityValues]="customFieldValues"
           (valuesChanged)="onCustomFieldChange($event)">
         </app-custom-fields>
+
+        <!-- Add Another Field -->
+        <div class="add-field-inline" (click)="openAddCustomField()">
+          <ion-icon name="add-circle-outline"></ion-icon>
+          <span>Add Custom Field</span>
+        </div>
+      </div>
+
+      <!-- Add Custom Field Inline Form -->
+      <div class="form-section" *ngIf="showAddCustomField">
+        <div class="section-header">
+          <div class="section-icon">
+            <ion-icon name="create-outline"></ion-icon>
+          </div>
+          <h3>New Custom Field</h3>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-field full-width">
+            <ion-label>Field Label *</ion-label>
+            <ion-input [(ngModel)]="newCustomField.label" placeholder="e.g., Reference Number"></ion-input>
+          </div>
+
+          <div class="form-field">
+            <ion-label>Field Type</ion-label>
+            <ion-select [(ngModel)]="newCustomField.type" interface="popover">
+              <ion-select-option value="text">Text</ion-select-option>
+              <ion-select-option value="textarea">Long Text</ion-select-option>
+              <ion-select-option value="number">Number</ion-select-option>
+              <ion-select-option value="date">Date</ion-select-option>
+              <ion-select-option value="select">Dropdown</ion-select-option>
+            </ion-select>
+          </div>
+
+          <div class="form-field" *ngIf="newCustomField.type === 'select'">
+            <ion-label>Options</ion-label>
+            <ion-input [(ngModel)]="newCustomField.optionsText" placeholder="Option 1, Option 2"></ion-input>
+          </div>
+        </div>
+
+        <div class="inline-actions">
+          <ion-button fill="clear" style="--background:transparent;--color:gray;color:gray;" (click)="showAddCustomField = false">Cancel</ion-button>
+          <ion-button (click)="addCustomField()" [disabled]="!newCustomField.label">
+            <ion-icon name="add" slot="start"></ion-icon>
+            Add Field
+          </ion-button>
+        </div>
+      </div>
+
+      <!-- No Custom Fields - Show Add Button -->
+      <div class="form-section" *ngIf="customFields.length === 0 && !showAddCustomField">
+        <div class="add-field-empty" (click)="openAddCustomField()">
+          <div class="section-icon">
+            <ion-icon name="options-outline"></ion-icon>
+          </div>
+          <p>Add custom fields to capture additional information</p>
+          <ion-button size="small">
+            <ion-icon name="add" slot="start"></ion-icon>
+            Add Custom Field
+          </ion-button>
+        </div>
       </div>
 
       <!-- Action Buttons -->

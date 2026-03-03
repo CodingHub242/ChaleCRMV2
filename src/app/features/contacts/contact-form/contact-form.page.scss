@@ -206,3 +206,96 @@
     grid-template-columns: 1fr;
   }
 }
+
+// Add Custom Field Button
+.add-field-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  margin-top: 12px;
+  background: #f8f9fa;
+  border: 1px dashed #c0c0c0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+
+  &:hover {
+    background: #f0f4f8;
+    border-color: #073336;
+    color: #073336;
+  }
+
+  ion-icon {
+    font-size: 20px;
+  }
+}
+
+// Empty State - Add Custom Field
+.add-field-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background: #f8f9fa;
+  border: 1px dashed #c0c0c0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+
+  &:hover {
+    background: #f0f4f8;
+    border-color: #073336;
+  }
+
+  .section-icon {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, rgba(7, 51, 54, 0.1) 0%, rgba(7, 51, 54, 0.05) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+
+    ion-icon {
+      font-size: 28px;
+      color: #073336;
+    }
+  }
+
+  p {
+    color: #666;
+    font-size: 14px;
+    margin: 0 0 16px;
+  }
+
+  ion-button {
+    --background: #073336;
+    --color: #fff;
+    --border-radius: 8px;
+  }
+}
+
+// Inline Actions
+.inline-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+
+  ion-button {
+    --background: #073336;
+    --color: #fff;
+    --border-radius: 8px;
+    height: 40px;
+    font-weight: 500;
+  }
+}
