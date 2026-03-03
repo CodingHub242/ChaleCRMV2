@@ -53,7 +53,7 @@ export class ContactDetailPage implements OnInit {
 
   constructor(
     private api: ApiService,
-    private router: Router,
+    public router: Router,
     private route: ActivatedRoute,
     private alertController: AlertController,
     private toastController: ToastController
