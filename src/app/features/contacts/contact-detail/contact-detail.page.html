@@ -35,7 +35,6 @@
             {{ getInitials() }}
           </div>
           <h2 class="profile-name">{{ getFullName() }}</h2>
-          <p class="profile-title" *ngIf="contact?.job_title">{{ contact.job_title }}</p>
           
           <ion-badge class="status-badge" [class]="getStatusClass()">
             {{ contact.lead_status || 'New' }}
@@ -131,14 +130,6 @@
               <span class="value">{{ formatDate(contact.updated_at) }}</span>
             </div>
           </div>
-        </div>
-
-        <!-- Notes Card -->
-        <div class="notes-card" *ngIf="contact && contact['notes']">
-          <div class="card-header">
-            <h3>Notes</h3>
-          </div>
-          <p class="notes-content">{{ contact['notes'] }}</p>
         </div>
       </div>
 
@@ -265,16 +256,13 @@
           <!-- Notes Tab -->
           <div class="tab-pane" *ngIf="activeTab === 'notes'">
             <div class="notes-section">
-              <div class="empty" *ngIf="contact && !contact['notes']">
+              <div class="empty">
                 <ion-icon name="document-text-outline"></ion-icon>
                 <p>No notes yet</p>
                 <ion-button size="small" (click)="editContact()">
                   <ion-icon name="add" slot="start"></ion-icon>
                   Add Note
                 </ion-button>
-              </div>
-              <div class="notes-display" *ngIf="contact && contact['notes']">
-                <p>{{ contact['notes'] }}</p>
               </div>
             </div>
           </div>
