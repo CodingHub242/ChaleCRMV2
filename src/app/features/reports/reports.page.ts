@@ -356,12 +356,12 @@ export class ReportsPage implements OnInit {
       case 'activities':
         return data.map((item: any) => ({
           id: item.id,
-          activity_type: item.type,
-          subject: item.title || item.subject,
-          related_to: item.deal?.title || item.contact?.first_name || '-',
-          due_date: item.due_date || item.scheduled_date,
+          activity_type: item.activity_type,
+          subject: item.title || item.subject_type,
+          related_to: item.deal?.title || item.user?.name || '-',
+          due_date: item.activity_date || item.scheduled_date,
           status: item.status,
-          assigned_to: item.assigned_to?.name || '-'
+          assigned_to: item.user?.name || '-'
         }));
         
       default:
