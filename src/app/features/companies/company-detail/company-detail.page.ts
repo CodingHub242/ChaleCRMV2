@@ -150,6 +150,15 @@ export class CompanyDetailPage implements OnInit {
     });
   }
 
+  getCompanyDescription(): string {
+    if (!this.company) return '';
+    return (this.company as any)['description'] || '';
+  }
+
+  hasCompanyDescription(): boolean {
+    return !!this.getCompanyDescription();
+  }
+
   editCompany(): void {
     if (this.company?.id) {
       this.router.navigate(['/companies', this.company.id]);

@@ -143,11 +143,11 @@
         </div>
 
         <!-- Notes Card -->
-        <div class="notes-card" *ngIf="company && (company as any)['description']">
+        <div class="notes-card" *ngIf="company && hasCompanyDescription()">
           <div class="card-header">
             <h3>Description</h3>
           </div>
-          <p class="notes-content">{{ (company as any)['description'] }}</p>
+          <p class="notes-content">{{ getCompanyDescription() }}</p>
         </div>
       </div>
 
@@ -290,7 +290,7 @@
           <!-- Notes Tab -->
           <div class="tab-pane" *ngIf="activeTab === 'notes'">
             <div class="notes-section">
-              <div class="empty" *ngIf="company && !(company as any)['description']">
+              <div class="empty" *ngIf="company && !hasCompanyDescription()">
                 <ion-icon name="document-text-outline"></ion-icon>
                 <p>No notes yet</p>
                 <ion-button size="small" (click)="editCompany()">
@@ -298,8 +298,8 @@
                   Add Note
                 </ion-button>
               </div>
-              <div class="notes-display" *ngIf="company && (company as any)['description']">
-                <p>{{ (company as any)['description'] }}</p>
+              <div class="notes-display" *ngIf="company && hasCompanyDescription()">
+                <p>{{ getCompanyDescription() }}</p>
               </div>
             </div>
           </div>
