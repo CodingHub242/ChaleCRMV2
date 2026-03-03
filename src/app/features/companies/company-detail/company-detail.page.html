@@ -38,7 +38,7 @@
           <p class="profile-title" *ngIf="company.industry">{{ company.industry }}</p>
           
           <div class="profile-actions">
-            <ion-button fill="outline" (click)="sendEmail()" *ngIf="company.email">
+            <ion-button  fill="outline" (click)="sendEmail()" *ngIf="company.email">
               <ion-icon slot="start" name="mail-outline"></ion-icon>
               Email
             </ion-button>
@@ -202,7 +202,7 @@
               <div class="empty" *ngIf="!isLoadingRelated && contacts.length === 0">
                 <ion-icon name="people-outline"></ion-icon>
                 <p>No contacts yet</p>
-                <ion-button size="small" routerLink="/contacts/new">
+                <ion-button style="--background:#073336;--color:#fff;" size="small" routerLink="/contacts/new">
                   <ion-icon name="add" slot="start"></ion-icon>
                   Add Contact
                 </ion-button>
@@ -232,7 +232,7 @@
               <div class="empty" *ngIf="!isLoadingRelated && deals.length === 0">
                 <ion-icon name="trending-up-outline"></ion-icon>
                 <p>No deals yet</p>
-                <ion-button size="small" routerLink="/deals/new">
+                <ion-button style="--background:#073336;--color:#fff;" size="small" routerLink="/deals/new">
                   <ion-icon name="add" slot="start"></ion-icon>
                   Create Deal
                 </ion-button>
@@ -265,7 +265,7 @@
               <div class="empty" *ngIf="!isLoadingRelated && tasks.length === 0">
                 <ion-icon name="checkbox-outline"></ion-icon>
                 <p>No tasks yet</p>
-                <ion-button size="small" routerLink="/tasks/new">
+                <ion-button style="--background:#073336;--color:#fff;" size="small" routerLink="/tasks/new">
                   <ion-icon name="add" slot="start"></ion-icon>
                   Create Task
                 </ion-button>
@@ -279,7 +279,7 @@
               <div class="empty">
                 <ion-icon name="calendar-outline"></ion-icon>
                 <p>No activities yet</p>
-                <ion-button size="small" routerLink="/activities/new">
+                <ion-button style="--background:#073336;--color:#fff;" size="small" routerLink="/activities/new">
                   <ion-icon name="add" slot="start"></ion-icon>
                   Log Activity
                 </ion-button>
@@ -293,7 +293,7 @@
               <div class="empty" *ngIf="company && !hasCompanyDescription()">
                 <ion-icon name="document-text-outline"></ion-icon>
                 <p>No notes yet</p>
-                <ion-button size="small" (click)="editCompany()">
+                <ion-button style="--background:#073336;--color:#fff;" size="small" (click)="editCompany()">
                   <ion-icon name="add" slot="start"></ion-icon>
                   Add Note
                 </ion-button>
