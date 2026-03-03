@@ -123,6 +123,22 @@
         </div>
       </div>
 
+      <!-- Custom Fields Section -->
+      <div class="form-section" *ngIf="customFields.length > 0">
+        <div class="section-header">
+          <div class="section-icon">
+            <ion-icon name="options-outline"></ion-icon>
+          </div>
+          <h3>Custom Information</h3>
+        </div>
+        
+        <app-custom-fields
+          [fields]="customFields"
+          [entityValues]="customFieldValues"
+          (valuesChanged)="onCustomFieldChange($event)">
+        </app-custom-fields>
+      </div>
+
       <!-- Action Buttons -->
       <div class="form-actions">
         <ion-button expand="block" class="cancel-btn" fill="outline" (click)="router.navigate(['/contacts'])">

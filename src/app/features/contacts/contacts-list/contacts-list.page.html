@@ -63,6 +63,7 @@
             <th>Email</th>
             <th>Phone</th>
             <th>Company</th>
+            <th>Lead Source</th>
             <th>Status</th>
             <th>Created</th>
             <th></th>
@@ -81,6 +82,7 @@
             <td>{{ contact.email }}</td>
             <td>{{ contact.phone || contact.mobile || '-' }}</td>
             <td>{{ contact.company?.name || '-' }}</td>
+            <td>{{ contact.source || '-' }}</td>
             <td>
               <ion-badge *ngIf="contact.lead_status" class="status-badge" [class]="getStatusClass(contact.lead_status)">
                 {{ contact.lead_status }}

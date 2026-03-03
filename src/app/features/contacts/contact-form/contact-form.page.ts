@@ -4,15 +4,16 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule, AlertController, LoadingController } from '@ionic/angular';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
-import { Contact, Company } from '../../../models';
+import { Contact, Company, CustomField, CustomFieldValue } from '../../../models';
 import { addIcons } from 'ionicons';
-import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, personOutline, flagOutline } from 'ionicons/icons';
+import { CustomFieldsComponent } from '../../../shared/components/custom-fields/custom-fields.component';
+import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, personOutline, flagOutline, optionsOutline } from 'ionicons/icons';
 
 
 @Component({
   selector: 'app-contact-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule, RouterModule],
+  imports: [CommonModule, FormsModule, IonicModule, RouterModule, CustomFieldsComponent],
   templateUrl: './contact-form.page.html',
   styleUrls: ['./contact-form.page.scss']
 })
@@ -22,6 +23,11 @@ export class ContactFormPage implements OnInit {
   isLoading = false;
   isSaving = false;
   companies: Company[] = [];
+  
+  // Custom fields
+  customFields: CustomField[] = [];
+  customFieldValues: CustomFieldValue[] = [];
+  customFieldData: { [key: string]: string } = {};
   
   // Photo upload
   selectedFile: File | null = null;
@@ -55,11 +61,12 @@ export class ContactFormPage implements OnInit {
     private alertController: AlertController,
     private loadingController: LoadingController
   ) {
-     addIcons({personOutline,flagOutline,briefcase,notificationsOutline,settingsOutline,trophyOutline,trendingUp,cash,chevronBack,chevronForward,chevronDown,alertCircle, add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter,checkmarkCircle,cloudUpload,layers,time,person,logOut,list,calendar,analytics,people,flag,folderOpen,ellipse,business,callOutline,chatbubbleOutline,calendarOutline});
+     addIcons({personOutline,flagOutline,briefcase,notificationsOutline,settingsOutline,trophyOutline,trendingUp,cash,chevronBack,chevronForward,chevronDown,alertCircle, add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter,checkmarkCircle,cloudUpload,layers,time,person,logOut,list,calendar,analytics,people,flag,folderOpen,ellipse,business,callOutline,chatbubbleOutline,calendarOutline,optionsOutline});
   }
 
   ngOnInit(): void {
     this.loadCompanies();
+    this.loadCustomFields();
     
     const id = this.route.snapshot.paramMap.get('id');
     if (id && id !== 'new') {
@@ -67,6 +74,24 @@ export class ContactFormPage implements OnInit {
       this.contactId = +id;
       this.loadContact();
     }
+  }
+
+  loadCustomFields(): void {
+    this.api.getCustomFields('contacts').subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.customFields = response.data;
+        }
+      },
+      error: () => {
+        // Silently handle error - custom fields are optional
+        console.log('No custom fields found for contacts');
+      }
+    });
+  }
+
+  onCustomFieldChange(values: { [key: string]: string }): void {
+    this.customFieldData = values;
   }
 
   loadCompanies(): void {
@@ -177,9 +202,14 @@ export class ContactFormPage implements OnInit {
 
   private saveContact( avatarUrl: string | null): void {
     //console.log('saveContact called with avatarUrl:', avatarUrl);
-    const contactData = { ...this.contact };
+    const contactData: any = { ...this.contact };
     if (avatarUrl) {
       contactData.avatar = avatarUrl;
+    }
+
+    // Include custom fields data
+    if (Object.keys(this.customFieldData).length > 0) {
+      contactData.custom_fields = this.customFieldData;
     }
 
    // console.log('Contact data to save:', contactData);
