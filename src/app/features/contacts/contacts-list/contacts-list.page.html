@@ -69,7 +69,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let contact of contacts" [routerLink]="['/contacts', contact.id]" class="table-row">
+          <tr *ngFor="let contact of contacts" [routerLink]="['/contacts/view', contact.id]" class="table-row">
             <td>
               <div class="contact-cell">
                 <div class="contact-avatar-small" [style.background]="getAvatarColor(contact)">

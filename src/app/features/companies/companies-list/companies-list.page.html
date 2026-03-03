@@ -59,7 +59,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let company of companies" [routerLink]="['/companies', company.id]" class="table-row">
+          <tr *ngFor="let company of companies" [routerLink]="['/companies/view', company.id]" class="table-row">
             <td>
               <div class="company-cell">
                 <div class="company-avatar-small" [style.background]="getAvatarColor(company)">

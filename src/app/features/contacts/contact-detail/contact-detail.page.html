@@ -1,0 +1,305 @@
+<ion-header class="bigin-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="router.navigate(['/contacts'])">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ getFullName() || 'Contact Details' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="sendEmail()" *ngIf="contact?.email">
+        <ion-icon slot="icon-only" name="send-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="makeCall()" *ngIf="contact?.phone">
+        <ion-icon slot="icon-only" name="call-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="editContact()">
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="deleteContact()" color="danger">
+        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="detail-container" *ngIf="!isLoading && contact">
+    <!-- Main Split Layout -->
+    <div class="split-layout">
+      <!-- Left Sidebar - Contact Info -->
+      <div class="left-panel">
+        <!-- Profile Card -->
+        <div class="profile-card">
+          <div class="profile-avatar" [style.background]="getAvatarColor()">
+            {{ getInitials() }}
+          </div>
+          <h2 class="profile-name">{{ getFullName() }}</h2>
+          <p class="profile-title" *ngIf="contact.job_title">{{ contact.job_title }}</p>
+          
+          <ion-badge class="status-badge" [class]="getStatusClass()">
+            {{ contact.lead_status || 'New' }}
+          </ion-badge>
+          
+          <div class="profile-actions">
+            <ion-button fill="outline" (click)="sendEmail()" *ngIf="contact.email">
+              <ion-icon slot="start" name="mail-outline"></ion-icon>
+              Email
+            </ion-button>
+            <ion-button fill="outline" (click)="makeCall()" *ngIf="contact.phone">
+              <ion-icon slot="start" name="call-outline"></ion-icon>
+              Call
+            </ion-button>
+          </div>
+        </div>
+
+        <!-- Contact Info Card -->
+        <div class="info-card">
+          <div class="card-header">
+            <h3>Contact Information</h3>
+          </div>
+          
+          <div class="info-row" *ngIf="contact.email">
+            <ion-icon name="mail-outline"></ion-icon>
+            <div class="info-content">
+              <span class="label">Email</span>
+              <a class="value link" (click)="sendEmail()">{{ contact.email }}</a>
+            </div>
+          </div>
+          
+          <div class="info-row" *ngIf="contact.phone">
+            <ion-icon name="call-outline"></ion-icon>
+            <div class="info-content">
+              <span class="label">Phone</span>
+              <a class="value link" (click)="makeCall()">{{ contact.phone }}</a>
+            </div>
+          </div>
+          
+          <div class="info-row" *ngIf="contact.mobile">
+            <ion-icon name="phone-portrait-outline"></ion-icon>
+            <div class="info-content">
+              <span class="label">Mobile</span>
+              <span class="value">{{ contact.mobile }}</span>
+            </div>
+          </div>
+          
+          <div class="info-row" *ngIf="contact.company">
+            <ion-icon name="business-outline"></ion-icon>
+            <div class="info-content">
+              <span class="label">Company</span>
+              <a class="value link" (click)="router.navigate(['/companies', contact.company?.id])">
+                {{ contact.company.name }}
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Info Card -->
+        <div class="info-card">
+          <div class="card-header">
+            <h3>Additional Information</h3>
+          </div>
+          
+          <div class="info-row">
+            <ion-icon name="flag-outline"></ion-icon>
+            <div class="info-content">
+              <span class="label">Lead Status</span>
+              <span class="value">{{ contact.lead_status || 'New' }}</span>
+            </div>
+          </div>
+          
+          <div class="info-row" *ngIf="contact.source">
+            <ion-icon name="analytics-outline"></ion-icon>
+            <div class="info-content">
+              <span class="label">Source</span>
+              <span class="value">{{ contact.source }}</span>
+            </div>
+          </div>
+          
+          <div class="info-row">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <div class="info-content">
+              <span class="label">Created</span>
+              <span class="value">{{ formatDate(contact.created_at) }}</span>
+            </div>
+          </div>
+          
+          <div class="info-row" *ngIf="contact.created_at !== contact.updated_at">
+            <ion-icon name="time-outline"></ion-icon>
+            <div class="info-content">
+              <span class="label">Last Updated</span>
+              <span class="value">{{ formatDate(contact.updated_at) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes Card -->
+        <div class="notes-card" *ngIf="contact.notes">
+          <div class="card-header">
+            <h3>Notes</h3>
+          </div>
+          <p class="notes-content">{{ contact.notes }}</p>
+        </div>
+      </div>
+
+      <!-- Right Panel - Tabs -->
+      <div class="right-panel">
+        <!-- Tab Bar -->
+        <div class="tab-bar">
+          <div 
+            *ngFor="let tab of tabs" 
+            class="tab-item" 
+            [class.active]="isTabActive(tab.key)"
+            (click)="onTabClick(tab.key)">
+            <ion-icon [name]="tab.icon"></ion-icon>
+            <span>{{ tab.label }}</span>
+          </div>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+          <!-- Details Tab -->
+          <div class="tab-pane" *ngIf="activeTab === 'details'">
+            <div class="details-section">
+              <div class="empty">
+                <ion-icon name="person-outline"></ion-icon>
+                <p>Contact details shown on the left panel</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Deals Tab -->
+          <div class="tab-pane" *ngIf="activeTab === 'deals'">
+            <div class="deals-section">
+              <div class="loading" *ngIf="isLoadingRelated">
+                <ion-spinner name="lines"></ion-spinner>
+              </div>
+              
+              <div class="deal-list" *ngIf="!isLoadingRelated && deals.length > 0">
+                <div class="deal-item" *ngFor="let deal of deals" [routerLink]="['/deals/view', deal.id]">
+                  <div class="deal-info">
+                    <div class="deal-name">{{ deal.name }}</div>
+                    <div class="deal-amount">{{ deal.amount | currency }}</div>
+                  </div>
+                  <ion-badge class="stage-badge" [class]="deal.stage?.toLowerCase()">
+                    {{ deal.stage }}
+                  </ion-badge>
+                </div>
+              </div>
+              
+              <div class="empty" *ngIf="!isLoadingRelated && deals.length === 0">
+                <ion-icon name="trending-up-outline"></ion-icon>
+                <p>No deals yet</p>
+                <ion-button size="small" routerLink="/deals/new">
+                  <ion-icon name="add" slot="start"></ion-icon>
+                  Create Deal
+                </ion-button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tasks Tab -->
+          <div class="tab-pane" *ngIf="activeTab === 'tasks'">
+            <div class="tasks-section">
+              <div class="loading" *ngIf="isLoadingRelated">
+                <ion-spinner name="lines"></ion-spinner>
+              </div>
+              
+              <div class="task-list" *ngIf="!isLoadingRelated && tasks.length > 0">
+                <div class="task-item" *ngFor="let task of tasks" [routerLink]="['/tasks', task.id]">
+                  <div class="task-checkbox">
+                    <ion-checkbox [checked]="task.status === 'completed'" disabled></ion-checkbox>
+                  </div>
+                  <div class="task-info">
+                    <div class="task-title">{{ task.title }}</div>
+                    <div class="task-due" *ngIf="task.due_date">Due: {{ formatDate(task.due_date) }}</div>
+                  </div>
+                  <ion-badge [color]="task.status === 'completed' ? 'success' : 'warning'">
+                    {{ task.status }}
+                  </ion-badge>
+                </div>
+              </div>
+              
+              <div class="empty" *ngIf="!isLoadingRelated && tasks.length === 0">
+                <ion-icon name="checkbox-outline"></ion-icon>
+                <p>No tasks yet</p>
+                <ion-button size="small" routerLink="/tasks/new">
+                  <ion-icon name="add" slot="start"></ion-icon>
+                  Create Task
+                </ion-button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Activities Tab -->
+          <div class="tab-pane" *ngIf="activeTab === 'activities'">
+            <div class="activities-section">
+              <div class="loading" *ngIf="isLoadingRelated">
+                <ion-spinner name="lines"></ion-spinner>
+              </div>
+              
+              <div class="activity-list" *ngIf="!isLoadingRelated && activities.length > 0">
+                <div class="activity-item" *ngFor="let activity of activities">
+                  <div class="activity-icon">
+                    <ion-icon [name]="activity.type === 'call' ? 'call' : activity.type === 'meeting' ? 'calendar' : 'document-text'"></ion-icon>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-title">{{ activity.title }}</div>
+                    <div class="activity-desc" *ngIf="activity.description">{{ activity.description }}</div>
+                    <div class="activity-date">{{ formatDate(activity.created_at) }}</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="empty" *ngIf="!isLoadingRelated && activities.length === 0">
+                <ion-icon name="calendar-outline"></ion-icon>
+                <p>No activities yet</p>
+                <ion-button size="small" routerLink="/activities/new">
+                  <ion-icon name="add" slot="start"></ion-icon>
+                  Log Activity
+                </ion-button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes Tab -->
+          <div class="tab-pane" *ngIf="activeTab === 'notes'">
+            <div class="notes-section">
+              <div class="empty" *ngIf="!contact.notes">
+                <ion-icon name="document-text-outline"></ion-icon>
+                <p>No notes yet</p>
+                <ion-button size="small" (click)="editContact()">
+                  <ion-icon name="add" slot="start"></ion-icon>
+                  Add Note
+                </ion-button>
+              </div>
+              <div class="notes-display" *ngIf="contact.notes">
+                <p>{{ contact.notes }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Emails Tab -->
+          <div class="tab-pane" *ngIf="activeTab === 'emails'">
+            <div class="emails-section">
+              <div class="empty">
+                <ion-icon name="mail-outline"></ion-icon>
+                <p>No emails sent yet</p>
+                <ion-button size="small" (click)="sendEmail()">
+                  <ion-icon name="send" slot="start"></ion-icon>
+                  Send Email
+                </ion-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Loading contact...</p>
+  </div>
+</ion-content>

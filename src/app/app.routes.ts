@@ -17,10 +17,12 @@ import { DashboardPage } from './features/dashboard/dashboard.page';
 // // Contacts
 import { ContactsListPage } from './features/contacts/contacts-list/contacts-list.page';
 import { ContactFormPage } from './features/contacts/contact-form/contact-form.page';
+import { ContactDetailPage } from './features/contacts/contact-detail/contact-detail.page';
 
 // // Companies
 import { CompaniesListPage } from './features/companies/companies-list/companies-list.page';
 import { CompanyFormPage } from './features/companies/company-form/company-form.page';
+import { CompanyDetailPage } from './features/companies/company-detail/company-detail.page';
 
 // // Deals
 import { DealsListPage } from './features/deals/deals-list/deals-list.page';
@@ -117,6 +119,10 @@ export const routes: Routes = [
         component: ContactFormPage
       },
       {
+        path: 'contacts/view/:id',
+        component: ContactDetailPage
+      },
+      {
         path: 'contacts/:id',
         component: ContactFormPage
       },
@@ -128,6 +134,10 @@ export const routes: Routes = [
       {
         path: 'companies/new',
         component: CompanyFormPage
+      },
+      {
+        path: 'companies/view/:id',
+        component: CompanyDetailPage
       },
       {
         path: 'companies/:id',
