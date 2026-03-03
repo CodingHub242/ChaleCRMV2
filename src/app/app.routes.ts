@@ -347,6 +347,11 @@ export const routes: Routes = [
         path: 'forecasting',
         loadComponent: () => import('./features/forecasting/forecasting.page').then(m => m.ForecastingPage)
       },
+      // Reports
+      {
+        path: 'reports',
+        loadComponent: () => import('./features/reports/reports.page').then(m => m.ReportsPage)
+      },
       // SQR (Service Quality Requests)
       {
         path: 'sqrs',

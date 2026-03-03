@@ -1,0 +1,167 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Reports</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleFilters()" [color]="showFilters ? 'primary' : 'medium'">
+        <ion-icon slot="icon-only" name="filter-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="loadReport()">
+        <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+      </ion-button>
+      <ion-button id="export-trigger">
+        <ion-icon slot="icon-only" name="download-outline"></ion-icon>
+      </ion-button>
+      <ion-popover trigger="export-trigger" side="bottom" alignment="end">
+        <ng-template>
+          <ion-content>
+            <ion-list lines="none">
+              <ion-item button (click)="exportToCSV()">
+                <ion-icon slot="start" name="document-text-outline"></ion-icon>
+                <ion-label>Export as CSV</ion-label>
+              </ion-item>
+              <ion-item button (click)="exportToExcel()">
+                <ion-icon slot="start" name="grid-outline"></ion-icon>
+                <ion-label>Export as Excel</ion-label>
+              </ion-item>
+              <ion-item button (click)="exportToPDF()">
+                <ion-icon slot="start" name="document-outline"></ion-icon>
+                <ion-label>Export as PDF</ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-content>
+        </ng-template>
+      </ion-popover>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Pull to Refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="reports-container">
+    <!-- Report Type Selector -->
+    <div class="report-selector">
+      <div class="report-tabs">
+        <button 
+          *ngFor="let report of reportConfigs" 
+          class="report-tab"
+          [class.active]="selectedReport.id === report.id"
+          (click)="selectReport(report)">
+          <ion-icon [name]="report.icon"></ion-icon>
+          <span>{{ report.title }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="filters-section" [class.visible]="showFilters">
+      <div class="filter-row">
+        <div class="filter-item">
+          <label>Date Range</label>
+          <ion-select [(ngModel)]="dateRange" interface="popover" placeholder="Select date range">
+            <ion-select-option *ngFor="let range of dateRanges" [value]="range.value">
+              {{ range.label }}
+            </ion-select-option>
+          </ion-select>
+        </div>
+        
+        <div class="filter-item">
+          <label>Search</label>
+          <ion-input 
+            [(ngModel)]="searchQuery" 
+            placeholder="Search records..."
+            clearInput>
+          </ion-input>
+        </div>
+        
+        <div class="filter-actions">
+          <ion-button fill="clear" (click)="clearFilters()">Clear</ion-button>
+          <ion-button (click)="applyFilters()">Apply</ion-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="summary-stats">
+      <div class="stat-card" *ngFor="let stat of summaryStats">
+        <div class="stat-icon">
+          <ion-icon [name]="stat.icon"></ion-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stat.value }}</span>
+          <span class="stat-label">{{ stat.label }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Report Table -->
+    <div class="report-table-container">
+      <div class="table-header">
+        <h2>{{ selectedReport.title }}</h2>
+        <span class="record-count">{{ reportData.length }} records</span>
+      </div>
+
+      <div class="table-wrapper" *ngIf="!isLoading && reportData.length > 0">
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th 
+="let col of                *ngFor selectedReport.columns" 
+                [class.sortable]="col.sortable"
+                (click)="col.sortable && sort(col.key)">
+                {{ col.label }}
+                <ion-icon 
+                  *ngIf="col.sortable" 
+                  [name]="getSortIcon(col.key)" 
+                  class="sort-icon">
+                </ion-icon>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of reportData">
+              <td *ngFor="let col of selectedReport.columns">
+                <ng-container [ngSwitch]="col.type">
+                  <span *ngSwitchCase="'status'" 
+                    class="status-badge" 
+                    [ngClass]="getStatusClass(row[col.key])">
+                    {{ row[col.key] }}
+                  </span>
+                  <span *ngSwitchCase="'currency'" class="currency-value">
+                    {{ formatValue(row[col.key], col.type) }}
+                  </span>
+                  <span *ngSwitchCase="'number'" class="number-value">
+                    {{ formatValue(row[col.key], col.type) }}
+                  </span>
+                  <span *ngSwitchCase="'date'" class="date-value">
+                    {{ formatValue(row[col.key], col.type) }}
+                  </span>
+                  <span *ngSwitchDefault>{{ row[col.key] }}</span>
+                </ng-container>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-state" *ngIf="isLoading">
+        <ion-spinner name="lines"></ion-spinner>
+        <p>Loading report data...</p>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="!isLoading && reportData.length === 0">
+        <ion-icon name="document-text-outline"></ion-icon>
+        <p>No data available for this report</p>
+        <ion-button fill="outline" (click)="loadReport()">Refresh</ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>
