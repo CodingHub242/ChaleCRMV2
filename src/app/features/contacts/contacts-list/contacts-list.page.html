@@ -73,9 +73,9 @@
           <tr *ngFor="let contact of contacts" [routerLink]="['/contacts/view', contact.id]" class="table-row">
             <td>
               <div class="contact-cell">
-                <div class="contact-avatar-small" [style.background]="getAvatarColor(contact)">
+                <!-- <div class="contact-avatar-small" [style.background]="getAvatarColor(contact)">
                   {{ getInitials(contact) }}
-                </div>
+                </div> -->
                 <span class="contact-name">{{ getFullName(contact) }}</span>
               </div>
             </td>
