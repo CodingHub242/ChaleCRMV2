@@ -79,6 +79,7 @@
             <th>Status</th>
             <th>Contact</th>
             <th>Company</th>
+            <th>Assigned To</th>
             <th>Created</th>
             <th></th>
           </tr>
@@ -105,6 +106,7 @@
             </td>
             <td>{{ sqr.contact?.first_name ? sqr.contact?.first_name + ' ' + sqr.contact?.last_name : '-' }}</td>
             <td>{{ sqr.company?.name || '-' }}</td>
+            <td>{{ sqr.assignee?.name ? sqr.assignee?.name : '-' }}</td>
             <td>{{ sqr.created_at | date:'mediumDate' }}</td>
             <td>
               <ion-button fill="clear" color="danger" (click)="deleteSqr(sqr); $event.stopPropagation()">
