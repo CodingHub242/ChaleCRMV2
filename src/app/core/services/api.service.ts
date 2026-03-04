@@ -190,7 +190,7 @@ export class ApiService {
   syncContacts(): Observable<ApiResponse<any>> {
     let httpParams = new HttpParams();
     httpParams = this.addOrganizationParams(httpParams);
-    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/contacts/sync?force=true&debug=true`, {}, { params: httpParams });
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/contacts/sync`, {}, { params: httpParams });
   }
 
   getSyncStatus(): Observable<ApiResponse<any>> {
