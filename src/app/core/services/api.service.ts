@@ -187,10 +187,63 @@ export class ApiService {
   }
 
   // ==================== CONTACT SYNC (External API - Chale App) ====================
-  syncContacts(): Observable<ApiResponse<any>> {
+  syncContacts(params?: { page?: number; force?: boolean }): Observable<ApiResponse<any>> {
     let httpParams = new HttpParams();
+    if (params) {
+      if (params.page) httpParams = httpParams.set('page', params.page.toString());
+      if (params.force) httpParams = httpParams.set('force', 'true');
+    }
     httpParams = this.addOrganizationParams(httpParams);
     return this.http.post<ApiResponse<any>>(`${this.baseUrl}/contacts/sync`, {}, { params: httpParams });
+  }
+
+  // Sync all contacts automatically (handles pagination)
+  syncAllContacts(force: boolean = true): Observable<ApiResponse<any>> {
+    return new Observable(observer => {
+      this.syncAllContactsRecursive(1, force, { totalImported: 0, totalSkipped: 0, pagesProcessed: 0 }, observer);
+    });
+  }
+
+  private syncAllContactsRecursive(
+    page: number, 
+    force: boolean, 
+    totals: { totalImported: number; totalSkipped: number; pagesProcessed: number },
+    observer: any
+  ): void {
+    this.syncContacts({ page, force }).subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          totals.totalImported += response.data.imported || 0;
+          totals.totalSkipped += response.data.skipped || 0;
+          totals.pagesProcessed++;
+
+          // Check if there are more pages
+          if (response.data.has_more) {
+            // Continue to next page
+            this.syncAllContactsRecursive(page + 1, force, totals, observer);
+          } else {
+            // All done
+            observer.next({
+              success: true,
+              message: `Sync completed! ${totals.totalImported} imported, ${totals.totalSkipped} skipped across ${totals.pagesProcessed} pages.`,
+              data: {
+                imported: totals.totalImported,
+                skipped: totals.totalSkipped,
+                pages_processed: totals.pagesProcessed,
+                completed: true
+              }
+            });
+            observer.complete();
+          }
+        } else {
+          observer.next(response);
+          observer.complete();
+        }
+      },
+      error: (err) => {
+        observer.error(err);
+      }
+    });
   }
 
   getSyncStatus(): Observable<ApiResponse<any>> {

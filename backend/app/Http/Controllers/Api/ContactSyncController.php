@@ -22,18 +22,19 @@ class ContactSyncController extends Controller
     protected string $lastSyncCacheKey = 'contacts_last_sync';
 
     /**
-     * Maximum number of times to retry failed requests
+     * Maximum number of records to process per request (0 = all)
      */
-    protected int $maxRetries = 3;
+    protected int $defaultPerPage = 500;
 
     /**
      * Sync contacts from external API
-     * Can be triggered manually or via scheduled command
+     * Fetches and processes ONE PAGE (batch) per request
      */
     public function sync(Request $request)
     {
         $forceSync = $request->boolean('force', false);
-        $debug = $request->boolean('debug', false);
+        $page = $request->integer('page', 1); // which page to fetch (1, 2, 3, etc.)
+        $batchSize = $request->integer('batch_size', 500); // records per page (from external API)
         
         // Check if we should skip based on daily limit (unless forced)
         if (!$forceSync && !$this->shouldSync()) {
@@ -45,12 +46,8 @@ class ContactSyncController extends Controller
         }
 
         try {
-            $result = $this->fetchExternalContacts($debug);
-            
-            // Handle debug response
-            if (isset($result['debug'])) {
-                return response()->json($result['debug']);
-            }
+            // Fetch only ONE page from external API
+            $result = $this->fetchSinglePage($page, $batchSize);
             
             if (!$result['success']) {
                 return response()->json([
@@ -59,18 +56,37 @@ class ContactSyncController extends Controller
                 ]);
             }
 
-            $synced = $this->processContacts($result['data']);
+            $contacts = $result['data'];
+            $totalOnPage = count($contacts);
+            
+            if ($totalOnPage === 0) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "No more records to sync. Finished at page {$page}.",
+                    'data' => [
+                        'imported' => 0,
+                        'skipped' => 0,
+                        'page' => $page,
+                        'has_more' => false
+                    ]
+                ]);
+            }
+
+            // Process this batch
+            $synced = $this->processContacts($contacts);
             
             // Update last sync time
             cache([$this->lastSyncCacheKey => Carbon::now()->toDateTimeString()], now()->addDays(1));
 
             return response()->json([
                 'success' => true,
-                'message' => "Sync completed. {$synced['imported']} imported, {$synced['skipped']} skipped.",
+                'message' => "Page {$page} completed. {$synced['imported']} imported, {$synced['skipped']} skipped.",
                 'data' => [
                     'imported' => $synced['imported'],
                     'skipped' => $synced['skipped'],
-                    'total_processed' => $synced['imported'] + $synced['skipped'],
+                    'page' => $page,
+                    'records_on_page' => $totalOnPage,
+                    'has_more' => $totalOnPage === $batchSize,
                     'last_sync' => Carbon::now()->toDateTimeString()
                 ]
             ]);
@@ -82,6 +98,34 @@ class ContactSyncController extends Controller
                 'success' => false,
                 'message' => 'Sync failed: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    /**
+     * Fetch a single page from external API
+     */
+    protected function fetchSinglePage(int $page, int $perPage): array
+    {
+        try {
+            $response = Http::timeout(120)->get($this->externalApiUrl, [
+                'page' => $page,
+                'per_page' => $perPage
+            ]);
+
+            if (!$response->successful()) {
+                return ['success' => false, 'error' => "HTTP " . $response->status() . ": " . $response->body()];
+            }
+
+            $data = $response->json();
+            
+            if (empty($data['data'])) {
+                return ['success' => true, 'data' => []];
+            }
+
+            return ['success' => true, 'data' => $data['data']];
+
+        } catch (\Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
         }
     }
 
@@ -104,108 +148,20 @@ class ContactSyncController extends Controller
     }
 
     /**
-     * Fetch contacts from external API with pagination
-     */
-    protected function fetchExternalContacts($debug = false): array
-    {
-        $allData = [];
-        $page = 1;
-        $perPage = 500;
-        $maxPages = 100;
-        $lastError = '';
-        $firstPageData = null;
-        
-        try {
-            while ($page <= $maxPages) {
-                $response = Http::timeout(300)->get($this->externalApiUrl, [
-                    'page' => $page,
-                    'per_page' => $perPage
-                ]);
-
-                if (!$response->successful()) {
-                    $lastError = "HTTP " . $response->status() . ": " . $response->body();
-                    break;
-                }
-
-                $data = $response->json();
-                
-                // Store first page for debug
-                if ($firstPageData === null) {
-                    $firstPageData = $data;
-                }
-                
-                if (empty($data['data'])) {
-                    break;
-                }
-
-                $allData = array_merge($allData, $data['data']);
-
-                Log::info('Fetched page ' . $page . ' with ' . count($data['data']) . ' records. Total so far: ' . count($allData));
-
-                // Check for next page - try both formats
-                $nextPageUrl = $data['next_page_url'] ?? $data['pagination']['next_page_url'] ?? null;
-                
-                if (empty($nextPageUrl)) {
-                    break;
-                }
-
-                $page++;
-            }
-
-            Log::info('Total contacts fetched: ' . count($allData));
-            
-            // DEBUG MODE: Return first page data for inspection
-            if ($debug && $firstPageData) {
-                $emails = array_column($firstPageData['data'] ?? [], 'customer_email');
-                // Try alternative field names
-                if (empty($emails)) {
-                    $emails = array_column($firstPageData['data'] ?? [], 'email');
-                }
-                
-                return [
-                    'success' => true,
-                    'data' => $allData,
-                    'debug' => [
-                        'raw_first_page' => $firstPageData,
-                        'sample_fields' => !empty($firstPageData['data']) ? array_keys($firstPageData['data'][0]) : [],
-                        'emails' => $emails,
-                        'total_records' => count($allData)
-                    ]
-                ];
-            }
-
-            return ['success' => true, 'data' => $allData];
-
-        } catch (\Exception $e) {
-            return ['success' => false, 'error' => $e->getMessage()];
-        }
-    }
-
-    /**
      * Process and sync contacts
      */
     protected function processContacts(array $externalContacts): array
     {
-        // Log the emails being processed
-        Log::info('Processing contacts', ['emails' => array_column($externalContacts, 'customer_email')]);
-        
         $imported = 0;
         $skipped = 0;
         
         foreach ($externalContacts as $externalContact) {
             try {
-                // Map external API fields to internal fields
-                // Try multiple field name variations
-                $name = $externalContact['customer_name'] 
-                    ?? $externalContact['name'] 
-                    ?? $externalContact['customer_name'] 
-                    ?? null;
-                $email = $externalContact['customer_email'] 
-                    ?? $externalContact['email'] 
-                    ?? null;
-                $phone = $externalContact['customer_phone'] 
-                    ?? $externalContact['phone'] 
-                    ?? null;
+                // Map fields from orders table
+                // The API selects orders.* which includes all order columns
+                $email = $externalContact['customer_email'] ?? null;
+                $name = $externalContact['customer_name'] ?? null;
+                $phone = $externalContact['customer_phone'] ?? null;
                 $eventName = $externalContact['event_name'] ?? '';
                 
                 // Validate required fields - skip if email is null, empty, or not set

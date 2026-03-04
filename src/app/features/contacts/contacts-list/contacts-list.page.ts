@@ -113,12 +113,13 @@ export class ContactsListPage implements OnInit {
 
   performSync(): void {
     this.isSyncing = true;
-    this.api.syncContacts().subscribe({
+    // Use the new method that handles pagination automatically
+    this.api.syncAllContacts(true).subscribe({
       next: async (response) => {
         this.isSyncing = false;
         const toast = await this.toastController.create({
-          message: `Sync complete! ${response.data?.synced || 0} new contacts synced, ${response.data?.skipped || 0} skipped.`,
-          duration: 3000,
+          message: response.message || `Sync complete! ${response.data?.imported || 0} new contacts synced, ${response.data?.skipped || 0} skipped.`,
+          duration: 5000,
           color: 'success',
           position: 'top'
         });
