@@ -33,6 +33,7 @@ class ContactSyncController extends Controller
     public function sync(Request $request)
     {
         $forceSync = $request->boolean('force', false);
+        $debug = $request->boolean('debug', false);
         
         // Check if we should skip based on daily limit (unless forced)
         if (!$forceSync && !$this->shouldSync()) {
@@ -44,7 +45,12 @@ class ContactSyncController extends Controller
         }
 
         try {
-            $result = $this->fetchExternalContacts();
+            $result = $this->fetchExternalContacts($debug);
+            
+            // Handle debug response
+            if (isset($result['debug'])) {
+                return response()->json($result['debug']);
+            }
             
             if (!$result['success']) {
                 return response()->json([
@@ -98,45 +104,81 @@ class ContactSyncController extends Controller
     }
 
     /**
-     * Fetch contacts from external API with retry logic
+     * Fetch contacts from external API with pagination
      */
-    protected function fetchExternalContacts(): array
+    protected function fetchExternalContacts($debug = false): array
     {
-        $attempt = 0;
+        $allData = [];
+        $page = 1;
+        $perPage = 500;
+        $maxPages = 100;
         $lastError = '';
+        $firstPageData = null;
         
-        while ($attempt < $this->maxRetries) {
-            try {
-                $response = Http::timeout(30)->get($this->externalApiUrl);
+        try {
+            while ($page <= $maxPages) {
+                $response = Http::timeout(300)->get($this->externalApiUrl, [
+                    'page' => $page,
+                    'per_page' => $perPage
+                ]);
+
+                if (!$response->successful()) {
+                    $lastError = "HTTP " . $response->status() . ": " . $response->body();
+                    break;
+                }
+
+                $data = $response->json();
                 
-                if ($response->successful()) {
-                    $data = $response->json();
-                    
-                    // Handle different response formats
-                    if (isset($data['data'])) {
-                        return ['success' => true, 'data' => $data['data']];
-                    } elseif (is_array($data)) {
-                        return ['success' => true, 'data' => $data];
-                    }
-                    
-                    return ['success' => false, 'error' => 'Invalid response format'];
+                // Store first page for debug
+                if ($firstPageData === null) {
+                    $firstPageData = $data;
                 }
                 
-                $lastError = "HTTP " . $response->status() . ": " . $response->body();
+                if (empty($data['data'])) {
+                    break;
+                }
+
+                $allData = array_merge($allData, $data['data']);
+
+                Log::info('Fetched page ' . $page . ' with ' . count($data['data']) . ' records. Total so far: ' . count($allData));
+
+                // Check for next page - try both formats
+                $nextPageUrl = $data['next_page_url'] ?? $data['pagination']['next_page_url'] ?? null;
                 
-            } catch (\Exception $e) {
-                $lastError = $e->getMessage();
+                if (empty($nextPageUrl)) {
+                    break;
+                }
+
+                $page++;
             }
+
+            Log::info('Total contacts fetched: ' . count($allData));
             
-            $attempt++;
-            
-            if ($attempt < $this->maxRetries) {
-                // Wait before retry (exponential backoff)
-                sleep(pow(2, $attempt));
+            // DEBUG MODE: Return first page data for inspection
+            if ($debug && $firstPageData) {
+                $emails = array_column($firstPageData['data'] ?? [], 'customer_email');
+                // Try alternative field names
+                if (empty($emails)) {
+                    $emails = array_column($firstPageData['data'] ?? [], 'email');
+                }
+                
+                return [
+                    'success' => true,
+                    'data' => $allData,
+                    'debug' => [
+                        'raw_first_page' => $firstPageData,
+                        'sample_fields' => !empty($firstPageData['data']) ? array_keys($firstPageData['data'][0]) : [],
+                        'emails' => $emails,
+                        'total_records' => count($allData)
+                    ]
+                ];
             }
+
+            return ['success' => true, 'data' => $allData];
+
+        } catch (\Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
         }
-        
-        return ['success' => false, 'error' => $lastError];
     }
 
     /**
@@ -144,15 +186,29 @@ class ContactSyncController extends Controller
      */
     protected function processContacts(array $externalContacts): array
     {
+        // Log the emails being processed
+        Log::info('Processing contacts', ['emails' => array_column($externalContacts, 'customer_email')]);
+        
         $imported = 0;
         $skipped = 0;
         
         foreach ($externalContacts as $externalContact) {
             try {
-                // Validate required fields - skip if email is null, empty, or not set
-                $email = $externalContact['email'] ?? null;
+                // Map external API fields to internal fields
+                // Try multiple field name variations
+                $name = $externalContact['customer_name'] 
+                    ?? $externalContact['name'] 
+                    ?? $externalContact['customer_name'] 
+                    ?? null;
+                $email = $externalContact['customer_email'] 
+                    ?? $externalContact['email'] 
+                    ?? null;
+                $phone = $externalContact['customer_phone'] 
+                    ?? $externalContact['phone'] 
+                    ?? null;
+                $eventName = $externalContact['event_name'] ?? '';
                 
-                // Skip if email is null, empty string, or the string "null"
+                // Validate required fields - skip if email is null, empty, or not set
                 if (empty($email) || $email === 'null' || $email === 'NULL') {
                     $skipped++;
                     continue;
@@ -165,7 +221,7 @@ class ContactSyncController extends Controller
                 }
                 
                 // Check if contact already exists by email
-                $existingContact = Contact::where('email', $externalContact['email'])->first();
+                $existingContact = Contact::where('email', $email)->first();
                 
                 if ($existingContact) {
                     // Contact exists - skip
@@ -174,17 +230,17 @@ class ContactSyncController extends Controller
                 }
                 
                 // Parse name into first_name and last_name
-                $nameParts = $this->parseName($externalContact['name'] ?? '');
+                $nameParts = $this->parseName($name ?? '');
                 
                 // Create new contact
                 Contact::create([
                     'first_name' => $nameParts['first_name'],
                     'last_name' => $nameParts['last_name'],
-                    'email' => $externalContact['email'],
-                    'phone' => $externalContact['phone'] ?? null,
+                    'email' => $email,
+                    'phone' => $phone,
                     'owner_id' => 1, // Default owner
                     'organization_id' => 1,
-                    'source' => 'chale_app_sync',
+                    'source' => $eventName,
                     'lead_status' => 'new',
                 ]);
                 
