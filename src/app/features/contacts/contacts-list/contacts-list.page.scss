@@ -291,11 +291,12 @@
   background: white;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
+  overflow-x: auto;
 }
 
 .bigin-table {
   width: 100%;
+  min-width: 900px; // Ensure table has minimum width for horizontal scroll
   border-collapse: collapse;
   
   thead {
@@ -329,6 +330,8 @@
         color: #333;
         border-bottom: 1px solid #f0f0f0;
         vertical-align: middle;
+        min-width: 100px; // Prevent cells from shrinking too much
+        white-space: nowrap;
       }
     }
   }
