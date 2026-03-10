@@ -73,6 +73,7 @@
       <table class="bigin-table">
         <thead>
           <tr>
+            <th>Ticket Number</th>
             <th>Title</th>
             <th>Type</th>
             <th>Priority</th>
@@ -86,6 +87,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let sqr of sqrs" [routerLink]="['/sqrs/view', sqr.id]" class="table-row">
+            <td>{{ sqr.ticket_number }}</td>
             <td>
               <span class="sqr-title">{{ sqr.title }}</span>
             </td>

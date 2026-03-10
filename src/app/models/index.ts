@@ -606,4 +606,5 @@ export interface Sqr {
   custom_fields?: CustomFieldValue[] | { [key: string]: string };
   created_at: string;
   updated_at: string;
+  ticket_number: string;
 }

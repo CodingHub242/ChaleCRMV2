@@ -23,6 +23,7 @@ class Sqr extends Model
         'custom_fields',
         'created_by',
         'updated_by',
+        'ticket_number',
     ];
 
     protected $casts = [

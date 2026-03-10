@@ -27,7 +27,8 @@ class SqrController extends Controller
             $query->where(function($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
                   ->orWhere('description', 'like', "%{$search}%")
-                  ->orWhere('type', 'like', "%{$search}%");
+                  ->orWhere('type', 'like', "%{$search}%")
+                  ->orWhere('ticket_number', 'like', "%{$search}%");
             });
         }
         
@@ -84,6 +85,9 @@ class SqrController extends Controller
         ]);
 
         $validated['organization_id'] = $this->getOrganizationId();
+        
+        // Generate unique ticket number
+        $validated['ticket_number'] = $this->generateTicketNumber($validated['organization_id']);
         
         // Set created_by to current user
         $validated['created_by'] = auth()->id();
@@ -210,5 +214,34 @@ class SqrController extends Controller
             'data' => $sqr->load(['contact', 'company', 'assignee', 'owner', 'creator', 'updater']),
             'message' => 'SQR status updated successfully'
         ]);
+    }
+
+    /**
+     * Generate a unique ticket number for SQR
+     * Format: SQR-YYYYMMDD-XXXX
+     */
+    private function generateTicketNumber(?int $organizationId): string
+    {
+        $date = now()->format('Ymd');
+        $prefix = 'SQR-' . $date;
+        
+        // Get the latest ticket number for today
+        $query = Sqr::where('ticket_number', 'like', $prefix . '-%');
+        
+        if ($organizationId) {
+            $query->where('organization_id', $organizationId);
+        }
+        
+        $lastTicket = $query->orderBy('ticket_number', 'desc')->first();
+        
+        if ($lastTicket) {
+            // Extract the last sequence number
+            $lastNumber = (int) substr($lastTicket->ticket_number, -4);
+            $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+        } else {
+            $newNumber = '0001';
+        }
+        
+        return $prefix . '-' . $newNumber;
     }
 }
