@@ -58,6 +58,7 @@
               {{ getContactInitials() }}
             </div>
             <div class="info">
+              <div class="name">{{ sqr.ticket_number }}</div>
               <div class="name">{{ sqr.contact?.first_name }} {{ sqr.contact?.last_name }}</div>
               <div class="subtitle">Contact</div>
               <div class="detail" *ngIf="sqr.contact.email">
