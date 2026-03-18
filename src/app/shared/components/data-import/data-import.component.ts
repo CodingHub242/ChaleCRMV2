@@ -57,6 +57,11 @@ export class DataImportComponent implements OnInit {
   groups: DealGroup[] = [];
   selectedGroupId: number | null = null;
 
+  // For SQR name lookups
+  contactsMap: { [key: string]: number } = {};
+  companiesMap: { [key: string]: number } = {};
+  usersMap: { [key: string]: number } = {};
+
   // Entity-specific field definitions
   fieldDefinitions: { [key: string]: { key: string; label: string; type: string }[] } = {
     company: [
@@ -112,8 +117,11 @@ export class DataImportComponent implements OnInit {
       { key: 'status', label: 'Status', type: 'select' },
       { key: 'description', label: 'Description', type: 'textarea' },
       { key: 'contact_id', label: 'Contact ID', type: 'number' },
+      { key: 'contact_name', label: 'Contact Name', type: 'text' },
       { key: 'company_id', label: 'Company ID', type: 'number' },
+      { key: 'company_name', label: 'Company Name', type: 'text' },
       { key: 'assigned_to', label: 'Assigned To (User ID)', type: 'number' },
+      { key: 'assigned_to_name', label: 'Assigned To (Name)', type: 'text' },
       { key: 'resolution_notes', label: 'Resolution Notes', type: 'textarea' }
     ]
   };
@@ -130,12 +138,63 @@ export class DataImportComponent implements OnInit {
     if (this.entityType === 'deal') {
       this.loadGroups();
     }
+    if (this.entityType === 'sqr') {
+      this.loadContactsForLookup();
+      this.loadCompaniesForLookup();
+      this.loadUsersForLookup();
+    }
   }
 
   loadGroups(): void {
     this.api.getDealGroups().subscribe({
       next: (response) => {
         this.groups = response.data || [];
+      }
+    });
+  }
+
+  loadContactsForLookup(): void {
+    this.api.getContacts({ per_page: 1000 }).subscribe({
+      next: (response) => {
+        const contacts = response.data || [];
+        contacts.forEach((contact: any) => {
+          const fullName = `${contact.first_name || ''} ${contact.last_name || ''}`.trim().toLowerCase();
+          if (fullName) {
+            this.contactsMap[fullName] = contact.id;
+          }
+          if (contact.email) {
+            this.contactsMap[contact.email.toLowerCase()] = contact.id;
+          }
+        });
+      }
+    });
+  }
+
+  loadCompaniesForLookup(): void {
+    this.api.getCompanies({ per_page: 1000 }).subscribe({
+      next: (response) => {
+        const companies = response.data || [];
+        companies.forEach((company: any) => {
+          if (company.name) {
+            this.companiesMap[company.name.toLowerCase()] = company.id;
+          }
+        });
+      }
+    });
+  }
+
+  loadUsersForLookup(): void {
+    this.api.getUsers().subscribe({
+      next: (response) => {
+        const users = response.data || [];
+        users.forEach((user: any) => {
+          if (user.name) {
+            this.usersMap[user.name.toLowerCase()] = user.id;
+          }
+          if (user.email) {
+            this.usersMap[user.email.toLowerCase()] = user.id;
+          }
+        });
       }
     });
   }
@@ -394,6 +453,27 @@ export class DataImportComponent implements OnInit {
         }
         if (!record.status) {
           record.status = 'Open'; // Default status
+        }
+
+        // Handle contact_name -> contact_id lookup
+        const contactNameField = this.fieldMappings.find(m => m.appField === 'contact_name');
+        if (contactNameField?.excelColumn && row[contactNameField.excelColumn]) {
+          const contactName = row[contactNameField.excelColumn].toString().trim().toLowerCase();
+          record.contact_id = this.contactsMap[contactName] || null;
+        }
+
+        // Handle company_name -> company_id lookup
+        const companyNameField = this.fieldMappings.find(m => m.appField === 'company_name');
+        if (companyNameField?.excelColumn && row[companyNameField.excelColumn]) {
+          const companyName = row[companyNameField.excelColumn].toString().trim().toLowerCase();
+          record.company_id = this.companiesMap[companyName] || null;
+        }
+
+        // Handle assigned_to_name -> assigned_to lookup
+        const assignedToNameField = this.fieldMappings.find(m => m.appField === 'assigned_to_name');
+        if (assignedToNameField?.excelColumn && row[assignedToNameField.excelColumn]) {
+          const userName = row[assignedToNameField.excelColumn].toString().trim().toLowerCase();
+          record.assigned_to = this.usersMap[userName] || null;
         }
       }
 
