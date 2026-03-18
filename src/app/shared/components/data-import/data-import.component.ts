@@ -419,9 +419,14 @@ export class DataImportComponent implements OnInit {
       mappedFields.forEach(mapping => {
         let value = row[mapping.excelColumn] || '';
         
+        // Skip empty values for ID fields
+        if (value === '' && ['contact_id', 'company_id', 'assigned_to'].includes(mapping.appField)) {
+          return; // Don't set empty ID fields
+        }
+        
         // Type conversions
         const fieldDef = this.fieldDefinitions[this.entityType].find(f => f.key === mapping.appField);
-        if (fieldDef?.type === 'number') {
+        if (fieldDef?.type === 'number' && value !== '') {
           value = parseFloat(value) || 0;
         }
         
@@ -510,7 +515,27 @@ export class DataImportComponent implements OnInit {
         const contactNameField = this.fieldMappings.find(m => m.appField === 'contact_name');
         if (contactNameField?.excelColumn && row[contactNameField.excelColumn] && !record.contact_id) {
           const contactName = row[contactNameField.excelColumn].toString().trim().toLowerCase();
-          const foundId = this.contactsMap[contactName];
+          const nameParts = contactName.split(' ');
+          
+          // Try exact match first
+          let foundId = this.contactsMap[contactName];
+          
+          // If no exact match, try partial match (first or last name)
+          if (!foundId) {
+            for (const part of nameParts) {
+              if (part.length > 2) { // Avoid matching on short words like "of", "the"
+                foundId = this.contactsMap[part];
+                if (foundId) break;
+              }
+            }
+          }
+          
+          // Try matching by first name + last name combination
+          if (!foundId && nameParts.length >= 2) {
+            const firstLast = `${nameParts[0]} ${nameParts[nameParts.length - 1]}`;
+            foundId = this.contactsMap[firstLast];
+          }
+          
           if (foundId) {
             record.contact_id = foundId;
           }
@@ -536,15 +561,21 @@ export class DataImportComponent implements OnInit {
           }
         }
 
-        // Ensure IDs are numbers
-        if (record.contact_id) {
-          record.contact_id = parseInt(record.contact_id, 10) || null;
+        // Ensure IDs are numbers (not 0 or empty strings)
+        if (record.contact_id && record.contact_id > 0) {
+          record.contact_id = parseInt(record.contact_id, 10);
+        } else {
+          delete record.contact_id;
         }
-        if (record.company_id) {
-          record.company_id = parseInt(record.company_id, 10) || null;
+        if (record.company_id && record.company_id > 0) {
+          record.company_id = parseInt(record.company_id, 10);
+        } else {
+          delete record.company_id;
         }
-        if (record.assigned_to) {
-          record.assigned_to = parseInt(record.assigned_to, 10) || null;
+        if (record.assigned_to && record.assigned_to > 0) {
+          record.assigned_to = parseInt(record.assigned_to, 10);
+        } else {
+          delete record.assigned_to;
         }
       }
 
