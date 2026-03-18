@@ -157,15 +157,26 @@ export class DataImportComponent implements OnInit {
     this.api.getContacts({ per_page: 1000 }).subscribe({
       next: (response) => {
         const contacts = response.data || [];
+        console.log('Loading contacts for lookup:', contacts.length);
         contacts.forEach((contact: any) => {
+          // Try different name combinations
           const fullName = `${contact.first_name || ''} ${contact.last_name || ''}`.trim().toLowerCase();
           if (fullName) {
             this.contactsMap[fullName] = contact.id;
+            console.log('Mapped contact:', fullName, '->', contact.id);
+          }
+          // Also map first_name and last_name individually for better matching
+          if (contact.first_name) {
+            this.contactsMap[contact.first_name.toLowerCase()] = contact.id;
+          }
+          if (contact.last_name) {
+            this.contactsMap[contact.last_name.toLowerCase()] = contact.id;
           }
           if (contact.email) {
             this.contactsMap[contact.email.toLowerCase()] = contact.id;
           }
         });
+        console.log('Contacts map built:', this.contactsMap);
       }
     });
   }
@@ -516,15 +527,19 @@ export class DataImportComponent implements OnInit {
         if (contactNameField?.excelColumn && row[contactNameField.excelColumn] && !record.contact_id) {
           const contactName = row[contactNameField.excelColumn].toString().trim().toLowerCase();
           const nameParts = contactName.split(' ');
+          console.log('Looking up contact:', contactName);
+          console.log('Contacts map keys:', Object.keys(this.contactsMap));
           
           // Try exact match first
           let foundId = this.contactsMap[contactName];
+          console.log('Exact match:', foundId);
           
           // If no exact match, try partial match (first or last name)
           if (!foundId) {
             for (const part of nameParts) {
               if (part.length > 2) { // Avoid matching on short words like "of", "the"
                 foundId = this.contactsMap[part];
+                console.log('Partial match on', part, ':', foundId);
                 if (foundId) break;
               }
             }
@@ -534,6 +549,7 @@ export class DataImportComponent implements OnInit {
           if (!foundId && nameParts.length >= 2) {
             const firstLast = `${nameParts[0]} ${nameParts[nameParts.length - 1]}`;
             foundId = this.contactsMap[firstLast];
+            console.log('First+Last match on', firstLast, ':', foundId);
           }
           
           if (foundId) {
