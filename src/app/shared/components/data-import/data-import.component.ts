@@ -36,7 +36,7 @@ export interface ImportResult {
   styleUrls: ['./data-import.component.scss']
 })
 export class DataImportComponent implements OnInit {
-  @Input() entityType: 'company' | 'contact' | 'lead' | 'deal' = 'contact';
+  @Input() entityType: 'company' | 'contact' | 'lead' | 'deal' | 'sqr' = 'contact';
   @Output() importComplete = new EventEmitter<ImportResult>();
   @Output() cancel = new EventEmitter<void>();
 
@@ -103,6 +103,18 @@ export class DataImportComponent implements OnInit {
       { key: 'company_id', label: 'Company ID', type: 'number' },
       { key: 'description', label: 'Description', type: 'textarea' },
       { key: 'group_name', label: 'Group Name', type: 'text' }
+    ],
+    sqr: [
+      { key: 'title', label: 'Title', type: 'text' },
+      { key: 'ticket_number', label: 'Ticket Number', type: 'text' },
+      { key: 'type', label: 'Type', type: 'select' },
+      { key: 'priority', label: 'Priority', type: 'select' },
+      { key: 'status', label: 'Status', type: 'select' },
+      { key: 'description', label: 'Description', type: 'textarea' },
+      { key: 'contact_id', label: 'Contact ID', type: 'number' },
+      { key: 'company_id', label: 'Company ID', type: 'number' },
+      { key: 'assigned_to', label: 'Assigned To (User ID)', type: 'number' },
+      { key: 'resolution_notes', label: 'Resolution Notes', type: 'textarea' }
     ]
   };
 
@@ -372,6 +384,19 @@ export class DataImportComponent implements OnInit {
         }
       }
 
+      // For SQR, set default values for required fields if not provided
+      if (this.entityType === 'sqr') {
+        if (!record.type) {
+          record.type = 'Inquiry'; // Default type
+        }
+        if (!record.priority) {
+          record.priority = 'Medium'; // Default priority
+        }
+        if (!record.status) {
+          record.status = 'Open'; // Default status
+        }
+      }
+
       try {
         await this.createRecord(record);
         success++;
@@ -407,6 +432,9 @@ export class DataImportComponent implements OnInit {
         break;
       case 'deal':
         observable = this.api.createDeal(data);
+        break;
+      case 'sqr':
+        observable = this.api.createSqr(data);
         break;
       default:
         return Promise.reject(new Error('Unknown entity type'));
@@ -460,7 +488,8 @@ export class DataImportComponent implements OnInit {
 
   onCancel() {
     this.cancel.emit();
-    this.modcl.dismiss();
+    // Pass the import result if import was completed, otherwise pass null
+    this.modcl.dismiss(this.importResult);
   }
 
   private async showAlert(title: string, message: string, handler?: () => void) {

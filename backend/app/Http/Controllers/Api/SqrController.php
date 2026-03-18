@@ -73,6 +73,7 @@ class SqrController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'ticket_number' => 'nullable|string|max:50|unique:sqrs,ticket_number',
             'type' => 'required|string|in:Complaint,Feedback,Suggestion,Inquiry',
             'priority' => 'required|string|in:Low,Medium,High,Critical',
             'status' => 'nullable|string|in:Open,In Progress,Escalated,Resolved,Closed',
@@ -86,8 +87,10 @@ class SqrController extends Controller
 
         $validated['organization_id'] = $this->getOrganizationId();
         
-        // Generate unique ticket number
-        $validated['ticket_number'] = $this->generateTicketNumber($validated['organization_id']);
+        // Generate unique ticket number only if not provided
+        if (empty($validated['ticket_number'])) {
+            $validated['ticket_number'] = $this->generateTicketNumber($validated['organization_id']);
+        }
         
         // Set created_by to current user
         $validated['created_by'] = auth()->id();

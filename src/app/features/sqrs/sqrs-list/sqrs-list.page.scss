@@ -317,6 +317,11 @@
   font-weight: 600;
 }
 
+.import-btn {
+  --color: #4caf50;
+  font-weight: 600;
+}
+
 // Responsive
 @media (max-width: 768px) {
   .filter-toolbar {

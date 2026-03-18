@@ -12,6 +12,9 @@
      <ion-title *ngIf="entityType=='deal'">
       Import Leads
     </ion-title>
+    <ion-title *ngIf="entityType=='sqr'">
+      Import SQRs
+    </ion-title>
     <ion-buttons slot="end" *ngIf="currentStep !== 'importing'">
       <ion-button (click)="onCancel()">Cancel</ion-button>
     </ion-buttons>
@@ -83,7 +86,8 @@
       <div class="mapping-section">
         <h3>Map Your Data</h3>
         <p *ngIf="entityType === 'deal'">Match your file columns to lead fields</p>
-        <p *ngIf="entityType != 'deal'">Match your file columns to {{ entityType }} fields</p>
+        <p *ngIf="entityType === 'sqr'">Match your file columns to SQR fields</p>
+        <p *ngIf="entityType != 'deal' && entityType != 'sqr'">Match your file columns to {{ entityType }} fields</p>
         
         <!-- Group selector for deals -->
         <div class="group-selector" *ngIf="entityType === 'deal'">
@@ -109,7 +113,8 @@
             <span>Your Column</span>
             <span></span>
             <span *ngIf="entityType === 'deal'">Lead Field</span>
-            <span *ngIf="entityType != 'deal'">{{ entityType | titlecase }} Field</span>
+            <span *ngIf="entityType === 'sqr'">SQR Field</span>
+            <span *ngIf="entityType !== 'deal' && entityType !== 'sqr'">{{ entityType | titlecase }} Field</span>
           </div>
           <div class="mapping-row" *ngFor="let mapping of fieldMappings">
             <ion-select 

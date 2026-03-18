@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, SearchbarCustomEvent, AlertController } from '@ionic/angular';
+import { IonicModule, SearchbarCustomEvent, AlertController, ModalController } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { Sqr } from '../../../models';
+import { DataImportComponent } from '../../../shared/components/data-import/data-import.component';
 import { addIcons } from 'ionicons';
-import { warning, chatbubbles, helpCircle, add, trash, create, chevronBack, chevronForward, chevronDown, alertCircle, bulb, person, trashOutline, documents, time, checkmarkCircle, arrowUpCircle } from 'ionicons/icons';
+import { warning, chatbubbles, helpCircle, add, trash, create, chevronBack, chevronForward, chevronDown, alertCircle, bulb, person, trashOutline, documents, time, checkmarkCircle, arrowUpCircle, cloudUploadOutline } from 'ionicons/icons';
 
 interface TabCount {
   key: string;
@@ -69,9 +70,10 @@ export class SqrsListPage implements OnInit {
 
   constructor(
     private api: ApiService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private modalController: ModalController
   ) {
-    addIcons({ trashOutline, warning, chatbubbles, helpCircle, add, trash, create, chevronBack, chevronForward, chevronDown, alertCircle, bulb: alertCircle, person, documents, time, checkmarkCircle, arrowUpCircle });
+    addIcons({ trashOutline, warning, chatbubbles, helpCircle, add, trash, create, chevronBack, chevronForward, chevronDown, alertCircle, bulb: alertCircle, person, documents, time, checkmarkCircle, arrowUpCircle, cloudUploadOutline });
   }
 
   ngOnInit(): void {
@@ -268,5 +270,25 @@ export class SqrsListPage implements OnInit {
       ]
     });
     await alert.present();
+  }
+
+  async openImportModal(): Promise<void> {
+    const modal = await this.modalController.create({
+      component: DataImportComponent,
+      componentProps: {
+        entityType: 'sqr'
+      },
+      cssClass: 'import-modal'
+    });
+
+    modal.onDidDismiss().then((result) => {
+      if (result.data) {
+        // Reload data after import
+        this.loadSqrs();
+        this.loadSqrCounts();
+      }
+    });
+
+    return await modal.present();
   }
 }
