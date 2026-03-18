@@ -506,25 +506,45 @@ export class DataImportComponent implements OnInit {
           record.priority = 'Medium'; // Default priority
         }
 
-        // Handle contact_name -> contact_id lookup
+        // Handle contact_name -> contact_id lookup (only if contact_id not already set)
         const contactNameField = this.fieldMappings.find(m => m.appField === 'contact_name');
-        if (contactNameField?.excelColumn && row[contactNameField.excelColumn]) {
+        if (contactNameField?.excelColumn && row[contactNameField.excelColumn] && !record.contact_id) {
           const contactName = row[contactNameField.excelColumn].toString().trim().toLowerCase();
-          record.contact_id = this.contactsMap[contactName] || null;
+          const foundId = this.contactsMap[contactName];
+          if (foundId) {
+            record.contact_id = foundId;
+          }
         }
 
-        // Handle company_name -> company_id lookup
+        // Handle company_name -> company_id lookup (only if company_id not already set)
         const companyNameField = this.fieldMappings.find(m => m.appField === 'company_name');
-        if (companyNameField?.excelColumn && row[companyNameField.excelColumn]) {
+        if (companyNameField?.excelColumn && row[companyNameField.excelColumn] && !record.company_id) {
           const companyName = row[companyNameField.excelColumn].toString().trim().toLowerCase();
-          record.company_id = this.companiesMap[companyName] || null;
+          const foundId = this.companiesMap[companyName];
+          if (foundId) {
+            record.company_id = foundId;
+          }
         }
 
-        // Handle assigned_to_name -> assigned_to lookup
+        // Handle assigned_to_name -> assigned_to lookup (only if assigned_to not already set)
         const assignedToNameField = this.fieldMappings.find(m => m.appField === 'assigned_to_name');
-        if (assignedToNameField?.excelColumn && row[assignedToNameField.excelColumn]) {
+        if (assignedToNameField?.excelColumn && row[assignedToNameField.excelColumn] && !record.assigned_to) {
           const userName = row[assignedToNameField.excelColumn].toString().trim().toLowerCase();
-          record.assigned_to = this.usersMap[userName] || null;
+          const foundId = this.usersMap[userName];
+          if (foundId) {
+            record.assigned_to = foundId;
+          }
+        }
+
+        // Ensure IDs are numbers
+        if (record.contact_id) {
+          record.contact_id = parseInt(record.contact_id, 10) || null;
+        }
+        if (record.company_id) {
+          record.company_id = parseInt(record.company_id, 10) || null;
+        }
+        if (record.assigned_to) {
+          record.assigned_to = parseInt(record.assigned_to, 10) || null;
         }
       }
 
