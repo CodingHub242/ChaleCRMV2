@@ -445,14 +445,65 @@ export class DataImportComponent implements OnInit {
 
       // For SQR, set default values for required fields if not provided
       if (this.entityType === 'sqr') {
-        if (!record.type) {
+        // Map common status variations to valid SQR status values
+        const statusMapping: { [key: string]: string } = {
+          'new': 'Open',
+          'new ticket': 'Open',
+          'open': 'Open',
+          'in progress': 'In Progress',
+          'inprogress': 'In Progress',
+          'progress': 'In Progress',
+          'escalated': 'Escalated',
+          'resolved': 'Resolved',
+          'closed': 'Closed',
+          'done': 'Closed',
+          'completed': 'Closed'
+        };
+
+        if (record.status) {
+          const normalizedStatus = record.status.toString().toLowerCase().trim();
+          record.status = statusMapping[normalizedStatus] || record.status;
+        } else {
+          record.status = 'Open'; // Default status
+        }
+
+        // Map common type variations to valid SQR type values
+        const typeMapping: { [key: string]: string } = {
+          'complaint': 'Complaint',
+          'complaints': 'Complaint',
+          'feedback': 'Feedback',
+          'suggestion': 'Suggestion',
+          'suggestions': 'Suggestion',
+          'inquiry': 'Inquiry',
+          'inquiries': 'Inquiry',
+          'question': 'Inquiry',
+          'support': 'Inquiry'
+        };
+
+        if (record.type) {
+          const normalizedType = record.type.toString().toLowerCase().trim();
+          record.type = typeMapping[normalizedType] || record.type;
+        } else {
           record.type = 'Inquiry'; // Default type
         }
-        if (!record.priority) {
+
+        // Map common priority variations to valid SQR priority values
+        const priorityMapping: { [key: string]: string } = {
+          'low': 'Low',
+          'medium': 'Medium',
+          'high': 'High',
+          'critical': 'Critical',
+          'urgent': 'Critical',
+          'lowest': 'Low',
+          'highest': 'Critical',
+          'normal': 'Medium'
+        };
+
+        if (record.priority) {
+          const normalizedPriority = record.priority.toString().toLowerCase().trim();
+          record.priority = priorityMapping[normalizedPriority] || record.priority;
+        } else {
           record.priority = 'Medium'; // Default priority
-        }
-        if (!record.status) {
-          record.status = 'Open'; // Default status
         }
 
         // Handle contact_name -> contact_id lookup
