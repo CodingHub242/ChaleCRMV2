@@ -154,8 +154,10 @@ export class DataImportComponent implements OnInit {
   }
 
   loadContactsForLookup(): void {
+    console.log('Loading contacts for lookup...');
     this.api.getContacts({ per_page: 1000 }).subscribe({
       next: (response) => {
+        console.log('Contacts API response:', response);
         const contacts = response.data || [];
         console.log('Loading contacts for lookup:', contacts.length);
         contacts.forEach((contact: any) => {
@@ -177,6 +179,9 @@ export class DataImportComponent implements OnInit {
           }
         });
         console.log('Contacts map built:', this.contactsMap);
+      },
+      error: (err) => {
+        console.error('Error loading contacts:', err);
       }
     });
   }
