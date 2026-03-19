@@ -26,6 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // User Profile
     Route::get('user/profile', [App\Http\Controllers\Api\UserController::class, 'profile']);
     Route::put('user/profile', [App\Http\Controllers\Api\UserController::class, 'updateProfile']);
+    Route::post('user/change-password', [App\Http\Controllers\Api\UserController::class, 'changePassword']);
     
     // Organization management
     Route::get('organization/current', [App\Http\Controllers\Api\OrganizationController::class, 'current']);

@@ -19,7 +19,7 @@ import {
   IonSpinner
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { personOutline, businessOutline, saveOutline, shieldOutline } from 'ionicons/icons';
+import { personOutline, businessOutline, saveOutline, shieldOutline, lockClosedOutline } from 'ionicons/icons';
 import { AuthService } from '../../../core/services/auth.service';
 import { ApiService } from '../../../core/services/api.service';
 import { User, Organization } from '../../../models';
@@ -73,11 +73,16 @@ export class SettingsPage implements OnInit {
   orgZipCode = '';
   orgWebsite = '';
 
+  // Password change fields
+  currentPassword = '';
+  newPassword = '';
+  confirmPassword = '';
+
   constructor(
     public authService: AuthService,
     public apiService: ApiService
   ) {
-    addIcons({ personOutline, businessOutline, saveOutline, shieldOutline });
+    addIcons({ personOutline, businessOutline, saveOutline, shieldOutline, lockClosedOutline });
   }
 
   ngOnInit(): void {
@@ -172,6 +177,57 @@ export class SettingsPage implements OnInit {
       error: (err) => {
         this.isSaving = false;
         this.errorMessage = err?.error?.message || 'Failed to update organization';
+      }
+    });
+  }
+
+  changePassword(): void {
+    // Validate passwords
+    if (!this.currentPassword) {
+      this.errorMessage = 'Please enter your current password';
+      return;
+    }
+
+    if (!this.newPassword) {
+      this.errorMessage = 'Please enter a new password';
+      return;
+    }
+
+    if (this.newPassword.length < 8) {
+      this.errorMessage = 'New password must be at least 8 characters';
+      return;
+    }
+
+    if (this.newPassword !== this.confirmPassword) {
+      this.errorMessage = 'New passwords do not match';
+      return;
+    }
+
+    this.isSaving = true;
+    this.successMessage = '';
+    this.errorMessage = '';
+
+    this.authService.changePassword({
+      current_password: this.currentPassword,
+      new_password: this.newPassword,
+      new_password_confirmation: this.confirmPassword
+    }).subscribe({
+      next: (response) => {
+        this.isSaving = false;
+        if (response.success) {
+          this.successMessage = 'Password changed successfully!';
+          // Clear the form
+          this.currentPassword = '';
+          this.newPassword = '';
+          this.confirmPassword = '';
+          setTimeout(() => this.successMessage = '', 3000);
+        } else {
+          this.errorMessage = response.message || 'Failed to change password';
+        }
+      },
+      error: (err) => {
+        this.isSaving = false;
+        this.errorMessage = err?.error?.message || 'Failed to change password. Please check your current password.';
       }
     });
   }

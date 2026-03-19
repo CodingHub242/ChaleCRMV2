@@ -209,6 +209,10 @@ export class AuthService {
     return this.api.updateProfile(data);
   }
 
+  changePassword(data: { current_password: string; new_password: string; new_password_confirmation: string }): Observable<any> {
+    return this.api.changePassword(data);
+  }
+
   logout(): void {
     if (this.isLoggedIn) {
       this.api.logout().subscribe({

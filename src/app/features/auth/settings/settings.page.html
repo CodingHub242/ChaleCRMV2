@@ -15,6 +15,13 @@
     </button>
     <button 
       class="tab-item" 
+      [class.active]="selectedSegment === 'password'" 
+      (click)="selectedSegment = 'password'">
+      <ion-icon name="lock-closed-outline"></ion-icon>
+      <span>Password</span>
+    </button>
+    <button 
+      class="tab-item" 
       [class.active]="selectedSegment === 'organization'" 
       (click)="selectedSegment = 'organization'"
       *ngIf="isAdmin">
@@ -91,6 +98,73 @@
         <ion-spinner *ngIf="isSaving" name="lines"></ion-spinner>
         <ion-icon *ngIf="!isSaving" slot="start" name="save-outline"></ion-icon>
         <span *ngIf="!isSaving">Save Profile</span>
+      </ion-button>
+    </form>
+  </div>
+
+  <!-- Password Change -->
+  <div *ngIf="selectedSegment === 'password'" class="settings-section">
+    <div class="section-header">
+      <ion-icon name="lock-closed-outline"></ion-icon>
+      <h2>Change Password</h2>
+      <p>Update your account password</p>
+    </div>
+
+    <form (ngSubmit)="changePassword()">
+      <ion-list lines="full">
+        <ion-item>
+          <ion-label position="stacked">Current Password *</ion-label>
+          <ion-input
+            [(ngModel)]="currentPassword"
+            name="currentPassword"
+            type="password"
+            placeholder="Enter current password"
+            [disabled]="isSaving"
+            required>
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">New Password *</ion-label>
+          <ion-input
+            [(ngModel)]="newPassword"
+            name="newPassword"
+            type="password"
+            placeholder="Enter new password (min 8 characters)"
+            [disabled]="isSaving"
+            required>
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Confirm New Password *</ion-label>
+          <ion-input
+            [(ngModel)]="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            placeholder="Confirm new password"
+            [disabled]="isSaving"
+            required>
+          </ion-input>
+        </ion-item>
+      </ion-list>
+
+      <div class="success-message" *ngIf="successMessage && selectedSegment === 'password'">
+        <ion-note color="success">{{ successMessage }}</ion-note>
+      </div>
+
+      <div class="error-message" *ngIf="errorMessage && selectedSegment === 'password'">
+        <ion-note color="danger">{{ errorMessage }}</ion-note>
+      </div>
+
+      <ion-button
+        type="submit"
+        expand="block"
+        [disabled]="isSaving"
+        class="save-button">
+        <ion-spinner *ngIf="isSaving" name="lines"></ion-spinner>
+        <ion-icon *ngIf="!isSaving" slot="start" name="lock-closed-outline"></ion-icon>
+        <span *ngIf="!isSaving">Change Password</span>
       </ion-button>
     </form>
   </div>

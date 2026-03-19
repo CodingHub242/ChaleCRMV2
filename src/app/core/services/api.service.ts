@@ -147,6 +147,10 @@ export class ApiService {
     return this.http.put<ApiResponse<User>>(`${this.baseUrl}/user/profile`, data);
   }
 
+  changePassword(data: { current_password: string; new_password: string; new_password_confirmation: string }): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/user/change-password`, data);
+  }
+
   // Dashboard
   getDashboardStats(): Observable<ApiResponse<DashboardStats>> {
     let httpParams = new HttpParams();
