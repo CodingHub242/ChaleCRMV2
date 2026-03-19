@@ -237,18 +237,14 @@ export class DataImportComponent implements OnInit {
     });
   }
 
-  // Load users for assigned_to lookup using organization users endpoint
+  // Load users for assigned_to lookup using organization users endpoint (no pagination - get all)
   loadUsersForLookup(): void {
     console.log('Loading users for lookup...');
-    this.loadUsersPage(1);
-  }
-
-  private loadUsersPage(page: number): void {
-    this.api.getOrganizationUsers({ per_page: 1000, page }).subscribe({
+    this.api.getOrganizationUsers().subscribe({
       next: (response) => {
-        console.log('Users API response page', page + ':', response);
+        console.log('Users API response:', response);
         const users = response.data || [];
-        console.log('Loaded users page', page + ':', users.length);
+        console.log('Loaded users:', users.length);
         
         users.forEach((user: any) => {
           // Map name variations
@@ -268,15 +264,7 @@ export class DataImportComponent implements OnInit {
           }
         });
         
-        // Check if there are more pages
-        const hasMore = (response as any).next_page_url !== null;
-        console.log('Page', page, 'has more:', hasMore);
-        
-        if (hasMore) {
-          this.loadUsersPage(page + 1);
-        } else {
-          console.log('All users loaded. Total map entries:', Object.keys(this.usersMap).length);
-        }
+        console.log('All users loaded. Total map entries:', Object.keys(this.usersMap).length);
         console.log('Users map built:', this.usersMap);
       },
       error: (err) => {
