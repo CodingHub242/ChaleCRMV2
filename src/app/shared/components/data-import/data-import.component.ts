@@ -237,21 +237,46 @@ export class DataImportComponent implements OnInit {
     });
   }
 
-  // Users typically don't have many, but handle pagination if needed
+  // Load users for assigned_to lookup using organization users endpoint
   loadUsersForLookup(): void {
     console.log('Loading users for lookup...');
-    this.api.getUsers().subscribe({
+    this.loadUsersPage(1);
+  }
+
+  private loadUsersPage(page: number): void {
+    this.api.getOrganizationUsers({ per_page: 1000, page }).subscribe({
       next: (response) => {
+        console.log('Users API response page', page + ':', response);
         const users = response.data || [];
-        console.log('Loaded users:', users.length);
+        console.log('Loaded users page', page + ':', users.length);
+        
         users.forEach((user: any) => {
+          // Map name variations
           if (user.name) {
             this.usersMap[user.name.toLowerCase()] = user.id;
+            console.log('Mapped user:', user.name, '->', user.id);
+            
+            // Also map first name and last name separately
+            const nameParts = user.name.split(' ');
+            if (nameParts.length > 1) {
+              this.usersMap[nameParts[0].toLowerCase()] = user.id;
+              this.usersMap[nameParts[nameParts.length - 1].toLowerCase()] = user.id;
+            }
           }
           if (user.email) {
             this.usersMap[user.email.toLowerCase()] = user.id;
           }
         });
+        
+        // Check if there are more pages
+        const hasMore = (response as any).next_page_url !== null;
+        console.log('Page', page, 'has more:', hasMore);
+        
+        if (hasMore) {
+          this.loadUsersPage(page + 1);
+        } else {
+          console.log('All users loaded. Total map entries:', Object.keys(this.usersMap).length);
+        }
         console.log('Users map built:', this.usersMap);
       },
       error: (err) => {
@@ -621,7 +646,25 @@ export class DataImportComponent implements OnInit {
         const assignedToNameField = this.fieldMappings.find(m => m.appField === 'assigned_to_name');
         if (assignedToNameField?.excelColumn && row[assignedToNameField.excelColumn] && !record.assigned_to) {
           const userName = row[assignedToNameField.excelColumn].toString().trim().toLowerCase();
-          const foundId = this.usersMap[userName];
+          console.log('Looking up user:', userName);
+          console.log('Users map keys:', Object.keys(this.usersMap));
+          
+          // Try exact match first
+          let foundId = this.usersMap[userName];
+          console.log('Exact user match:', foundId);
+          
+          // Try partial match (first name or last name)
+          if (!foundId) {
+            const nameParts = userName.split(' ');
+            for (const part of nameParts) {
+              if (part.length > 2) {
+                foundId = this.usersMap[part];
+                console.log('Partial user match on', part, ':', foundId);
+                if (foundId) break;
+              }
+            }
+          }
+          
           if (foundId) {
             record.assigned_to = foundId;
           }
