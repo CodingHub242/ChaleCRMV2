@@ -153,19 +153,25 @@ export class DataImportComponent implements OnInit {
     });
   }
 
+  // Load all contacts recursively (handles pagination)
   loadContactsForLookup(): void {
     console.log('Loading contacts for lookup...');
-    this.api.getContacts({ per_page: 1000 }).subscribe({
+    this.loadContactsPage(1);
+  }
+
+  private loadContactsPage(page: number): void {
+    this.api.getContacts({ per_page: 1000, page }).subscribe({
       next: (response) => {
-        console.log('Contacts API response:', response);
+        console.log('Contacts API response page', page + ':', response);
         const contacts = response.data || [];
-        console.log('Loading contacts for lookup:', contacts.length);
+        console.log('Loaded contacts page', page + ':', contacts.length);
+        
+        // Process this page's contacts
         contacts.forEach((contact: any) => {
           // Try different name combinations
           const fullName = `${contact.first_name || ''} ${contact.last_name || ''}`.trim().toLowerCase();
           if (fullName) {
             this.contactsMap[fullName] = contact.id;
-            console.log('Mapped contact:', fullName, '->', contact.id);
           }
           // Also map first_name and last_name individually for better matching
           if (contact.first_name) {
@@ -178,7 +184,18 @@ export class DataImportComponent implements OnInit {
             this.contactsMap[contact.email.toLowerCase()] = contact.id;
           }
         });
-        console.log('Contacts map built:', this.contactsMap);
+        
+        // Check if there are more pages
+        const hasMore = response.next_page_url !== null;
+        console.log('Page', page, 'has more:', hasMore);
+        
+        if (hasMore) {
+          // Fetch next page
+          this.loadContactsPage(page + 1);
+        } else {
+          // All done
+          console.log('All contacts loaded. Total map entries:', Object.keys(this.contactsMap).length);
+        }
       },
       error: (err) => {
         console.error('Error loading contacts:', err);
@@ -186,23 +203,47 @@ export class DataImportComponent implements OnInit {
     });
   }
 
+  // Load all companies recursively (handles pagination)
   loadCompaniesForLookup(): void {
-    this.api.getCompanies({ per_page: 1000 }).subscribe({
+    console.log('Loading companies for lookup...');
+    this.loadCompaniesPage(1);
+  }
+
+  private loadCompaniesPage(page: number): void {
+    this.api.getCompanies({ per_page: 1000, page }).subscribe({
       next: (response) => {
         const companies = response.data || [];
+        console.log('Loaded companies page', page + ':', companies.length);
+        
         companies.forEach((company: any) => {
           if (company.name) {
             this.companiesMap[company.name.toLowerCase()] = company.id;
           }
+          if (company.email) {
+            this.companiesMap[company.email.toLowerCase()] = company.id;
+          }
         });
+        
+        const hasMore = response.next_page_url !== null;
+        if (hasMore) {
+          this.loadCompaniesPage(page + 1);
+        } else {
+          console.log('All companies loaded. Total map entries:', Object.keys(this.companiesMap).length);
+        }
+      },
+      error: (err) => {
+        console.error('Error loading companies:', err);
       }
     });
   }
 
+  // Users typically don't have many, but handle pagination if needed
   loadUsersForLookup(): void {
+    console.log('Loading users for lookup...');
     this.api.getUsers().subscribe({
       next: (response) => {
         const users = response.data || [];
+        console.log('Loaded users:', users.length);
         users.forEach((user: any) => {
           if (user.name) {
             this.usersMap[user.name.toLowerCase()] = user.id;
@@ -211,6 +252,10 @@ export class DataImportComponent implements OnInit {
             this.usersMap[user.email.toLowerCase()] = user.id;
           }
         });
+        console.log('Users map built:', this.usersMap);
+      },
+      error: (err) => {
+        console.error('Error loading users:', err);
       }
     });
   }
