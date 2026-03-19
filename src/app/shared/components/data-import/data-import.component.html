@@ -57,7 +57,7 @@
         <p>Upload a CSV file with your {{ entityType }} data</p>
         
         <div class="file-input-wrapper">
-          <input type="file" accept=".csv,.xlsx,.xls" (change)="onFileSelected($event)" #fileInput hidden>
+          <input type="file" accept=".csv" (change)="onFileSelected($event)" #fileInput hidden>
           <ion-button expand="block" (click)="fileInput.click()" class="upload-btn">
             <ion-icon name="document-attach-outline" slot="start"></ion-icon>
             Choose File
