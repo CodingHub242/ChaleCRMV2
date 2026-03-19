@@ -602,19 +602,19 @@ export class DataImportComponent implements OnInit {
         if (contactNameField?.excelColumn && row[contactNameField.excelColumn] && !record.contact_id) {
           const contactName = row[contactNameField.excelColumn].toString().trim().toLowerCase();
           const nameParts = contactName.split(' ');
-          console.log('Looking up contact:', contactName);
-          console.log('Contacts map keys:', Object.keys(this.contactsMap));
+          //console.log('Looking up contact:', contactName);
+         // console.log('Contacts map keys:', Object.keys(this.contactsMap));
           
           // Try exact match first
           let foundId = this.contactsMap[contactName];
-          console.log('Exact match:', foundId);
+          //console.log('Exact match:', foundId);
           
           // If no exact match, try partial match (first or last name)
           if (!foundId) {
             for (const part of nameParts) {
               if (part.length > 2) { // Avoid matching on short words like "of", "the"
                 foundId = this.contactsMap[part];
-                console.log('Partial match on', part, ':', foundId);
+            //    console.log('Partial match on', part, ':', foundId);
                 if (foundId) break;
               }
             }
@@ -624,7 +624,7 @@ export class DataImportComponent implements OnInit {
           if (!foundId && nameParts.length >= 2) {
             const firstLast = `${nameParts[0]} ${nameParts[nameParts.length - 1]}`;
             foundId = this.contactsMap[firstLast];
-            console.log('First+Last match on', firstLast, ':', foundId);
+            //console.log('First+Last match on', firstLast, ':', foundId);
           }
           
           if (foundId) {
@@ -645,17 +645,18 @@ export class DataImportComponent implements OnInit {
         // Handle assigned_to_name -> assigned_to lookup (only if assigned_to not already set)
         const assignedToNameField = this.fieldMappings.find(m => m.appField === 'assigned_to_name');
         if (assignedToNameField?.excelColumn && row[assignedToNameField.excelColumn] && !record.assigned_to) {
-          const userName = row[assignedToNameField.excelColumn].toString().trim().toLowerCase();
-          console.log('Looking up user:', userName);
+          const userName = row[assignedToNameField.excelColumn].toString().trim();
+          const userNameLower = userName.toLowerCase();
+          console.log('Looking up user:', userName, '(lower:', userNameLower, ')');
           console.log('Users map keys:', Object.keys(this.usersMap));
           
-          // Try exact match first
-          let foundId = this.usersMap[userName];
+          // Try exact match first (case-insensitive)
+          let foundId = this.usersMap[userNameLower];
           console.log('Exact user match:', foundId);
           
           // Try partial match (first name or last name)
           if (!foundId) {
-            const nameParts = userName.split(' ');
+            const nameParts = userNameLower.split(' ');
             for (const part of nameParts) {
               if (part.length > 2) {
                 foundId = this.usersMap[part];
@@ -665,8 +666,15 @@ export class DataImportComponent implements OnInit {
             }
           }
           
+          // Try email match
+          if (!foundId && userNameLower.includes('@')) {
+            foundId = this.usersMap[userNameLower];
+            console.log('Email user match:', foundId);
+          }
+          
           if (foundId) {
             record.assigned_to = foundId;
+            console.log('User assigned:', foundId);
           }
         }
 
