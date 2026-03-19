@@ -630,10 +630,19 @@ export class DataImportComponent implements OnInit {
           }
         }
 
-        // Handle assigned_to_name -> assigned_to lookup (only if assigned_to not already set)
+        // Handle assigned_to_name -> assigned_to lookup (always try if name field is mapped, regardless of assigned_to)
         const assignedToNameField = this.fieldMappings.find(m => m.appField === 'assigned_to_name');
-        if (assignedToNameField?.excelColumn && row[assignedToNameField.excelColumn] && !record.assigned_to) {
-          const userName = row[assignedToNameField.excelColumn].toString().trim();
+        const assignedToValue = assignedToNameField?.excelColumn ? row[assignedToNameField.excelColumn] : null;
+        
+        console.log('Checking assigned_to_name lookup:', {
+          hasMapping: !!assignedToNameField?.excelColumn,
+          excelValue: assignedToValue,
+          currentAssignedTo: record.assigned_to,
+          usersMapLoaded: Object.keys(this.usersMap).length > 0
+        });
+        
+        if (assignedToNameField?.excelColumn && assignedToValue && !record.assigned_to) {
+          const userName = assignedToValue.toString().trim();
           const userNameLower = userName.toLowerCase();
           console.log('Looking up user:', userName, '(lower:', userNameLower, ')');
           console.log('Users map keys:', Object.keys(this.usersMap));
@@ -663,6 +672,8 @@ export class DataImportComponent implements OnInit {
           if (foundId) {
             record.assigned_to = foundId;
             console.log('User assigned:', foundId);
+          } else {
+            console.log('No user found for:', userName);
           }
         }
 
