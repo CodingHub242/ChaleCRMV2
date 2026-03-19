@@ -247,17 +247,10 @@ export class DataImportComponent implements OnInit {
         console.log('Loaded users:', users.length);
         
         users.forEach((user: any) => {
-          // Map name variations
+          // Map the full name (API returns 'name' field, not first_name/last_name)
           if (user.name) {
             this.usersMap[user.name.toLowerCase()] = user.id;
             console.log('Mapped user:', user.name, '->', user.id);
-            
-            // Also map first name and last name separately
-            const nameParts = user.name.split(' ');
-            if (nameParts.length > 1) {
-              this.usersMap[nameParts[0].toLowerCase()] = user.id;
-              this.usersMap[nameParts[nameParts.length - 1].toLowerCase()] = user.id;
-            }
           }
           if (user.email) {
             this.usersMap[user.email.toLowerCase()] = user.id;
@@ -399,19 +392,45 @@ export class DataImportComponent implements OnInit {
       if (this.headers.includes(field.key)) {
         matchedColumn = field.key;
       } else {
-        // Fuzzy match
-        const lowerKey = field.key.toLowerCase().replace('_', ' ');
+        // Fuzzy match - check various common header variations
+        const possibleHeaders = [
+          field.key,
+          field.key.replace('_', ' '),
+          field.key.replace('_', ''),
+          field.key.replace('_name', ''),
+          field.label.toLowerCase().replace(' ', ''),
+          field.label.toLowerCase().replace(' ', '_'),
+        ];
+        
+        // For assigned_to_name, also try common variations
+        if (field.key === 'assigned_to_name') {
+          possibleHeaders.push(
+            'assigned to',
+            'assignedto',
+            'assignee',
+            'assigned',
+            'assigned_to_name',
+            'assignedtoname'
+          );
+        }
+        
         for (const header of this.headers) {
-          const lowerHeader = header.toLowerCase().replace(/[_\s]/g, '');
-          if (lowerHeader === lowerKey.replace(/[_\s]/g, '')) {
-            matchedColumn = header;
-            break;
+          const lowerHeader = header.toLowerCase().replace(/[\s_]/g, '');
+          
+          for (const key of possibleHeaders) {
+            const lowerKey = key.toLowerCase().replace(/[\s_]/g, '');
+            if (lowerHeader === lowerKey) {
+              matchedColumn = header;
+              break;
+            }
+            // Check for partial matches
+            if (lowerHeader.includes(lowerKey) || lowerKey.includes(lowerHeader)) {
+              matchedColumn = header;
+              break;
+            }
           }
-          // Check for partial matches
-          if (lowerHeader.includes(lowerKey) || lowerKey.includes(lowerHeader)) {
-            matchedColumn = header;
-            break;
-          }
+          
+          if (matchedColumn) break;
         }
       }
       
@@ -634,9 +653,13 @@ export class DataImportComponent implements OnInit {
         const assignedToNameField = this.fieldMappings.find(m => m.appField === 'assigned_to_name');
         const assignedToValue = assignedToNameField?.excelColumn ? row[assignedToNameField.excelColumn] : null;
         
+        console.log('Field Mappings for SQR:', this.fieldMappings.filter(m => m.appField.includes('assigned')));
+        console.log('Excel Headers:', this.headers);
+        console.log('Raw row sample:', row);
         console.log('Checking assigned_to_name lookup:', {
           hasMapping: !!assignedToNameField?.excelColumn,
           excelValue: assignedToValue,
+          fieldMapping: assignedToNameField,
           currentAssignedTo: record.assigned_to,
           usersMapLoaded: Object.keys(this.usersMap).length > 0
         });
@@ -651,7 +674,7 @@ export class DataImportComponent implements OnInit {
           let foundId = this.usersMap[userNameLower];
           console.log('Exact user match:', foundId);
           
-          // Try partial match (first name or last name)
+          // Try partial match - split by space and try each part
           if (!foundId) {
             const nameParts = userNameLower.split(' ');
             for (const part of nameParts) {
