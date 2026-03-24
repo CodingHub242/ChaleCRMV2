@@ -34,7 +34,7 @@ class SqrController extends Controller
         }
         
         if ($status) {
-            if ($status === 'Closed') {
+            if ($status === 'Closed' || $status === 'Resolved') {
                 // For 'Closed' tab, show both Resolved and Closed
                 $query->whereIn('status', ['Resolved', 'Closed']);
             } else {

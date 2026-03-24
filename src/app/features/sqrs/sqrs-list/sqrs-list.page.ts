@@ -146,16 +146,19 @@ export class SqrsListPage implements OnInit {
     this.activeTab = tabKey;
     // Clear status filter when switching tabs
     this.statusFilter = '';
+    this.currentPage = 1;
     this.loadSqrs();
   }
 
   onSearch(event: SearchbarCustomEvent): void {
     this.searchQuery = event.detail.value || '';
+    this.currentPage = 1;
     this.loadSqrs();
   }
 
   onStatusFilterChange(event: any): void {
     this.statusFilter = event.detail.value;
+    this.currentPage = 1;
     // Update active tab based on filter
     if (this.statusFilter === 'Open') {
       this.activeTab = 'new';
@@ -173,6 +176,7 @@ export class SqrsListPage implements OnInit {
 
   onFilterChange(event: any): void {
     this.selectedFilter = event.detail.value;
+    this.currentPage = 1;
     // Map filter to status
     if (this.selectedFilter === '') {
       this.statusFilter = '';
