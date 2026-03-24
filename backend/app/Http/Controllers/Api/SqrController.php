@@ -15,6 +15,7 @@ class SqrController extends Controller
     {
         $perPage = $request->input('per_page', 15);
         $search = $request->input('search', '');
+        $status = $request->input('status', '');
         $organizationId = $this->getOrganizationId();
         
         $query = Sqr::with(['contact', 'company', 'assignee', 'owner', 'creator']);
@@ -30,6 +31,15 @@ class SqrController extends Controller
                   ->orWhere('type', 'like', "%{$search}%")
                   ->orWhere('ticket_number', 'like', "%{$search}%");
             });
+        }
+        
+        if ($status) {
+            if ($status === 'Closed') {
+                // For 'Closed' tab, show both Resolved and Closed
+                $query->whereIn('status', ['Resolved', 'Closed']);
+            } else {
+                $query->where('status', $status);
+            }
         }
         
         $sqrs = $query->orderBy('created_at', 'desc')->paginate($perPage);
