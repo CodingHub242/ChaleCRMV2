@@ -105,7 +105,6 @@ export class SqrsListPage implements OnInit {
       this.currentPage++;
     } else {
       this.isLoading = true;
-      this.currentPage = 1;
     }
 
     // Determine status filter based on active tab or dropdown
