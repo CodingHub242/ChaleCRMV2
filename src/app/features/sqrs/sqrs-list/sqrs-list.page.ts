@@ -30,6 +30,8 @@ export class SqrsListPage implements OnInit {
   searchQuery = '';
   currentPage = 1;
   hasMore = true;
+  totalItems = 0;
+  lastPage = 1;
   statusFilter = '';
   activeTab = 'all';
 
@@ -128,6 +130,8 @@ export class SqrsListPage implements OnInit {
           this.sqrs = response.data;
         }
         this.hasMore = response.current_page < response.last_page;
+        this.totalItems = response.total || 0;
+        this.lastPage = response.last_page || 1;
         this.isLoading = false;
       },
       error: () => {
@@ -169,22 +173,22 @@ export class SqrsListPage implements OnInit {
   onFilterChange(event: any): void {
     this.selectedFilter = event.detail.value;
     // Map filter to status
-    if (this.selectedFilter === 'All SQR Tickets') {
+    if (this.selectedFilter === '') {
       this.statusFilter = '';
       this.activeTab = 'all';
-    } else if (this.selectedFilter === 'All New Tickets') {
+    } else if (this.selectedFilter === 'Open') {
       this.statusFilter = 'Open';
       this.activeTab = 'new';
-    } else if (this.selectedFilter === 'All In Progress') {
+    } else if (this.selectedFilter === 'In Progress') {
       this.statusFilter = 'In Progress';
       this.activeTab = 'in_progress';
-    } else if (this.selectedFilter === 'All Escalated') {
+    } else if (this.selectedFilter === 'Escalated') {
       this.statusFilter = 'Escalated';
       this.activeTab = 'escalated';
-    } else if (this.selectedFilter === 'All Resolved') {
+    } else if (this.selectedFilter === 'Resolved') {
       this.statusFilter = 'Resolved';
       this.activeTab = 'closed';
-    } else if (this.selectedFilter === 'All Closed') {
+    } else if (this.selectedFilter === 'Closed') {
       this.statusFilter = 'Closed';
       this.activeTab = 'closed';
     } else {
@@ -215,6 +219,8 @@ export class SqrsListPage implements OnInit {
         next: (response) => {
           this.sqrs = [...this.sqrs, ...response.data];
           this.hasMore = response.current_page < response.last_page;
+          this.totalItems = response.total || 0;
+          this.lastPage = response.last_page || 1;
           event.target.complete();
         },
         error: () => {
@@ -224,6 +230,28 @@ export class SqrsListPage implements OnInit {
     } else {
       event.target.complete();
     }
+  }
+
+  prevPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.loadSqrs();
+    }
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.lastPage) {
+      this.currentPage++;
+      this.loadSqrs();
+    }
+  }
+
+  get startItem(): number {
+    return (this.currentPage - 1) * 20 + 1;
+  }
+
+  get endItem(): number {
+    return Math.min(this.currentPage * 20, this.totalItems);
   }
 
   getTypeIcon(type: string): string {

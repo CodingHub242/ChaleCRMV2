@@ -312,6 +312,40 @@
   border-top: 1px solid #f0f0f0;
 }
 
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-top: 1px solid #f0f0f0;
+  background: white;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pagination-btn {
+  --color: #073336;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  height: 32px;
+  width: 32px;
+  
+  &:disabled {
+    --color: #ccc;
+  }
+}
+
+.page-number {
+  font-size: 13px;
+  color: #666;
+  min-width: 60px;
+  text-align: center;
+}
+
 .add-btn {
   --color: #e09027;
   font-weight: 600;

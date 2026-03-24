@@ -22,7 +22,7 @@
       [value]="selectedFilter"
       (ionChange)="onFilterChange($event)"
       class="filter-select">
-      <ion-select-option *ngFor="let option of filterOptions" [value]="option.label">
+      <ion-select-option *ngFor="let option of filterOptions" [value]="option.value">
         {{ option.label }}
       </ion-select-option>
     </ion-select>
@@ -122,13 +122,32 @@
         </tbody>
       </table>
 
-      <!-- Pagination Info -->
-      <div class="pagination-info">
-        <span>Showing {{ sqrs.length }} SQRs</span>
+      <!-- Pagination -->
+      <div class="pagination-container" *ngIf="totalItems > 0">
+        <div class="pagination-info">
+          <span>Showing {{ startItem }}-{{ endItem }} of {{ totalItems }} SQRs</span>
+        </div>
+        <div class="pagination-controls">
+          <ion-button 
+            fill="clear" 
+            [disabled]="currentPage === 1"
+            (click)="prevPage()"
+            class="pagination-btn">
+            <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
+          </ion-button>
+          <span class="page-number">{{ currentPage }} / {{ lastPage }}</span>
+          <ion-button 
+            fill="clear" 
+            [disabled]="currentPage >= lastPage"
+            (click)="nextPage()"
+            class="pagination-btn">
+            <ion-icon slot="icon-only" name="chevron-forward"></ion-icon>
+          </ion-button>
+        </div>
       </div>
 
       <!-- Infinite Scroll -->
-      <ion-infinite-scroll (ionInfinite)="loadMore($event)" *ngIf="hasMore">
+      <ion-infinite-scroll (ionInfinite)="loadMore($event)" *ngIf="hasMore && currentPage < lastPage">
         <ion-infinite-scroll-content
           loading-spinner="lines-small"
           loading-text="Loading more...">
