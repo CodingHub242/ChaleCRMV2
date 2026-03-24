@@ -333,6 +333,12 @@ export interface PaginatedResponse<T> {
   prev_page_url: string | null;
   to: number;
   total: number;
+  meta?: {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+  };
 }
 
 // ==================== NEW MODELS ====================

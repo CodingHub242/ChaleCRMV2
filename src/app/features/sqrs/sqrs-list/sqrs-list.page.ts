@@ -129,9 +129,11 @@ export class SqrsListPage implements OnInit {
         } else {
           this.sqrs = response.data;
         }
-        this.hasMore = response.current_page < response.last_page;
-        this.totalItems = response.total || 0;
-        this.lastPage = response.last_page || 1;
+        // Use meta if available, otherwise use root-level properties
+        const meta = response.meta;
+        this.hasMore = meta ? meta.current_page < meta.last_page : response.current_page < response.last_page;
+        this.totalItems = meta ? meta.total : response.total;
+        this.lastPage = meta ? meta.last_page : response.last_page;
         this.isLoading = false;
       },
       error: () => {
@@ -218,9 +220,11 @@ export class SqrsListPage implements OnInit {
       }).subscribe({
         next: (response) => {
           this.sqrs = [...this.sqrs, ...response.data];
-          this.hasMore = response.current_page < response.last_page;
-          this.totalItems = response.total || 0;
-          this.lastPage = response.last_page || 1;
+          // Use meta if available, otherwise use root-level properties
+          const meta = response.meta;
+          this.hasMore = meta ? meta.current_page < meta.last_page : response.current_page < response.last_page;
+          this.totalItems = meta ? meta.total : response.total;
+          this.lastPage = meta ? meta.last_page : response.last_page;
           event.target.complete();
         },
         error: () => {
