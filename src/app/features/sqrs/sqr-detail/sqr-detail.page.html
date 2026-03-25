@@ -280,7 +280,7 @@
                 <div class="note-item" *ngFor="let note of sqrNotes">
                   <div class="note-header">
                     <div class="note-avatar" *ngIf="note.user?.avatar">
-                      <img [src]="'https://expiry.codepps.online' + note.user?.avatar" [alt]="note.user?.name">
+                      <img [src]="'https://expiry.codepps.online/' + note.user?.avatar" [alt]="note.user?.name">
                     </div>
                     <div class="note-avatar initials" *ngIf="!note.user?.avatar">
                       {{ getUserInitials(note.user) }}
