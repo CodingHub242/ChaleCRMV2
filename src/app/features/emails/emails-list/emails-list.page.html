@@ -67,6 +67,10 @@
 
   <!-- Email List -->
   <div *ngIf="emails.length > 0" class="email-list">
+    <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+      <ion-refresher-content pulling-text="Pull to refresh" refreshing-text="Refreshing..."></ion-refresher-content>
+    </ion-refresher>
+
     <div 
       *ngFor="let email of emails" 
       class="email-item"
