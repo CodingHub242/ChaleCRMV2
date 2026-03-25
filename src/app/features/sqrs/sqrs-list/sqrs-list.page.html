@@ -35,7 +35,7 @@
   </ion-toolbar>
 
   <!-- Tabs -->
-  <ion-toolbar class="tabs-toolbar">
+  <!-- <ion-toolbar class="tabs-toolbar">
     <div class="tabs-container" #tabsContainer>
       <div 
         *ngFor="let tab of tabs" 
@@ -47,7 +47,7 @@
         <span class="tab-count">{{ tab.count }}</span>
       </div>
     </div>
-    <!-- Scroll Buttons -->
+    
     <div class="scroll-buttons" *ngIf="tabsScrollable">
       <ion-button fill="clear" class="scroll-btn" (click)="scrollTabs('left')">
         <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
@@ -56,7 +56,7 @@
         <ion-icon slot="icon-only" name="chevron-forward"></ion-icon>
       </ion-button>
     </div>
-  </ion-toolbar>
+  </ion-toolbar> -->
 </ion-header>
 
 <ion-content class="bigin-content">
@@ -371,8 +371,8 @@
       </div>
     </div>
 
-    <!-- Pagination -->
-    <div class="pagination-container" *ngIf="totalItems > 0">
+    <!-- Pagination - Hidden in Kanban view since we load all records -->
+    <div class="pagination-container" *ngIf="totalItems > 0 && sqrs.length === 0">
       <div class="pagination-info">
         <span>Showing {{ startItem }}-{{ endItem }} of {{ totalItems }} SQRs</span>
       </div>
@@ -395,13 +395,6 @@
       </div>
     </div>
 
-    <!-- Infinite Scroll -->
-    <ion-infinite-scroll (ionInfinite)="loadMore($event)" *ngIf="hasMore && currentPage < lastPage">
-      <ion-infinite-scroll-content
-        loading-spinner="lines-small"
-        loading-text="Loading more...">
-      </ion-infinite-scroll-content>
-    </ion-infinite-scroll>
   </div>
   
   <!-- Horizontal Scroll Controls for Kanban -->

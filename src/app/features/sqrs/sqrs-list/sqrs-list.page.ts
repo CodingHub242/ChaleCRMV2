@@ -222,9 +222,10 @@ export class SqrsListPage implements OnInit {
       }
     }
 
+    // For Kanban view, load all records without pagination to display in correct columns
     this.api.getSqrs({ 
-      page: this.currentPage, 
-      per_page: 20,
+      page: 1, 
+      per_page: 100, // Load more records for Kanban view
       search: this.searchQuery,
       status: statusParam
     }).subscribe({
