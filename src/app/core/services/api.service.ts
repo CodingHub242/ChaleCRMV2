@@ -325,6 +325,14 @@ export class ApiService {
     return this.http.put<ApiResponse<Deal>>(`${this.baseUrl}/deals/${id}/stage`, this.addOrganizationToBody({ stage }));
   }
 
+  bulkUpdateDealStage(ids: number[], stage: string): Observable<ApiResponse<any>> {
+    return this.http.patch<ApiResponse<any>>(`${this.baseUrl}/deals/bulk-update-stage`, this.addOrganizationToBody({ ids, stage }));
+  }
+
+  bulkDeleteDeals(ids: number[]): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/deals/bulk-delete`, this.addOrganizationToBody({ ids }));
+  }
+
   // Tasks
   getTasks(params?: { page?: number; per_page?: number; status?: string; assigned_to?: number }): Observable<PaginatedResponse<Task>> {
     let httpParams = new HttpParams();

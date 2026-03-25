@@ -191,4 +191,55 @@ class DealController extends Controller
             'message' => 'Deal stage updated successfully'
         ]);
     }
+
+    /**
+     * Bulk update stage for multiple deals
+     */
+    public function bulkUpdateStage(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|exists:deals,id',
+            'stage' => 'required|string|max:100',
+        ]);
+
+        $organizationId = $this->getOrganizationId();
+        
+        $query = Deal::whereIn('id', $validated['ids']);
+        if ($organizationId) {
+            $query->where('organization_id', $organizationId);
+        }
+
+        $query->update(['stage' => $validated['stage']]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Deals stage updated successfully'
+        ]);
+    }
+
+    /**
+     * Bulk delete multiple deals
+     */
+    public function bulkDelete(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|exists:deals,id',
+        ]);
+
+        $organizationId = $this->getOrganizationId();
+        
+        $query = Deal::whereIn('id', $validated['ids']);
+        if ($organizationId) {
+            $query->where('organization_id', $organizationId);
+        }
+
+        $query->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Deals deleted successfully'
+        ]);
+    }
 }

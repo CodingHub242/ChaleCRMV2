@@ -480,3 +480,310 @@
     overflow-x: auto;
   }
 }
+
+// ==================== KANBAN BOARD STYLES ====================
+
+// Bulk Action Bar
+.bulk-action-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #073336;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.selected-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.select-all-checkbox {
+  --checkbox-color: white;
+  --checkbox-background: transparent;
+  --checkbox-border-color: white;
+}
+
+.selected-count {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.bulk-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.bulk-action-btn {
+  --color: white;
+  font-size: 13px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  
+  ion-icon {
+    font-size: 16px;
+  }
+  
+  &.delete-btn {
+    --color: #ff6b6b;
+  }
+  
+  &.cancel-btn {
+    --color: #adb5bd;
+  }
+}
+
+// Kanban Board
+.kanban-container {
+  padding: 16px;
+  height: calc(100vh - 250px);
+  overflow: auto;
+}
+
+.kanban-board {
+  display: flex;
+  gap: 0;
+  min-width: 100%;
+  height: 100%;
+}
+
+// Kanban Column
+.kanban-column {
+  flex: 1;
+  min-width: 260px;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin: 0 4px;
+}
+
+.column-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: white;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.column-icon {
+  font-size: 18px;
+  
+  &.stage-prospect { color: #1976d2; }
+  &.stage-client { color: #388e3c; }
+  &.stage-demo { color: #f57c00; }
+  &.stage-demo-done { color: #7b1fa2; }
+  &.stage-contract { color: #c2185b; }
+  &.stage-won { color: #2e7d32; }
+  &.stage-lost { color: #c62828; }
+}
+
+.column-select-all {
+  --size: 18px;
+  margin-right: 4px;
+}
+
+.column-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+}
+
+.column-count {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  background: #e9ecef;
+  border-radius: 10px;
+  color: #666;
+}
+
+.column-content {
+  flex: 1;
+  padding: 8px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+// Vertical Divider
+.column-divider {
+  width: 2px;
+  background: #d1d5db;
+  margin: 8px 0;
+  flex-shrink: 0;
+  border-left: 1px dashed #9ca3af;
+}
+
+// Deal Card
+.deal-card {
+  background: white;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  border: 1px solid #e5e7eb;
+  
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transform: translateY(-1px);
+    border-color: #9ca3af;
+  }
+  
+  &.selected {
+    border-color: #073336;
+    border-width: 2px;
+    background: #f0f7f7;
+  }
+}
+
+.card-checkbox {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  --size: 20px;
+  
+  ion-checkbox {
+    --checkbox-size: 18px;
+    --checkbox-background: #f8f9fa;
+    --checkbox-border-color: #ced4da;
+    --checkbox-border-radius: 4px;
+    
+    &.checkbox-checked {
+      --checkbox-background: #073336;
+      --checkbox-border-color: #073336;
+    }
+  }
+}
+
+.card-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a2e;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  padding-right: 30px;
+}
+
+.card-amount {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 8px;
+  
+  .amount {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e09027;
+  }
+  
+  .currency {
+    font-size: 11px;
+    color: #999;
+  }
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 11px;
+}
+
+.probability {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+  color: #666;
+  
+  ion-icon {
+    font-size: 12px;
+  }
+}
+
+.date {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #999;
+  
+  ion-icon {
+    font-size: 12px;
+  }
+}
+
+.card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+  color: #666;
+  padding-top: 8px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.contact, .company {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  
+  ion-icon {
+    font-size: 12px;
+    color: #999;
+  }
+}
+
+// Kanban Horizontal Scroll Controls
+.kanban-scroll-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  position: sticky;
+  bottom: 0;
+}
+
+.kanban-scroll-controls .scroll-btn {
+  --color: #666;
+  --background: white;
+  --border-radius: 50%;
+  height: 36px;
+  width: 36px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  
+  &:hover {
+    --color: #073336;
+    --background: #f0f7f7;
+  }
+  
+  ion-icon {
+    font-size: 20px;
+  }
+}
+
+.scroll-indicator {
+  font-size: 12px;
+  color: #999;
+}

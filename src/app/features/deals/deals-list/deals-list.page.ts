@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, SearchbarCustomEvent, ModalController, AlertController } from '@ionic/angular';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { Deal } from '../../../models';
 import { DataImportComponent } from '../../../shared/components/data-import/data-import.component';
 import { addIcons } from 'ionicons';
-import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, cloudUploadOutline, trashOutline, ellipsisVertical, searchOutline, funnelOutline, gridOutline, folder, createOutline, pricetagOutline } from 'ionicons/icons';
+import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, cloudUploadOutline, trashOutline, ellipsisVertical, searchOutline, funnelOutline, gridOutline, folder, createOutline, pricetagOutline, swapHorizontal, trendingUpOutline, calendarOutline as calendarIcon, videocamOutline, documentTextOutline, peopleOutline, checkmarkCircleOutline, closeCircleOutline } from 'ionicons/icons';
 
 interface DealGroup {
   id: number;
@@ -32,6 +32,8 @@ interface StageTab {
   styleUrls: ['./deals-list.page.scss']
 })
 export class DealsListPage implements OnInit {
+  @ViewChild('kanbanContainer') kanbanContainer!: ElementRef;
+
   deals: Deal[] = [];
   isLoading = true;
   searchQuery = '';
@@ -67,13 +69,19 @@ export class DealsListPage implements OnInit {
   constructor(
     private api: ApiService,
     private modalController: ModalController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private router: Router
   ) {
     addIcons({
       cloudUploadOutline, trashOutline, ellipsisVertical, searchOutline, 
       funnelOutline, gridOutline, folder, createOutline, pricetagOutline,
-      peopleOutline: people, videocamOutline: callOutline,
-      documentTextOutline: document, trophyOutline, closeCircleOutline: close
+      peopleOutline: people, 
+      documentTextOutline: document, trophyOutline, closeCircleOutline: close,
+      swapHorizontal, trendingUpOutline, calendarIcon, 
+      videocamOutline: videocamOutline, 
+      documentTextOutlineAlt: documentTextOutline,
+      peopleOutlineAlt: peopleOutline, 
+      checkmarkCircleOutline
     });
   }
 
@@ -169,7 +177,7 @@ export class DealsListPage implements OnInit {
 
     const params: any = { 
       page: this.currentPage, 
-      per_page: 20,
+      per_page: 100, // Load more records for Kanban view
       search: this.searchQuery,
       stage: stageParam
     };
@@ -380,6 +388,234 @@ export class DealsListPage implements OnInit {
           }
         }
       ]
+    });
+    await alert.present();
+  }
+
+  // ==================== Selection & Bulk Actions ====================
+  
+  // Selection tracking
+  selectedIds = new Set<number>();
+
+  // Stage options for bulk update
+  stageOptions = [
+    { value: 'Prospect', label: 'Prospect' },
+    { value: 'Client', label: 'Client' },
+    { value: 'Demo Requested', label: 'Demo Requested' },
+    { value: 'Demo Completed', label: 'Demo Completed' },
+    { value: 'Contract In-Review', label: 'Contract In-Review' },
+    { value: 'Closed Won', label: 'Closed Won' },
+    { value: 'Closed Lost', label: 'Closed Lost' }
+  ];
+
+  get allSelected(): boolean {
+    return this.deals.length > 0 && this.selectedIds.size === this.deals.length;
+  }
+
+  get someSelected(): boolean {
+    return this.selectedIds.size > 0 && this.selectedIds.size < this.deals.length;
+  }
+
+  toggleSelection(id: number, event: any): void {
+    if (event.detail && event.detail.checked !== undefined) {
+      if (event.detail.checked) {
+        this.selectedIds.add(id);
+      } else {
+        this.selectedIds.delete(id);
+      }
+    } else {
+      if (this.selectedIds.has(id)) {
+        this.selectedIds.delete(id);
+      } else {
+        this.selectedIds.add(id);
+      }
+    }
+  }
+
+  onDealClick(deal: Deal, event: any): void {
+    if (event.shiftKey || this.selectedIds.size > 0) {
+      this.toggleSelection(deal.id, event);
+    } else {
+      this.router.navigate(['/deals/view', deal.id]);
+    }
+  }
+
+  isAllSelectedForStage(stage: string): boolean {
+    const dealsInStage = this.getDealsByStage(stage);
+    if (dealsInStage.length === 0) return false;
+    return dealsInStage.every(deal => this.selectedIds.has(deal.id));
+  }
+
+  isSomeSelectedForStage(stage: string): boolean {
+    const dealsInStage = this.getDealsByStage(stage);
+    if (dealsInStage.length === 0) return false;
+    const selectedCount = dealsInStage.filter(deal => this.selectedIds.has(deal.id)).length;
+    return selectedCount > 0 && selectedCount < dealsInStage.length;
+  }
+
+  toggleSelectAllForStage(stage: string, event: any): void {
+    const dealsInStage = this.getDealsByStage(stage);
+    const isChecked = event.detail.checked;
+    
+    if (isChecked) {
+      dealsInStage.forEach(deal => this.selectedIds.add(deal.id));
+    } else {
+      dealsInStage.forEach(deal => this.selectedIds.delete(deal.id));
+    }
+  }
+
+  toggleSelectAll(): void {
+    if (this.allSelected) {
+      this.clearSelection();
+    } else {
+      this.deals.forEach(deal => this.selectedIds.add(deal.id));
+    }
+  }
+
+  clearSelection(): void {
+    this.selectedIds.clear();
+  }
+
+  getDealsByStage(stage: string): Deal[] {
+    return this.deals.filter(deal => deal.stage === stage);
+  }
+
+  // Scroll kanban board horizontally
+  scrollKanban(direction: 'left' | 'right'): void {
+    if (this.kanbanContainer?.nativeElement) {
+      const el = this.kanbanContainer.nativeElement;
+      const scrollAmount = 300;
+      if (direction === 'left') {
+        el.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      }
+    }
+  }
+
+  // Bulk stage update
+  async openBulkStageUpdate(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Update Stage',
+      message: `Update stage for ${this.selectedIds.size} selected deal(s)`,
+      inputs: [
+        {
+          name: 'stage',
+          type: 'radio',
+          label: 'Prospect',
+          value: 'Prospect',
+          checked: false
+        },
+        {
+          name: 'stage',
+          type: 'radio',
+          label: 'Client',
+          value: 'Client',
+          checked: false
+        },
+        {
+          name: 'stage',
+          type: 'radio',
+          label: 'Demo Requested',
+          value: 'Demo Requested',
+          checked: false
+        },
+        {
+          name: 'stage',
+          type: 'radio',
+          label: 'Demo Completed',
+          value: 'Demo Completed',
+          checked: false
+        },
+        {
+          name: 'stage',
+          type: 'radio',
+          label: 'Contract In-Review',
+          value: 'Contract In-Review',
+          checked: false
+        },
+        {
+          name: 'stage',
+          type: 'radio',
+          label: 'Closed Won',
+          value: 'Closed Won',
+          checked: false
+        },
+        {
+          name: 'stage',
+          type: 'radio',
+          label: 'Closed Lost',
+          value: 'Closed Lost',
+          checked: false
+        }
+      ],
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Update',
+          handler: (data) => {
+            if (data.stage) {
+              this.bulkUpdateStage(data.stage);
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  bulkUpdateStage(stage: string): void {
+    const ids = Array.from(this.selectedIds);
+    this.api.bulkUpdateDealStage(ids, stage).subscribe({
+      next: () => {
+        this.loadDeals();
+        this.loadStageCounts();
+        this.clearSelection();
+      },
+      error: () => {
+        this.showError('Failed to update stage');
+      }
+    });
+  }
+
+  // Bulk delete
+  async bulkDelete(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Delete Deals',
+      message: `Are you sure you want to delete ${this.selectedIds.size} selected deal(s)? This action cannot be undone.`,
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Delete',
+          role: 'destructive',
+          handler: () => {
+            this.performBulkDelete();
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  performBulkDelete(): void {
+    const ids = Array.from(this.selectedIds);
+    this.api.bulkDeleteDeals(ids).subscribe({
+      next: () => {
+        this.loadDeals();
+        this.loadStageCounts();
+        this.clearSelection();
+      },
+      error: () => {
+        this.showError('Failed to delete deals');
+      }
+    });
+  }
+
+  private async showError(message: string): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: message,
+      buttons: ['OK']
     });
     await alert.present();
   }

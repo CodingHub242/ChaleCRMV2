@@ -144,8 +144,10 @@ Route::apiResource('custom-fields', App\Http\Controllers\Api\CustomFieldControll
 
 // Deals
 Route::get('/deals/counts', [App\Http\Controllers\Api\DealController::class, 'counts']);
-Route::apiResource('deals', App\Http\Controllers\Api\DealController::class);
 Route::patch('deals/{id}/stage', [App\Http\Controllers\Api\DealController::class, 'updateStage']);
+Route::patch('deals/bulk-update-stage', [App\Http\Controllers\Api\DealController::class, 'bulkUpdateStage']);
+Route::post('deals/bulk-delete', [App\Http\Controllers\Api\DealController::class, 'bulkDelete']);
+Route::apiResource('deals', App\Http\Controllers\Api\DealController::class);
 
 // Deal Groups (for Sales Pipeline)
 Route::apiResource('deal-groups', App\Http\Controllers\Api\DealGroupController::class);
