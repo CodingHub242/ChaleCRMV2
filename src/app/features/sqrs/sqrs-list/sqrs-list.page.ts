@@ -134,7 +134,7 @@ export class SqrsListPage implements OnInit {
 
   // Scroll kanban board horizontally
   scrollKanban(direction: 'left' | 'right'): void {
-    const kanbanContainer = document.querySelector('.kanban-container') as HTMLElement;
+    const kanbanContainer = window.document.querySelector('.kanban-container') as HTMLElement;
     if (kanbanContainer) {
       // Use scrollLeft instead of scrollBy for better control
       const scrollAmount = 300;
@@ -145,7 +145,7 @@ export class SqrsListPage implements OnInit {
       }
     } else {
       // Fallback: try scrolling the content element
-      const content = document.querySelector('ion-content') as HTMLElement;
+      const content = window.document.querySelector('ion-content') as HTMLElement;
       if (content) {
         const scrollAmount = 300;
         if (direction === 'left') {
