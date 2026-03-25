@@ -1,0 +1,211 @@
+.bigin-header {
+  --background: #073336;
+  --border-color: #e0e0e0;
+  --color: #e3e3e3;
+}
+
+.bigin-header ion-title {
+  font-weight: 600;
+}
+
+.bigin-content {
+  --background: #f5f7fa;
+}
+
+// Loading State
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  text-align: center;
+  color: #999;
+}
+
+.loading-state ion-spinner {
+  margin-bottom: 16px;
+  color: #073336;
+}
+
+// Email Detail
+.email-detail {
+  padding: 16px;
+}
+
+.email-header-section {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.email-subject {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin: 0 0 16px 0;
+  line-height: 1.4;
+}
+
+.sender-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.sender-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #073336;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.avatar-initials {
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.sender-details {
+  flex: 1;
+}
+
+.sender-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+}
+
+.sender-email {
+  font-size: 13px;
+  color: #666;
+}
+
+.email-meta {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.to-label, .cc-label {
+  font-weight: 500;
+  margin-right: 4px;
+}
+
+.email-date {
+  font-size: 12px;
+  color: #999;
+  margin-top: 12px;
+}
+
+// Email Body
+.email-body-section {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.email-body {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  word-wrap: break-word;
+  
+  ::ng-deep p {
+    margin-bottom: 12px;
+  }
+  
+  ::ng-deep a {
+    color: #073336;
+  }
+  
+  ::ng-deep img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  ::ng-deep blockquote {
+    border-left: 3px solid #e9ecef;
+    padding-left: 12px;
+    margin-left: 0;
+    color: #666;
+  }
+  
+  ::ng-deep pre {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+}
+
+// Reply Section
+.reply-section {
+  margin-top: 16px;
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.reply-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.reply-form {
+  ion-item {
+    --padding-start: 0;
+    --padding-end: 0;
+    margin-bottom: 12px;
+    --background: transparent;
+    --border-color: #e9ecef;
+  }
+  
+  ion-label {
+    font-size: 12px;
+    color: #666;
+  }
+  
+  ion-input {
+    --padding-start: 8px;
+    font-size: 14px;
+  }
+}
+
+.reply-body-input {
+  margin-bottom: 12px;
+}
+
+.reply-textarea {
+  --background: #f8f9fa;
+  --padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  min-height: 120px;
+}
+
+.reply-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.send-btn {
+  --background: #073336;
+  --color: white;
+  --border-radius: 10px;
+  font-weight: 500;
+}

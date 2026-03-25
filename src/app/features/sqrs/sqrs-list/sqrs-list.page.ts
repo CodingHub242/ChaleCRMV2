@@ -7,7 +7,7 @@ import { ApiService } from '../../../core/services/api.service';
 import { Sqr } from '../../../models';
 import { DataImportComponent } from '../../../shared/components/data-import/data-import.component';
 import { addIcons } from 'ionicons';
-import { warning, chatbubbles, helpCircle, add, trash, create, chevronBack, chevronForward, chevronDown, alertCircle, bulb, person, trashOutline, documents, time, checkmarkCircle, arrowUpCircle, cloudUploadOutline } from 'ionicons/icons';
+import { warning, chatbubbles, helpCircle, add, trash, create, chevronBack, chevronForward, chevronDown, alertCircle, bulb, person, trashOutline, documents, time, checkmarkCircle, arrowUpCircle, cloudUploadOutline, swapHorizontal, flag, chatbubblesOutline, checkmarkDoneCircle, close } from 'ionicons/icons';
 
 interface TabCount {
   key: string;
@@ -35,6 +35,9 @@ export class SqrsListPage implements OnInit {
   statusFilter = '';
   activeTab = 'all';
 
+  // Selection tracking
+  selectedIds = new Set<number>();
+
   // Tab configuration with counts
   tabs: TabCount[] = [
     { key: 'all', label: 'All Tickets', icon: 'documents', count: 0, status: '' },
@@ -56,6 +59,15 @@ export class SqrsListPage implements OnInit {
 
   selectedFilter = '';
 
+  // Status options for bulk update
+  statusOptions = [
+    { value: 'Open', label: 'Open' },
+    { value: 'In Progress', label: 'In Progress' },
+    { value: 'Escalated', label: 'Escalated' },
+    { value: 'Resolved', label: 'Resolved' },
+    { value: 'Closed', label: 'Closed' }
+  ];
+
   private priorityColors: { [key: string]: string } = {
     'Low': '#4caf50',
     'Medium': '#ff9800',
@@ -75,12 +87,55 @@ export class SqrsListPage implements OnInit {
     private alertController: AlertController,
     private modalController: ModalController
   ) {
-    addIcons({ trashOutline, warning, chatbubbles, helpCircle, add, trash, create, chevronBack, chevronForward, chevronDown, alertCircle, bulb: alertCircle, person, documents, time, checkmarkCircle, arrowUpCircle, cloudUploadOutline });
+    addIcons({ trashOutline, warning, chatbubbles, helpCircle, add, trash, create, chevronBack, chevronForward, chevronDown, alertCircle, bulb: alertCircle, person, documents, time, checkmarkCircle, arrowUpCircle, cloudUploadOutline, swapHorizontal, flag, chatbubblesOutline, checkmarkDoneCircle, close });
   }
 
   ngOnInit(): void {
     this.loadSqrCounts();
     this.loadSqrs();
+  }
+
+  // Selection methods
+  get allSelected(): boolean {
+    return this.sqrs.length > 0 && this.selectedIds.size === this.sqrs.length;
+  }
+
+  get someSelected(): boolean {
+    return this.selectedIds.size > 0 && this.selectedIds.size < this.sqrs.length;
+  }
+
+  toggleSelection(id: number, event: any): void {
+    if (event.detail && event.detail.checked !== undefined) {
+      if (event.detail.checked) {
+        this.selectedIds.add(id);
+      } else {
+        this.selectedIds.delete(id);
+      }
+    } else {
+      // Toggle from click
+      if (this.selectedIds.has(id)) {
+        this.selectedIds.delete(id);
+      } else {
+        this.selectedIds.add(id);
+      }
+    }
+  }
+
+  toggleSelectAll(): void {
+    if (this.allSelected) {
+      this.clearSelection();
+    } else {
+      this.sqrs.forEach(sqr => this.selectedIds.add(sqr.id));
+    }
+  }
+
+  clearSelection(): void {
+    this.selectedIds.clear();
+  }
+
+  // Get SQRs filtered by status
+  getSqrsByStatus(status: string): Sqr[] {
+    return this.sqrs.filter(sqr => sqr.status === status);
   }
 
   loadSqrCounts(): void {
@@ -105,6 +160,8 @@ export class SqrsListPage implements OnInit {
       this.currentPage++;
     } else {
       this.isLoading = true;
+      // Clear selection when loading new data
+      this.clearSelection();
     }
 
     // Determine status filter based on active tab or dropdown
@@ -284,6 +341,110 @@ export class SqrsListPage implements OnInit {
     return this.activeTab === tabKey;
   }
 
+  // Bulk status update
+  async openBulkStatusUpdate(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Update Status',
+      message: `Update status for ${this.selectedIds.size} selected SQR(s)`,
+      inputs: [
+        {
+          name: 'status',
+          type: 'radio',
+          label: 'Open',
+          value: 'Open',
+          checked: false
+        },
+        {
+          name: 'status',
+          type: 'radio',
+          label: 'In Progress',
+          value: 'In Progress',
+          checked: false
+        },
+        {
+          name: 'status',
+          type: 'radio',
+          label: 'Escalated',
+          value: 'Escalated',
+          checked: false
+        },
+        {
+          name: 'status',
+          type: 'radio',
+          label: 'Resolved',
+          value: 'Resolved',
+          checked: false
+        },
+        {
+          name: 'status',
+          type: 'radio',
+          label: 'Closed',
+          value: 'Closed',
+          checked: false
+        }
+      ],
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Update',
+          handler: (data) => {
+            if (data.status) {
+              this.bulkUpdateStatus(data.status);
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  bulkUpdateStatus(status: string): void {
+    const ids = Array.from(this.selectedIds);
+    this.api.bulkUpdateSqrStatus(ids, status).subscribe({
+      next: () => {
+        this.loadSqrs();
+        this.loadSqrCounts();
+        this.clearSelection();
+      },
+      error: () => {
+        this.showError('Failed to update status');
+      }
+    });
+  }
+
+  // Bulk delete
+  async bulkDelete(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Delete SQRs',
+      message: `Are you sure you want to delete ${this.selectedIds.size} selected SQR(s)? This action cannot be undone.`,
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Delete',
+          role: 'destructive',
+          handler: () => {
+            this.performBulkDelete();
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  performBulkDelete(): void {
+    const ids = Array.from(this.selectedIds);
+    this.api.bulkDeleteSqrs(ids).subscribe({
+      next: () => {
+        this.loadSqrs();
+        this.loadSqrCounts();
+        this.clearSelection();
+      },
+      error: () => {
+        this.showError('Failed to delete SQRs');
+      }
+    });
+  }
+
   async deleteSqr(sqr: Sqr): Promise<void> {
     const alert = await this.alertController.create({
       header: 'Delete SQR',
@@ -325,5 +486,14 @@ export class SqrsListPage implements OnInit {
     });
 
     return await modal.present();
+  }
+
+  private async showError(message: string): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: message,
+      buttons: ['OK']
+    });
+    await alert.present();
   }
 }

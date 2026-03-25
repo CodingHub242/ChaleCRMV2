@@ -1,0 +1,77 @@
+<ion-header>
+  <ion-toolbar class="bigin-header">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Email Accounts</ion-title>
+    <ion-buttons slot="end">
+      <ion-button class="add-btn" (click)="addAccount()">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <ion-spinner name="lines"></ion-spinner>
+    <p>Loading accounts...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && accounts.length === 0" class="empty-state">
+    <div class="empty-illustration">
+      <ion-icon name="mail-outline"></ion-icon>
+    </div>
+    <h3>No Email Accounts</h3>
+    <p>Add an email account to receive emails via IMAP</p>
+    <ion-button class="primary-btn" (click)="addAccount()">
+      <ion-icon slot="start" name="add"></ion-icon>
+      Add Email Account
+    </ion-button>
+  </div>
+
+  <!-- Accounts List -->
+  <div *ngIf="accounts.length > 0" class="accounts-list">
+    <div *ngFor="let account of accounts" class="account-card">
+      <div class="account-header">
+        <div class="account-email">
+          <span class="email-text">{{ account.email }}</span>
+          <ion-badge *ngIf="account.is_default" class="default-badge">Default</ion-badge>
+          <ion-badge *ngIf="!account.is_active" class="inactive-badge">Inactive</ion-badge>
+        </div>
+        <div class="account-actions">
+          <ion-button fill="clear" size="small" (click)="testConnection(account)" *ngIf="account.is_active">
+            <ion-icon slot="icon-only" name="sync"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" size="small" (click)="setDefault(account)" *ngIf="!account.is_default">
+            <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" size="small" (click)="editAccount(account)">
+            <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" size="small" color="danger" (click)="deleteAccount(account)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+      
+      <div class="account-details">
+        <div class="detail-row">
+          <span class="label">IMAP:</span>
+          <span class="value">{{ account.imap_host }}:{{ account.imap_port }}/{{ account.imap_encryption }}</span>
+        </div>
+        <div class="detail-row" *ngIf="account.last_sync_at">
+          <span class="label">Last Sync:</span>
+          <span class="value">{{ account.last_sync_at | date:'medium' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="add-account-card" (click)="addAccount()">
+      <ion-icon name="add-circle-outline"></ion-icon>
+      <span>Add Another Email Account</span>
+    </div>
+  </div>
+</ion-content>

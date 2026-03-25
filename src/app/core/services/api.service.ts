@@ -1065,6 +1065,14 @@ export class ApiService {
     return this.http.get<ApiResponse<any>>(`${this.baseUrl}/sqrs/counts`, { params: httpParams });
   }
 
+  bulkUpdateSqrStatus(ids: number[], status: string): Observable<ApiResponse<any>> {
+    return this.http.patch<ApiResponse<any>>(`${this.baseUrl}/sqrs/bulk-update-status`, this.addOrganizationToBody({ ids, status }));
+  }
+
+  bulkDeleteSqrs(ids: number[]): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/sqrs/bulk-delete`, this.addOrganizationToBody({ ids }));
+  }
+
   // ==================== DEAL GROUPS (Sales Pipeline) ====================
   getDealGroups(): Observable<ApiResponse<any>> {
     let httpParams = new HttpParams();
@@ -1097,5 +1105,64 @@ export class ApiService {
     let httpParams = new HttpParams();
     httpParams = this.addOrganizationParams(httpParams);
     return this.http.get<ApiResponse<any>>(`${this.baseUrl}/deals/counts`, { params: httpParams });
+  }
+
+  // ==================== EMAIL ACCOUNTS (IMAP) ====================
+  getEmailAccounts(): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    httpParams = this.addOrganizationParams(httpParams);
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/email-accounts`, { params: httpParams });
+  }
+
+  getEmailAccount(id: number): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    httpParams = this.addOrganizationParams(httpParams);
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/email-accounts/${id}`, { params: httpParams });
+  }
+
+  createEmailAccount(data: any): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/email-accounts`, this.addOrganizationToBody(data));
+  }
+
+  updateEmailAccount(id: number, data: any): Observable<ApiResponse<any>> {
+    return this.http.put<ApiResponse<any>>(`${this.baseUrl}/email-accounts/${id}`, this.addOrganizationToBody(data));
+  }
+
+  deleteEmailAccount(id: number): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    httpParams = this.addOrganizationParams(httpParams);
+    return this.http.delete<ApiResponse<any>>(`${this.baseUrl}/email-accounts/${id}`, { params: httpParams });
+  }
+
+  testEmailConnection(data: any): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/email-accounts/test`, this.addOrganizationToBody(data));
+  }
+
+  getDefaultEmailAccount(): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    httpParams = this.addOrganizationParams(httpParams);
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/email-accounts/default`, { params: httpParams });
+  }
+
+  fetchEmails(accountId: number, limit?: number, createSqrs?: boolean): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    httpParams = this.addOrganizationParams(httpParams);
+    if (limit) {
+      httpParams = httpParams.set('limit', limit.toString());
+    }
+    if (createSqrs) {
+      httpParams = httpParams.set('create_sqrs', 'true');
+    }
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/email-accounts/${accountId}/fetch`, { params: httpParams });
+  }
+
+  getEmailContent(accountId: number, uid: number): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    httpParams = this.addOrganizationParams(httpParams);
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/email-accounts/${accountId}/emails/${uid}`, { params: httpParams });
+  }
+
+  sendEmailReply(accountId: number, data: { to: string; subject: string; body: string; cc?: string; in_reply_to?: string; references?: string }): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/email-accounts/${accountId}/reply`, this.addOrganizationToBody(data));
   }
 }

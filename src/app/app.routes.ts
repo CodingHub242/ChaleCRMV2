@@ -372,6 +372,28 @@ export const routes: Routes = [
       {
         path: 'sqrs/:id/edit',
         loadComponent: () => import('./features/sqrs/sqr-form/sqr-form.page').then(m => m.SqrFormPage)
+      },
+      // Email Inbox
+      {
+        path: 'emails',
+        loadComponent: () => import('./features/emails/emails-list/emails-list.page').then(m => m.EmailsListPage)
+      },
+      {
+        path: 'emails/view/:accountId/:uid',
+        loadComponent: () => import('./features/emails/email-detail/email-detail.page').then(m => m.EmailDetailPage)
+      },
+      // Email Accounts Settings
+      {
+        path: 'email-settings',
+        loadComponent: () => import('./features/emails/email-settings/email-settings.page').then(m => m.EmailSettingsPage)
+      },
+      {
+        path: 'email-settings/new',
+        loadComponent: () => import('./features/emails/email-settings-form/email-settings-form.page').then(m => m.EmailSettingsFormPage)
+      },
+      {
+        path: 'email-settings/:id',
+        loadComponent: () => import('./features/emails/email-settings-form/email-settings-form.page').then(m => m.EmailSettingsFormPage)
       }
     ]
   },

@@ -127,7 +127,17 @@ Route::get('enrichment/providers', [App\Http\Controllers\Api\EnrichmentControlle
 // SQR (Service Quality Requests)
 Route::get('sqrs/counts', [App\Http\Controllers\Api\SqrController::class, 'counts']);
 Route::patch('sqrs/{id}/status', [App\Http\Controllers\Api\SqrController::class, 'updateStatus']);
+Route::patch('sqrs/bulk-update-status', [App\Http\Controllers\Api\SqrController::class, 'bulkUpdateStatus']);
+Route::post('sqrs/bulk-delete', [App\Http\Controllers\Api\SqrController::class, 'bulkDelete']);
 Route::apiResource('sqrs', App\Http\Controllers\Api\SqrController::class);
+
+// Email Accounts (IMAP)
+Route::get('email-accounts/default', [App\Http\Controllers\Api\EmailAccountController::class, 'getDefault']);
+Route::post('email-accounts/test', [App\Http\Controllers\Api\EmailAccountController::class, 'testConnection']);
+Route::get('email-accounts/{id}/fetch', [App\Http\Controllers\Api\EmailAccountController::class, 'fetchEmails']);
+Route::get('email-accounts/{id}/emails/{uid}', [App\Http\Controllers\Api\EmailAccountController::class, 'getEmailContent']);
+Route::post('email-accounts/{id}/reply', [App\Http\Controllers\Api\EmailAccountController::class, 'sendReply']);
+Route::apiResource('email-accounts', App\Http\Controllers\Api\EmailAccountController::class);
 
 // Custom Fields
 Route::apiResource('custom-fields', App\Http\Controllers\Api\CustomFieldController::class);

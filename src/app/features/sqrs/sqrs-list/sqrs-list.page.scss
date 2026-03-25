@@ -118,38 +118,250 @@
   --background: #f5f7fa;
 }
 
-.table-container {
-  padding: 16px;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-// Stats Bar
-.stats-bar {
+// Bulk Action Bar
+.bulk-action-bar {
   display: flex;
-  gap: 16px;
-  margin-bottom: 20px;
-  padding: 16px 20px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #073336;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-.stat-item {
+.selected-info {
   display: flex;
   align-items: center;
+  gap: 12px;
+}
+
+.select-all-checkbox {
+  --checkbox-color: white;
+  --checkbox-background: transparent;
+  --checkbox-border-color: white;
+}
+
+.selected-count {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.bulk-actions {
+  display: flex;
   gap: 8px;
 }
 
-.stat-value {
-  font-size: 20px;
-  font-weight: 700;
-  color: #073336;
+.bulk-action-btn {
+  --color: white;
+  font-size: 13px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  
+  ion-icon {
+    font-size: 16px;
+  }
+  
+  &.delete-btn {
+    --color: #ff6b6b;
+  }
+  
+  &.cancel-btn {
+    --color: #adb5bd;
+  }
 }
 
-.stat-label {
-  font-size: 13px;
+// Kanban Board
+.kanban-container {
+  padding: 16px;
+  height: calc(100vh - 180px);
+  overflow: auto;
+}
+
+.kanban-board {
+  display: flex;
+  gap: 0;
+  min-width: 100%;
+  height: 100%;
+}
+
+// Kanban Column
+.kanban-column {
+  flex: 1;
+  min-width: 280px;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin: 0 4px;
+}
+
+.column-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: white;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.column-icon {
+  font-size: 18px;
+  
+  &.status-open { color: #c62828; }
+  &.status-progress { color: #e65100; }
+  &.status-escalated { color: #c2185b; }
+  &.status-resolved { color: #2e7d32; }
+  &.status-closed { color: #1565c0; }
+}
+
+.column-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+}
+
+.column-count {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  background: #e9ecef;
+  border-radius: 10px;
   color: #666;
+}
+
+.column-content {
+  flex: 1;
+  padding: 8px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+// Vertical Divider
+.column-divider {
+  width: 1px;
+  background: #e9ecef;
+  margin: 8px 0;
+  flex-shrink: 0;
+}
+
+// SQR Card
+.sqr-card {
+  background: white;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  border: 2px solid transparent;
+  
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transform: translateY(-1px);
+  }
+  
+  &.selected {
+    border-color: #073336;
+    background: #f0f7f7;
+  }
+}
+
+.card-checkbox {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.ticket-number {
+  font-size: 11px;
+  font-weight: 600;
+  color: #666;
+}
+
+.type-badge {
+  font-size: 9px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  
+  &.complaint { background: #ffebee; color: #c62828; }
+  &.feedback { background: #e3f2fd; color: #1565c0; }
+  &.suggestion { background: #fff8e1; color: #f57f17; }
+  &.inquiry { background: #f3e5f5; color: #7b1fa2; }
+  &.default { background: #e9ecef; color: #666; }
+}
+
+.card-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a2e;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 11px;
+}
+
+.priority {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+  
+  ion-icon {
+    font-size: 12px;
+  }
+}
+
+.date {
+  color: #999;
+}
+
+.card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+  color: #666;
+  padding-top: 8px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.assignee, .contact {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  
+  ion-icon {
+    font-size: 12px;
+    color: #999;
+  }
 }
 
 // Loading State
@@ -216,94 +428,7 @@
   height: 44px;
 }
 
-// Table Styles
-.table-wrapper {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
-}
-
-.bigin-table {
-  width: 100%;
-  border-collapse: collapse;
-  
-  thead {
-    background: #f8f9fa;
-    
-    th {
-      text-align: left;
-      padding: 14px 16px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #666;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      border-bottom: 1px solid #e9ecef;
-      white-space: nowrap;
-    }
-  }
-  
-  tbody {
-    .table-row {
-      cursor: pointer;
-      transition: background 0.2s ease;
-      
-      &:hover {
-        background: #f8f9fa;
-      }
-      
-      td {
-        padding: 12px 16px;
-        font-size: 13px;
-        color: #333;
-        border-bottom: 1px solid #f0f0f0;
-        vertical-align: middle;
-      }
-    }
-  }
-}
-
-.sqr-title {
-  font-weight: 500;
-  color: #1a1a2e;
-}
-
-.type-badge {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 3px 8px;
-  border-radius: 8px;
-  text-transform: uppercase;
-  
-  &.complaint { background: #ffebee; color: #c62828; }
-  &.feedback { background: #e3f2fd; color: #1565c0; }
-  &.suggestion { background: #fff8e1; color: #f57f17; }
-  &.inquiry { background: #f3e5f5; color: #7b1fa2; }
-}
-
-.priority-badge {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 3px 8px;
-  border-radius: 8px;
-  color: white;
-  text-transform: uppercase;
-}
-
-.status-badge {
-  font-size: 10px;
-  font-weight: 500;
-  padding: 3px 8px;
-  border-radius: 8px;
-  
-  &.status-open { background: #ffebee; color: #c62828; }
-  &.status-progress { background: #fff3e0; color: #e65100; }
-  &.status-escalated { background: #fce4ec; color: #c2185b; }
-  &.status-resolved { background: #e8f5e9; color: #2e7d32; }
-  &.status-closed { background: #e3f2fd; color: #1565c0; }
-}
-
+// Pagination
 .pagination-info {
   padding: 12px 16px;
   text-align: center;
@@ -319,6 +444,8 @@
   padding: 12px 16px;
   border-top: 1px solid #f0f0f0;
   background: white;
+  margin-top: 16px;
+  border-radius: 8px;
 }
 
 .pagination-controls {
@@ -384,8 +511,28 @@
     font-size: 12px;
   }
   
-  .bigin-table {
-    display: block;
-    overflow-x: auto;
+  .kanban-board {
+    flex-direction: column;
+  }
+  
+  .kanban-column {
+    max-width: 100%;
+    min-width: 100%;
+    margin-bottom: 8px;
+  }
+  
+  .column-divider {
+    display: none;
+  }
+  
+  .bulk-action-bar {
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+  }
+  
+  .bulk-actions {
+    width: 100%;
+    justify-content: space-around;
   }
 }

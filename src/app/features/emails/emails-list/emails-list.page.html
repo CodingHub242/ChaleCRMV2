@@ -1,0 +1,115 @@
+<ion-header>
+  <ion-toolbar class="bigin-header">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Email Inbox</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openSettings()">
+        <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <!-- Account Selector -->
+  <ion-toolbar class="account-toolbar" *ngIf="accounts.length > 1">
+    <ion-select 
+      interface="popover"
+      [value]="selectedAccountId"
+      (ionChange)="onAccountChange($event)"
+      class="account-select">
+      <ion-select-option *ngFor="let account of accounts" [value]="account.id">
+        {{ account.email }} {{ account.is_default ? '(Default)' : '' }}
+      </ion-select-option>
+    </ion-select>
+  </ion-toolbar>
+
+  <!-- Search -->
+  <ion-toolbar class="search-toolbar">
+    <ion-searchbar 
+      placeholder="Search emails..."
+      (ionChange)="onSearch($event)"
+      [value]="searchQuery"
+      class="bigin-search">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <!-- No Email Account Setup -->
+  <div *ngIf="!hasEmailAccount && !isLoading" class="empty-state">
+    <div class="empty-illustration">
+      <ion-icon name="mail-outline"></ion-icon>
+    </div>
+    <h3>No Email Account</h3>
+    <p>Connect an email account to receive emails via IMAP</p>
+    <ion-button class="primary-btn" routerLink="/email-settings/new">
+      <ion-icon slot="start" name="add"></ion-icon>
+      Add Email Account
+    </ion-button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading && hasEmailAccount" class="loading-state">
+    <ion-spinner name="lines"></ion-spinner>
+    <p>Fetching emails...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage && !isLoading" class="error-state">
+    <ion-icon name="warning-outline"></ion-icon>
+    <p>{{ errorMessage }}</p>
+    <ion-button class="retry-btn" (click)="loadEmails()">
+      <ion-icon slot="start" name="refresh"></ion-icon>
+      Retry
+    </ion-button>
+  </div>
+
+  <!-- Email List -->
+  <div *ngIf="emails.length > 0" class="email-list">
+    <ion-refresh-coin slot="fixed" (ionRefresh)="onRefresh($event)">
+      <ion-refresh-content pulling-text="Pull to refresh" refreshing-text="Refreshing..."></ion-refresh-content>
+    </ion-refresh-coin>
+
+    <div 
+      *ngFor="let email of emails" 
+      class="email-item"
+      [class.unread]="!email.seen"
+      (click)="viewEmail(email)">
+      
+      <div class="email-avatar">
+        <span class="avatar-initials">{{ getInitials(email.from_email) }}</span>
+      </div>
+      
+      <div class="email-content">
+        <div class="email-header">
+          <span class="sender-name">{{ email.from_email.split('@')[0] }}</span>
+          <span class="email-date">{{ formatDate(email.date) }}</span>
+        </div>
+        
+        <div class="email-subject">
+          <span *ngIf="!email.seen" class="unread-dot"></span>
+          {{ truncateSubject(email.subject) }}
+        </div>
+        
+        <div class="email-preview">
+          From: {{ email.from_email }}
+        </div>
+      </div>
+      
+      <div class="email-actions">
+        <ion-icon name="chevron-forward"></ion-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty Inbox -->
+  <div *ngIf="emails.length === 0 && hasEmailAccount && !isLoading && !errorMessage" class="empty-inbox">
+    <ion-icon name="mail-outline"></ion-icon>
+    <p>Your inbox is empty</p>
+    <ion-button fill="clear" (click)="loadEmails()">
+      <ion-icon slot="start" name="refresh"></ion-icon>
+      Refresh
+    </ion-button>
+  </div>
+</ion-content>

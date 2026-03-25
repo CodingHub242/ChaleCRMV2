@@ -1,0 +1,191 @@
+.bigin-header {
+  --background: #073336;
+  --border-color: #e0e0e0;
+  --color: #e3e3e3;
+}
+
+.bigin-header ion-title {
+  font-weight: 600;
+}
+
+.add-btn {
+  --color: #e09027;
+  font-weight: 600;
+}
+
+.bigin-content {
+  --background: #f5f7fa;
+  padding: 16px;
+}
+
+// Loading State
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  text-align: center;
+  color: #999;
+}
+
+.loading-state ion-spinner {
+  margin-bottom: 16px;
+  color: #073336;
+}
+
+// Empty State
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  text-align: center;
+  padding: 20px;
+}
+
+.empty-illustration {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.empty-illustration ion-icon {
+  font-size: 48px;
+  color: #073336;
+}
+
+.empty-state h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.empty-state p {
+  margin: 8px 0 24px;
+  color: #666;
+}
+
+.primary-btn {
+  --background: #073336;
+  --background-hover: #094749;
+  --border-radius: 10px;
+  --color: white;
+  font-weight: 500;
+  height: 44px;
+}
+
+// Accounts List
+.accounts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.account-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.account-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.account-email {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.email-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.default-badge {
+  --background: #073336;
+  --color: white;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.inactive-badge {
+  --background: #ff6b6b;
+  --color: white;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.account-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.account-actions ion-button {
+  --color: #666;
+}
+
+.account-details {
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.detail-row {
+  display: flex;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.detail-row .label {
+  color: #666;
+  width: 100px;
+  flex-shrink: 0;
+}
+
+.detail-row .value {
+  color: #333;
+}
+
+// Add Account Card
+.add-account-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: white;
+  border: 2px dashed #e9ecef;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #073336;
+    background: #f8f9fa;
+  }
+  
+  ion-icon {
+    font-size: 32px;
+    color: #999;
+    margin-bottom: 8px;
+  }
+  
+  span {
+    font-size: 14px;
+    color: #666;
+  }
+}

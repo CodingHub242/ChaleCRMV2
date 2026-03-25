@@ -1,0 +1,104 @@
+<ion-header>
+  <ion-toolbar class="bigin-header">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Email</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleReplyForm()" *ngIf="!showReplyForm">
+        <ion-icon slot="icon-only" name="send-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <ion-spinner name="lines"></ion-spinner>
+    <p>Loading email...</p>
+  </div>
+
+  <!-- Email Content -->
+  <div *ngIf="email && !isLoading" class="email-detail">
+    <div class="email-header-section">
+      <h2 class="email-subject">{{ email.subject }}</h2>
+      
+      <div class="sender-info">
+        <div class="sender-avatar">
+          <span class="avatar-initials">{{ getInitials(email.from_email) }}</span>
+        </div>
+        <div class="sender-details">
+          <div class="sender-name">{{ email.from_name || email.from_email }}</div>
+          <div class="sender-email">{{ email.from_email }}</div>
+        </div>
+      </div>
+      
+      <div class="email-meta">
+        <span class="to-label">To:</span>
+        <span class="to-email">{{ email.to_email }}</span>
+      </div>
+      
+      <div class="email-meta" *ngIf="email.cc">
+        <span class="cc-label">Cc:</span>
+        <span class="cc-email">{{ email.cc }}</span>
+      </div>
+      
+      <div class="email-date">
+        {{ formatDate(email.date) }}
+      </div>
+    </div>
+
+    <div class="email-body-section">
+      <div class="email-body" [innerHTML]="email.html_body || email.body"></div>
+    </div>
+
+    <!-- Reply Form -->
+    <div class="reply-section" *ngIf="showReplyForm">
+      <div class="reply-header">
+        <span>Reply to {{ replyTo }}</span>
+        <ion-button fill="clear" size="small" (click)="showReplyForm = false">
+          Cancel
+        </ion-button>
+      </div>
+      
+      <div class="reply-form">
+        <ion-item>
+          <ion-label position="stacked">To</ion-label>
+          <ion-input [(ngModel)]="replyTo" readonly></ion-input>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label position="stacked">Cc</ion-label>
+          <ion-input [(ngModel)]="replyCc"></ion-input>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label position="stacked">Subject</ion-label>
+          <ion-input [(ngModel)]="replySubject"></ion-input>
+        </ion-item>
+        
+        <div class="reply-body-input">
+          <ion-textarea 
+            [(ngModel)]="replyBody" 
+            placeholder="Write your reply..."
+            rows="6"
+            class="reply-textarea">
+          </ion-textarea>
+        </div>
+        
+        <div class="reply-actions">
+          <ion-button 
+            class="send-btn"
+            [disabled]="!replyBody.trim() || isSending"
+            (click)="sendReply()">
+            <ion-icon slot="start" name="send"></ion-icon>
+            {{ isSending ? 'Sending...' : 'Send Reply' }}
+          </ion-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

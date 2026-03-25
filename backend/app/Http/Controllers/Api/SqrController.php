@@ -257,4 +257,65 @@ class SqrController extends Controller
         
         return $prefix . '-' . $newNumber;
     }
+
+    /**
+     * Bulk update status for multiple SQRs
+     */
+    public function bulkUpdateStatus(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|exists:sqrs,id',
+            'status' => 'required|string|in:Open,In Progress,Escalated,Resolved,Closed',
+        ]);
+
+        $organizationId = $this->getOrganizationId();
+        
+        $query = Sqr::whereIn('id', $validated['ids']);
+        if ($organizationId) {
+            $query->where('organization_id', $organizationId);
+        }
+
+        $updateData = [
+            'status' => $validated['status'],
+            'updated_by' => auth()->id(),
+        ];
+
+        // Auto-set resolved_at when status is Resolved or Closed
+        if (in_array($validated['status'], ['Resolved', 'Closed'])) {
+            $updateData['resolved_at'] = now();
+        }
+
+        $query->update($updateData);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'SQRs status updated successfully'
+        ]);
+    }
+
+    /**
+     * Bulk delete multiple SQRs
+     */
+    public function bulkDelete(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|exists:sqrs,id',
+        ]);
+
+        $organizationId = $this->getOrganizationId();
+        
+        $query = Sqr::whereIn('id', $validated['ids']);
+        if ($organizationId) {
+            $query->where('organization_id', $organizationId);
+        }
+
+        $query->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'SQRs deleted successfully'
+        ]);
+    }
 }

@@ -1,0 +1,131 @@
+.bigin-header {
+  --background: #073336;
+  --border-color: #e0e0e0;
+  --color: #e3e3e3;
+}
+
+.bigin-header ion-title {
+  font-weight: 600;
+}
+
+.bigin-content {
+  --background: #f5f7fa;
+}
+
+.form-container {
+  padding: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.form-section {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+// Provider Grid
+.provider-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.provider-card {
+  padding: 8px 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  
+  &:hover {
+    background: #e9ecef;
+  }
+  
+  &.selected {
+    background: #e8f5e9;
+    border-color: #073336;
+  }
+  
+  .provider-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+  }
+}
+
+// Form Items
+ion-item {
+  --padding-start: 0;
+  --padding-end: 0;
+  --inner-padding-end: 0;
+  margin-bottom: 12px;
+  --background: transparent;
+  --border-color: #e9ecef;
+  
+  ion-label {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 4px;
+  }
+  
+  ion-input, ion-select {
+    --padding-start: 8px;
+    font-size: 15px;
+    color: #333;
+    background: #f8f9fa;
+    border-radius: 8px;
+    --padding: 12px;
+  }
+}
+
+ion-checkbox {
+  --checkbox-background: #073336;
+  --checkbox-background-checked: #073336;
+}
+
+.help-text {
+  font-size: 12px;
+  color: #666;
+  margin: 4px 0 0 0;
+  padding: 0 16px;
+}
+
+// Form Actions
+.form-actions {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+}
+
+.test-btn {
+  --border-color: #073336;
+  --color: #073336;
+  flex: 1;
+  --border-radius: 10px;
+  font-weight: 500;
+}
+
+.save-btn {
+  --background: #073336;
+  --color: white;
+  flex: 2;
+  --border-radius: 10px;
+  font-weight: 500;
+}
+
+.save-btn[disabled], .test-btn[disabled] {
+  opacity: 0.6;
+}

@@ -1,0 +1,158 @@
+<ion-header>
+  <ion-toolbar class="bigin-header">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ isEdit ? 'Edit Email Account' : 'Add Email Account' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bigin-content">
+  <div class="form-container">
+    <!-- Provider Selection -->
+    <div class="form-section">
+      <h3 class="section-title">Select Email Provider</h3>
+      <div class="provider-grid">
+        <div 
+          *ngFor="let provider of commonProviders" 
+          class="provider-card"
+          [class.selected]="account.imap_host === provider.imap && provider.name !== 'Custom'"
+          (click)="selectProvider(provider)">
+          <span class="provider-name">{{ provider.name }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Account Details -->
+    <div class="form-section">
+      <h3 class="section-title">Account Details</h3>
+      
+      <ion-item>
+        <ion-label position="stacked">Email Address *</ion-label>
+        <ion-input 
+          type="email" 
+          [(ngModel)]="account.email" 
+          placeholder="you@example.com">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Account Name</ion-label>
+        <ion-input 
+          [(ngModel)]="account.name" 
+          placeholder="My Email Account">
+        </ion-input>
+      </ion-item>
+    </div>
+
+    <!-- IMAP Settings -->
+    <div class="form-section">
+      <h3 class="section-title">Incoming Mail (IMAP)</h3>
+      
+      <ion-item>
+        <ion-label position="stacked">IMAP Host *</ion-label>
+        <ion-input 
+          [(ngModel)]="account.imap_host" 
+          placeholder="imap.example.com">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Port</ion-label>
+        <ion-input 
+          type="number" 
+          [(ngModel)]="account.imap_port">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Encryption</ion-label>
+        <ion-select [(ngModel)]="account.imap_encryption" interface="popover">
+          <ion-select-option value="ssl">SSL</ion-select-option>
+          <ion-select-option value="tls">TLS</ion-select-option>
+          <ion-select-option value="null">None</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Username *</ion-label>
+        <ion-input 
+          [(ngModel)]="account.username" 
+          placeholder="your.email@example.com">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Password *</ion-label>
+        <ion-input 
+          type="password" 
+          [(ngModel)]="account.password" 
+          [placeholder]="isEdit ? 'Leave blank to keep current' : 'Password or App Password'">
+        </ion-input>
+      </ion-item>
+      <p class="help-text">For Gmail/Outlook, use an App Password instead of your regular password.</p>
+    </div>
+
+    <!-- SMTP Settings -->
+    <div class="form-section">
+      <h3 class="section-title">Outgoing Mail (SMTP) - Optional</h3>
+      
+      <ion-item>
+        <ion-label position="stacked">SMTP Host</ion-label>
+        <ion-input 
+          [(ngModel)]="account.smtp_host" 
+          placeholder="smtp.example.com">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Port</ion-label>
+        <ion-input 
+          type="number" 
+          [(ngModel)]="account.smtp_port">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Encryption</ion-label>
+        <ion-select [(ngModel)]="account.smtp_encryption" interface="popover">
+          <ion-select-option value="tls">TLS</ion-select-option>
+          <ion-select-option value="ssl">SSL</ion-select-option>
+          <ion-select-option value="null">None</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+
+    <!-- Options -->
+    <div class="form-section">
+      <ion-item lines="none">
+        <ion-label>Set as default account</ion-label>
+        <ion-checkbox slot="end" [(ngModel)]="account.is_default"></ion-checkbox>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label>Auto-create SQR from received emails</ion-label>
+        <ion-checkbox slot="end" [(ngModel)]="account.auto_create_sqr"></ion-checkbox>
+      </ion-item>
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <ion-button 
+        class="test-btn"
+        fill="outline"
+        [disabled]="isTesting"
+        (click)="testConnection()">
+        {{ isTesting ? 'Testing...' : 'Test Connection' }}
+      </ion-button>
+
+      <ion-button 
+        class="save-btn"
+        [disabled]="isSaving"
+        (click)="save()">
+        {{ isSaving ? 'Saving...' : (isEdit ? 'Update Account' : 'Add Account') }}
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

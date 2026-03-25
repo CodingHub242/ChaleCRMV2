@@ -51,108 +51,347 @@
 </ion-header>
 
 <ion-content class="bigin-content">
-  <div class="table-container">
-    <!-- Loading State -->
-    <div *ngIf="isLoading && sqrs.length === 0" class="loading-state">
-      <ion-spinner name="lines"></ion-spinner>
-      <p>Loading SQRs...</p>
+  <!-- Bulk Action Toolbar -->
+  <div class="bulk-action-bar" *ngIf="selectedIds.size > 0">
+    <div class="selected-info">
+      <ion-checkbox 
+        [checked]="allSelected" 
+        [indeterminate]="someSelected"
+        (ionChange)="toggleSelectAll()"
+        class="select-all-checkbox">
+      </ion-checkbox>
+      <span class="selected-count">{{ selectedIds.size }} selected</span>
     </div>
-
-    <!-- Empty State -->
-    <div *ngIf="!isLoading && sqrs.length === 0" class="empty-state">
-      <div class="empty-illustration">
-        <ion-icon name="warning-outline"></ion-icon>
-      </div>
-      <h3>No SQRs found</h3>
-      <p>Get started by creating your first SQR</p>
-      <ion-button class="primary-btn" routerLink="/sqrs/new">
-        <ion-icon slot="start" name="add"></ion-icon>
-        Create SQR
+    <div class="bulk-actions">
+      <ion-button 
+        fill="clear" 
+        class="bulk-action-btn"
+        (click)="openBulkStatusUpdate()">
+        <ion-icon slot="start" name="swap-horizontal"></ion-icon>
+        Update Status
+      </ion-button>
+      <ion-button 
+        fill="clear" 
+        class="bulk-action-btn delete-btn"
+        (click)="bulkDelete()">
+        <ion-icon slot="start" name="trash-outline"></ion-icon>
+        Delete
+      </ion-button>
+      <ion-button 
+        fill="clear" 
+        class="bulk-action-btn cancel-btn"
+        (click)="clearSelection()">
+        <ion-icon slot="start" name="close"></ion-icon>
+        Cancel
       </ion-button>
     </div>
+  </div>
 
-    <!-- SQR Table -->
-    <div *ngIf="sqrs.length > 0" class="table-wrapper">
-      <table class="bigin-table">
-        <thead>
-          <tr>
-            <th>No.</th>
-            <th>Title</th>
-            <th>Type</th>
-            <th>Priority</th>
-            <th>Status</th>
-            <th>Contact</th>
-            <th>Company</th>
-            <th>Assigned To</th>
-            <th>Created</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let sqr of sqrs" [routerLink]="['/sqrs/view', sqr.id]" class="table-row">
-            <td>{{ sqr.ticket_number }}</td>
-            <td>
-              <span class="sqr-title">{{ sqr.title }}</span>
-            </td>
-            <td>
+  <!-- Loading State -->
+  <div *ngIf="isLoading && sqrs.length === 0" class="loading-state">
+    <ion-spinner name="lines"></ion-spinner>
+    <p>Loading SQRs...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && sqrs.length === 0" class="empty-state">
+    <div class="empty-illustration">
+      <ion-icon name="warning-outline"></ion-icon>
+    </div>
+    <h3>No SQRs found</h3>
+    <p>Get started by creating your first SQR</p>
+    <ion-button class="primary-btn" routerLink="/sqrs/new">
+      <ion-icon slot="start" name="add"></ion-icon>
+      Create SQR
+    </ion-button>
+  </div>
+
+  <!-- Kanban Board View -->
+  <div *ngIf="sqrs.length > 0" class="kanban-container">
+    <div class="kanban-board">
+      <!-- Open Column -->
+      <div class="kanban-column">
+        <div class="column-header">
+          <ion-icon name="alert-circle" class="column-icon status-open"></ion-icon>
+          <span class="column-title">Open</span>
+          <span class="column-count">{{ getSqrsByStatus('Open').length }}</span>
+        </div>
+        <div class="column-content">
+          <div 
+            *ngFor="let sqr of getSqrsByStatus('Open')" 
+            class="sqr-card"
+            [class.selected]="selectedIds.has(sqr.id)"
+            (click)="toggleSelection(sqr.id, $event)">
+            <div class="card-checkbox">
+              <ion-checkbox 
+                [checked]="selectedIds.has(sqr.id)"
+                (ionChange)="toggleSelection(sqr.id, $event)"
+                (click)="$event.stopPropagation()">
+              </ion-checkbox>
+            </div>
+            <div class="card-header">
+              <span class="ticket-number">{{ sqr.ticket_number }}</span>
               <ion-badge class="type-badge" [class]="sqr.type?.toLowerCase() || 'default'">
                 {{ sqr.type }}
               </ion-badge>
-            </td>
-            <td>
-              <ion-badge class="priority-badge" [style.background-color]="getPriorityColor(sqr.priority)">
+            </div>
+            <h4 class="card-title">{{ sqr.title }}</h4>
+            <div class="card-meta">
+              <span class="priority" [style.color]="getPriorityColor(sqr.priority)">
+                <ion-icon name="flag"></ion-icon>
                 {{ sqr.priority }}
-              </ion-badge>
-            </td>
-            <td>
-              <ion-badge class="status-badge" [class]="getStatusClass(sqr.status)">
-                {{ sqr.status }}
-              </ion-badge>
-            </td>
-            <td>{{ sqr.contact?.first_name ? sqr.contact?.first_name + ' ' + sqr.contact?.last_name : '-' }}</td>
-            <td>{{ sqr.company?.name || '-' }}</td>
-            <td>{{ sqr.assignee?.name ? sqr.assignee?.name : '-' }}</td>
-            <td>{{ sqr.created_at | date:'mediumDate' }}</td>
-            <td>
-              <ion-button fill="clear" color="danger" (click)="deleteSqr(sqr); $event.stopPropagation()">
-                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-              </ion-button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <!-- Pagination -->
-      <div class="pagination-container" *ngIf="totalItems > 0">
-        <div class="pagination-info">
-          <span>Showing {{ startItem }}-{{ endItem }} of {{ totalItems }} SQRs</span>
-        </div>
-        <div class="pagination-controls">
-          <ion-button 
-            fill="clear" 
-            [disabled]="currentPage === 1"
-            (click)="prevPage()"
-            class="pagination-btn">
-            <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
-          </ion-button>
-          <span class="page-number">{{ currentPage }} / {{ lastPage }}</span>
-          <ion-button 
-            fill="clear" 
-            [disabled]="currentPage >= lastPage"
-            (click)="nextPage()"
-            class="pagination-btn">
-            <ion-icon slot="icon-only" name="chevron-forward"></ion-icon>
-          </ion-button>
+              </span>
+              <span class="date">{{ sqr.created_at | date:'shortDate' }}</span>
+            </div>
+            <div class="card-footer">
+              <div class="assignee" *ngIf="sqr.assignee">
+                <ion-icon name="person"></ion-icon>
+                {{ sqr.assignee.name }}
+              </div>
+              <div class="contact" *ngIf="sqr.contact">
+                <ion-icon name="chatbubbles-outline"></ion-icon>
+                {{ sqr.contact.first_name }} {{ sqr.contact.last_name }}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Infinite Scroll -->
-      <ion-infinite-scroll (ionInfinite)="loadMore($event)" *ngIf="hasMore && currentPage < lastPage">
-        <ion-infinite-scroll-content
-          loading-spinner="lines-small"
-          loading-text="Loading more...">
-        </ion-infinite-scroll-content>
-      </ion-infinite-scroll>
+      <!-- Vertical Divider -->
+      <div class="column-divider"></div>
+
+      <!-- In Progress Column -->
+      <div class="kanban-column">
+        <div class="column-header">
+          <ion-icon name="time" class="column-icon status-progress"></ion-icon>
+          <span class="column-title">In Progress</span>
+          <span class="column-count">{{ getSqrsByStatus('In Progress').length }}</span>
+        </div>
+        <div class="column-content">
+          <div 
+            *ngFor="let sqr of getSqrsByStatus('In Progress')" 
+            class="sqr-card"
+            [class.selected]="selectedIds.has(sqr.id)"
+            (click)="toggleSelection(sqr.id, $event)">
+            <div class="card-checkbox">
+              <ion-checkbox 
+                [checked]="selectedIds.has(sqr.id)"
+                (ionChange)="toggleSelection(sqr.id, $event)"
+                (click)="$event.stopPropagation()">
+              </ion-checkbox>
+            </div>
+            <div class="card-header">
+              <span class="ticket-number">{{ sqr.ticket_number }}</span>
+              <ion-badge class="type-badge" [class]="sqr.type?.toLowerCase() || 'default'">
+                {{ sqr.type }}
+              </ion-badge>
+            </div>
+            <h4 class="card-title">{{ sqr.title }}</h4>
+            <div class="card-meta">
+              <span class="priority" [style.color]="getPriorityColor(sqr.priority)">
+                <ion-icon name="flag"></ion-icon>
+                {{ sqr.priority }}
+              </span>
+              <span class="date">{{ sqr.created_at | date:'shortDate' }}</span>
+            </div>
+            <div class="card-footer">
+              <div class="assignee" *ngIf="sqr.assignee">
+                <ion-icon name="person"></ion-icon>
+                {{ sqr.assignee.name }}
+              </div>
+              <div class="contact" *ngIf="sqr.contact">
+                <ion-icon name="chatbubbles-outline"></ion-icon>
+                {{ sqr.contact.first_name }} {{ sqr.contact.last_name }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vertical Divider -->
+      <div class="column-divider"></div>
+
+      <!-- Escalated Column -->
+      <div class="kanban-column">
+        <div class="column-header">
+          <ion-icon name="arrow-up-circle" class="column-icon status-escalated"></ion-icon>
+          <span class="column-title">Escalated</span>
+          <span class="column-count">{{ getSqrsByStatus('Escalated').length }}</span>
+        </div>
+        <div class="column-content">
+          <div 
+            *ngFor="let sqr of getSqrsByStatus('Escalated')" 
+            class="sqr-card"
+            [class.selected]="selectedIds.has(sqr.id)"
+            (click)="toggleSelection(sqr.id, $event)">
+            <div class="card-checkbox">
+              <ion-checkbox 
+                [checked]="selectedIds.has(sqr.id)"
+                (ionChange)="toggleSelection(sqr.id, $event)"
+                (click)="$event.stopPropagation()">
+              </ion-checkbox>
+            </div>
+            <div class="card-header">
+              <span class="ticket-number">{{ sqr.ticket_number }}</span>
+              <ion-badge class="type-badge" [class]="sqr.type?.toLowerCase() || 'default'">
+                {{ sqr.type }}
+              </ion-badge>
+            </div>
+            <h4 class="card-title">{{ sqr.title }}</h4>
+            <div class="card-meta">
+              <span class="priority" [style.color]="getPriorityColor(sqr.priority)">
+                <ion-icon name="flag"></ion-icon>
+                {{ sqr.priority }}
+              </span>
+              <span class="date">{{ sqr.created_at | date:'shortDate' }}</span>
+            </div>
+            <div class="card-footer">
+              <div class="assignee" *ngIf="sqr.assignee">
+                <ion-icon name="person"></ion-icon>
+                {{ sqr.assignee.name }}
+              </div>
+              <div class="contact" *ngIf="sqr.contact">
+                <ion-icon name="chatbubbles-outline"></ion-icon>
+                {{ sqr.contact.first_name }} {{ sqr.contact.last_name }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vertical Divider -->
+      <div class="column-divider"></div>
+
+      <!-- Resolved Column -->
+      <div class="kanban-column">
+        <div class="column-header">
+          <ion-icon name="checkmark-circle" class="column-icon status-resolved"></ion-icon>
+          <span class="column-title">Resolved</span>
+          <span class="column-count">{{ getSqrsByStatus('Resolved').length }}</span>
+        </div>
+        <div class="column-content">
+          <div 
+            *ngFor="let sqr of getSqrsByStatus('Resolved')" 
+            class="sqr-card"
+            [class.selected]="selectedIds.has(sqr.id)"
+            (click)="toggleSelection(sqr.id, $event)">
+            <div class="card-checkbox">
+              <ion-checkbox 
+                [checked]="selectedIds.has(sqr.id)"
+                (ionChange)="toggleSelection(sqr.id, $event)"
+                (click)="$event.stopPropagation()">
+              </ion-checkbox>
+            </div>
+            <div class="card-header">
+              <span class="ticket-number">{{ sqr.ticket_number }}</span>
+              <ion-badge class="type-badge" [class]="sqr.type?.toLowerCase() || 'default'">
+                {{ sqr.type }}
+              </ion-badge>
+            </div>
+            <h4 class="card-title">{{ sqr.title }}</h4>
+            <div class="card-meta">
+              <span class="priority" [style.color]="getPriorityColor(sqr.priority)">
+                <ion-icon name="flag"></ion-icon>
+                {{ sqr.priority }}
+              </span>
+              <span class="date">{{ sqr.created_at | date:'shortDate' }}</span>
+            </div>
+            <div class="card-footer">
+              <div class="assignee" *ngIf="sqr.assignee">
+                <ion-icon name="person"></ion-icon>
+                {{ sqr.assignee.name }}
+              </div>
+              <div class="contact" *ngIf="sqr.contact">
+                <ion-icon name="chatbubbles-outline"></ion-icon>
+                {{ sqr.contact.first_name }} {{ sqr.contact.last_name }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vertical Divider -->
+      <div class="column-divider"></div>
+
+      <!-- Closed Column -->
+      <div class="kanban-column">
+        <div class="column-header">
+          <ion-icon name="checkmark-done-circle" class="column-icon status-closed"></ion-icon>
+          <span class="column-title">Closed</span>
+          <span class="column-count">{{ getSqrsByStatus('Closed').length }}</span>
+        </div>
+        <div class="column-content">
+          <div 
+            *ngFor="let sqr of getSqrsByStatus('Closed')" 
+            class="sqr-card"
+            [class.selected]="selectedIds.has(sqr.id)"
+            (click)="toggleSelection(sqr.id, $event)">
+            <div class="card-checkbox">
+              <ion-checkbox 
+                [checked]="selectedIds.has(sqr.id)"
+                (ionChange)="toggleSelection(sqr.id, $event)"
+                (click)="$event.stopPropagation()">
+              </ion-checkbox>
+            </div>
+            <div class="card-header">
+              <span class="ticket-number">{{ sqr.ticket_number }}</span>
+              <ion-badge class="type-badge" [class]="sqr.type?.toLowerCase() || 'default'">
+                {{ sqr.type }}
+              </ion-badge>
+            </div>
+            <h4 class="card-title">{{ sqr.title }}</h4>
+            <div class="card-meta">
+              <span class="priority" [style.color]="getPriorityColor(sqr.priority)">
+                <ion-icon name="flag"></ion-icon>
+                {{ sqr.priority }}
+              </span>
+              <span class="date">{{ sqr.created_at | date:'shortDate' }}</span>
+            </div>
+            <div class="card-footer">
+              <div class="assignee" *ngIf="sqr.assignee">
+                <ion-icon name="person"></ion-icon>
+                {{ sqr.assignee.name }}
+              </div>
+              <div class="contact" *ngIf="sqr.contact">
+                <ion-icon name="chatbubbles-outline"></ion-icon>
+                {{ sqr.contact.first_name }} {{ sqr.contact.last_name }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container" *ngIf="totalItems > 0">
+      <div class="pagination-info">
+        <span>Showing {{ startItem }}-{{ endItem }} of {{ totalItems }} SQRs</span>
+      </div>
+      <div class="pagination-controls">
+        <ion-button 
+          fill="clear" 
+          [disabled]="currentPage === 1"
+          (click)="prevPage()"
+          class="pagination-btn">
+          <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
+        </ion-button>
+        <span class="page-number">{{ currentPage }} / {{ lastPage }}</span>
+        <ion-button 
+          fill="clear" 
+          [disabled]="currentPage >= lastPage"
+          (click)="nextPage()"
+          class="pagination-btn">
+          <ion-icon slot="icon-only" name="chevron-forward"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Infinite Scroll -->
+    <ion-infinite-scroll (ionInfinite)="loadMore($event)" *ngIf="hasMore && currentPage < lastPage">
+      <ion-infinite-scroll-content
+        loading-spinner="lines-small"
+        loading-text="Loading more...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
   </div>
 </ion-content>
