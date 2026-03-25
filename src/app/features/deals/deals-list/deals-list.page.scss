@@ -542,7 +542,7 @@
 .kanban-container {
   padding: 16px;
   height: calc(100vh - 250px);
-  overflow: auto;
+  //overflow: auto;
 }
 
 .kanban-board {
@@ -763,6 +763,7 @@
   border-top: 1px solid #e9ecef;
   position: sticky;
   bottom: 0;
+  z-index: 10;
 }
 
 .kanban-scroll-controls .scroll-btn {
