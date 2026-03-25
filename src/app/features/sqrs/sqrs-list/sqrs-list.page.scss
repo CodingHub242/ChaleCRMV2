@@ -250,6 +250,11 @@
   &.status-closed { color: #1565c0; }
 }
 
+.column-select-all {
+  --size: 18px;
+  margin-right: 4px;
+}
+
 .column-title {
   font-size: 14px;
   font-weight: 600;

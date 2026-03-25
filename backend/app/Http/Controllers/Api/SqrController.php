@@ -173,6 +173,28 @@ class SqrController extends Controller
         }
 
         $sqr->update($validated);
+        
+        // Log activity for updates
+        $changes = [];
+        if (isset($validated['title']) && $validated['title'] !== $sqr->title) {
+            $changes[] = 'title';
+        }
+        if (isset($validated['priority']) && $validated['priority'] !== $sqr->priority) {
+            $changes[] = 'priority';
+        }
+        if (isset($validated['status']) && $validated['status'] !== $sqr->status) {
+            $changes[] = 'status';
+        }
+        if (isset($validated['assigned_to']) && $validated['assigned_to'] !== $sqr->assigned_to) {
+            $changes[] = 'assignment';
+        }
+        if (isset($validated['resolution_notes']) && $validated['resolution_notes'] !== $sqr->resolution_notes) {
+            $changes[] = 'resolution notes';
+        }
+        
+        if (!empty($changes)) {
+            $this->logActivity($sqr->id, 'updated', 'SQR updated: ' . implode(', ', $changes));
+        }
 
         return response()->json([
             'success' => true,
@@ -213,6 +235,8 @@ class SqrController extends Controller
             'resolution_notes' => 'nullable|string',
         ]);
 
+        $oldStatus = $sqr->status;
+        
         if (in_array($validated['status'], ['Resolved', 'Closed'])) {
             $validated['resolved_at'] = now();
         }
@@ -221,6 +245,13 @@ class SqrController extends Controller
         $validated['updated_by'] = auth()->id();
         
         $sqr->update($validated);
+        
+        // Log activity for status change
+        $activityDesc = 'Status changed from ' . $oldStatus . ' to ' . $validated['status'];
+        if (!empty($validated['resolution_notes'])) {
+            $activityDesc .= '. Resolution: ' . $validated['resolution_notes'];
+        }
+        $this->logActivity($sqr->id, 'status_changed', $activityDesc);
 
         return response()->json([
             'success' => true,
@@ -316,6 +347,21 @@ class SqrController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'SQRs deleted successfully'
+        ]);
+    }
+    
+    /**
+     * Log activity for SQR changes
+     */
+    private function logActivity(int $sqrId, string $type, string $description): void
+    {
+        \App\Models\Activity::create([
+            'organization_id' => $this->getOrganizationId(),
+            'activity_type' => $type,
+            'description' => $description,
+            'related_to_type' => 'sqr',
+            'related_to_id' => $sqrId,
+            'user_id' => auth()->id(),
         ]);
     }
 }

@@ -121,6 +121,12 @@
       <!-- Open Column -->
       <div class="kanban-column">
         <div class="column-header">
+          <ion-checkbox 
+            class="column-select-all"
+            [checked]="isAllSelectedForStatus('Open')"
+            [indeterminate]="isSomeSelectedForStatus('Open')"
+            (ionChange)="toggleSelectAllForStatus('Open', $event)">
+          </ion-checkbox>
           <ion-icon name="alert-circle" class="column-icon status-open"></ion-icon>
           <span class="column-title">Open</span>
           <span class="column-count">{{ getSqrsByStatus('Open').length }}</span>
@@ -170,6 +176,12 @@
       <!-- In Progress Column -->
       <div class="kanban-column">
         <div class="column-header">
+          <ion-checkbox 
+            class="column-select-all"
+            [checked]="isAllSelectedForStatus('In Progress')"
+            [indeterminate]="isSomeSelectedForStatus('In Progress')"
+            (ionChange)="toggleSelectAllForStatus('In Progress', $event)">
+          </ion-checkbox>
           <ion-icon name="time" class="column-icon status-progress"></ion-icon>
           <span class="column-title">In Progress</span>
           <span class="column-count">{{ getSqrsByStatus('In Progress').length }}</span>
@@ -219,6 +231,12 @@
       <!-- Escalated Column -->
       <div class="kanban-column">
         <div class="column-header">
+          <ion-checkbox 
+            class="column-select-all"
+            [checked]="isAllSelectedForStatus('Escalated')"
+            [indeterminate]="isSomeSelectedForStatus('Escalated')"
+            (ionChange)="toggleSelectAllForStatus('Escalated', $event)">
+          </ion-checkbox>
           <ion-icon name="arrow-up-circle" class="column-icon status-escalated"></ion-icon>
           <span class="column-title">Escalated</span>
           <span class="column-count">{{ getSqrsByStatus('Escalated').length }}</span>
@@ -268,6 +286,12 @@
       <!-- Resolved Column -->
       <div class="kanban-column">
         <div class="column-header">
+          <ion-checkbox 
+            class="column-select-all"
+            [checked]="isAllSelectedForStatus('Resolved')"
+            [indeterminate]="isSomeSelectedForStatus('Resolved')"
+            (ionChange)="toggleSelectAllForStatus('Resolved', $event)">
+          </ion-checkbox>
           <ion-icon name="checkmark-circle" class="column-icon status-resolved"></ion-icon>
           <span class="column-title">Resolved</span>
           <span class="column-count">{{ getSqrsByStatus('Resolved').length }}</span>
@@ -317,6 +341,12 @@
       <!-- Closed Column -->
       <div class="kanban-column">
         <div class="column-header">
+          <ion-checkbox 
+            class="column-select-all"
+            [checked]="isAllSelectedForStatus('Closed')"
+            [indeterminate]="isSomeSelectedForStatus('Closed')"
+            (ionChange)="toggleSelectAllForStatus('Closed', $event)">
+          </ion-checkbox>
           <ion-icon name="checkmark-done-circle" class="column-icon status-closed"></ion-icon>
           <span class="column-title">Closed</span>
           <span class="column-count">{{ getSqrsByStatus('Closed').length }}</span>

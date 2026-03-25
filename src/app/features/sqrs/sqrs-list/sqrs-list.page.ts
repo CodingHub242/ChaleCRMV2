@@ -183,6 +183,33 @@ export class SqrsListPage implements OnInit {
     }
   }
 
+  // Per-column select all methods
+  isAllSelectedForStatus(status: string): boolean {
+    const sqrsInStatus = this.getSqrsByStatus(status);
+    if (sqrsInStatus.length === 0) return false;
+    return sqrsInStatus.every(sqr => this.selectedIds.has(sqr.id));
+  }
+
+  isSomeSelectedForStatus(status: string): boolean {
+    const sqrsInStatus = this.getSqrsByStatus(status);
+    if (sqrsInStatus.length === 0) return false;
+    const selectedCount = sqrsInStatus.filter(sqr => this.selectedIds.has(sqr.id)).length;
+    return selectedCount > 0 && selectedCount < sqrsInStatus.length;
+  }
+
+  toggleSelectAllForStatus(status: string, event: any): void {
+    const sqrsInStatus = this.getSqrsByStatus(status);
+    const isChecked = event.detail.checked;
+    
+    if (isChecked) {
+      // Select all in this status
+      sqrsInStatus.forEach(sqr => this.selectedIds.add(sqr.id));
+    } else {
+      // Deselect all in this status
+      sqrsInStatus.forEach(sqr => this.selectedIds.delete(sqr.id));
+    }
+  }
+
   toggleSelectAll(): void {
     if (this.allSelected) {
       this.clearSelection();
