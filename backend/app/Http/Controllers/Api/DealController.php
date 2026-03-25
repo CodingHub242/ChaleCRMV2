@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\ScopesByOrganization;
 use App\Models\Deal;
+use App\Models\Activity;
 use Illuminate\Http\Request;
 
 class DealController extends Controller
@@ -97,6 +98,9 @@ class DealController extends Controller
         $validated['organization_id'] = $this->getOrganizationId();
         $deal = Deal::create($validated);
 
+        // Log activity
+        $this->logActivity($deal->id, 'created', 'Deal created: ' . $deal->name);
+
         return response()->json([
             'success' => true,
             'data' => $deal->load(['contact', 'company', 'group']),
@@ -143,7 +147,39 @@ class DealController extends Controller
             'description' => 'nullable|string',
         ]);
 
+        // Track changes for activity logging
+        $changes = [];
+        if (isset($validated['name']) && $validated['name'] !== $deal->name) {
+            $changes[] = 'name';
+        }
+        if (isset($validated['amount']) && $validated['amount'] != $deal->amount) {
+            $changes[] = 'amount';
+        }
+        if (isset($validated['stage']) && $validated['stage'] !== $deal->stage) {
+            $changes[] = 'stage';
+        }
+        if (isset($validated['probability']) && $validated['probability'] != $deal->probability) {
+            $changes[] = 'probability';
+        }
+        if (isset($validated['expected_close_date']) && $validated['expected_close_date'] !== $deal->expected_close_date) {
+            $changes[] = 'expected close date';
+        }
+        if (isset($validated['contact_id']) && $validated['contact_id'] != $deal->contact_id) {
+            $changes[] = 'contact';
+        }
+        if (isset($validated['company_id']) && $validated['company_id'] != $deal->company_id) {
+            $changes[] = 'company';
+        }
+        if (isset($validated['group_id']) && $validated['group_id'] != $deal->group_id) {
+            $changes[] = 'group';
+        }
+
         $deal->update($validated);
+
+        // Log activity for updates
+        if (!empty($changes)) {
+            $this->logActivity($deal->id, 'updated', 'Deal updated: ' . implode(', ', $changes));
+        }
 
         return response()->json([
             'success' => true,
@@ -161,6 +197,10 @@ class DealController extends Controller
             $deal = $deal->where('organization_id', $organizationId);
         }
         $deal = $deal->findOrFail($id);
+        
+        // Log activity before deletion
+        $this->logActivity($deal->id, 'deleted', 'Deal deleted: ' . $deal->name);
+        
         $deal->delete();
 
         return response()->json([
@@ -183,7 +223,12 @@ class DealController extends Controller
             'stage' => 'required|string|max:100',
         ]);
 
+        $oldStage = $deal->stage;
         $deal->update($validated);
+
+        // Log activity for stage change
+        $activityDesc = 'Stage changed from ' . ($oldStage ?: 'None') . ' to ' . $validated['stage'];
+        $this->logActivity($deal->id, 'stage_changed', $activityDesc);
 
         return response()->json([
             'success' => true,
@@ -205,12 +250,24 @@ class DealController extends Controller
 
         $organizationId = $this->getOrganizationId();
         
+        // Get deals before update to log activity
+        $deals = Deal::whereIn('id', $validated['ids']);
+        if ($organizationId) {
+            $deals = $deals->where('organization_id', $organizationId);
+        }
+        $deals = $deals->get();
+        
         $query = Deal::whereIn('id', $validated['ids']);
         if ($organizationId) {
             $query->where('organization_id', $organizationId);
         }
 
         $query->update(['stage' => $validated['stage']]);
+
+        // Log activity for bulk update
+        foreach ($deals as $deal) {
+            $this->logActivity($deal->id, 'stage_changed', 'Stage changed to ' . $validated['stage'] . ' (bulk update)');
+        }
 
         return response()->json([
             'success' => true,
@@ -230,6 +287,17 @@ class DealController extends Controller
 
         $organizationId = $this->getOrganizationId();
         
+        // Get deals before deletion to log activity
+        $deals = Deal::whereIn('id', $validated['ids']);
+        if ($organizationId) {
+            $deals = $deals->where('organization_id', $organizationId);
+        }
+        $deals = $deals->get();
+        
+        // Log activity before deletion
+        $dealNames = $deals->pluck('name')->toArray();
+        $this->logActivity(0, 'bulk_deleted', 'Bulk deleted deals: ' . implode(', ', $dealNames));
+
         $query = Deal::whereIn('id', $validated['ids']);
         if ($organizationId) {
             $query->where('organization_id', $organizationId);
@@ -240,6 +308,25 @@ class DealController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Deals deleted successfully'
+        ]);
+    }
+    
+    /**
+     * Log activity for deal changes
+     */
+    private function logActivity(int $dealId, string $type, string $description): void
+    {
+        $userName = auth()->user()->name ?? 'Unknown User';
+        $fullDescription = $userName . ' ' . $description;
+        
+        Activity::create([
+            'organization_id' => $this->getOrganizationId(),
+            'activity_type' => $type,
+            'description' => $fullDescription,
+            'subject_type' => 'deal',
+            'subject_id' => $dealId,
+            'user_id' => auth()->id(),
+            'activity_date' => now(),
         ]);
     }
 }
