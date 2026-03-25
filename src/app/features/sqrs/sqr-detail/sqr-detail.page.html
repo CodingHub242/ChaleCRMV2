@@ -186,7 +186,8 @@
           </div>
           <div class="assignee-info" *ngIf="sqr.assignee">
             <div class="avatar">
-              {{ sqr.assignee.name?.charAt(0) || '?' }}
+              <img *ngIf="sqr.assignee.avatar" [src]="sqr.assignee.avatar" [alt]="sqr.assignee.name">
+              <span *ngIf="!sqr.assignee.avatar">{{ sqr.assignee.name?.charAt(0) || '?' }}</span>
             </div>
             <div class="info">
               <div class="name">{{ sqr.assignee.name }}</div>
