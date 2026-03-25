@@ -61,6 +61,8 @@ export class DealDetailPage implements OnInit {
   // Notes
   notes: string = '';
   isSavingNote = false;
+  dealNotes: any[] = [];
+  isLoadingDealNotes = true;
 
   // Activities
   activities: Activity[] = [];
@@ -120,12 +122,29 @@ export class DealDetailPage implements OnInit {
         if (response.success) {
           this.deal = response.data;
           this.loadTimeline();
+          this.loadDealNotes();
         }
         this.isLoading = false;
       },
       error: () => {
         this.isLoading = false;
         this.showAlert('Error', 'Failed to load deal');
+      }
+    });
+  }
+
+  loadDealNotes(): void {
+    if (!this.dealId) return;
+    this.isLoadingDealNotes = true;
+    this.api.getDealNotes(this.dealId).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.dealNotes = response.data || [];
+        }
+        this.isLoadingDealNotes = false;
+      },
+      error: () => {
+        this.isLoadingDealNotes = false;
       }
     });
   }
@@ -286,30 +305,50 @@ export class DealDetailPage implements OnInit {
   }
 
   async saveNote(): Promise<void> {
-    if (!this.notes.trim()) return;
+    if (!this.notes.trim() || !this.dealId) return;
     
     this.isSavingNote = true;
-    
-    // Save the note as part of the description
-    if (this.deal) {
-      const updateData = {
-        ...this.deal,
-        description: (this.deal.description || '') + '\n\n--- Note ---\n' + this.notes
-      };
-      
-      this.api.updateDeal(this.dealId!, updateData).subscribe({
-        next: (response) => {
-          this.isSavingNote = false;
-          if (response.success) {
-            this.notes = '';
-            this.loadTimeline();
-          }
-        },
-        error: () => {
-          this.isSavingNote = false;
+    this.api.addDealNote(this.dealId, this.notes).subscribe({
+      next: (response) => {
+        this.isSavingNote = false;
+        if (response.success) {
+          this.notes = '';
+          this.loadDealNotes();
         }
-      });
-    }
+      },
+      error: () => {
+        this.isSavingNote = false;
+      }
+    });
+  }
+
+  async deleteNote(noteId: number): Promise<void> {
+    if (!this.dealId) return;
+    
+    const alert = await this.alertController.create({
+      header: 'Delete Note',
+      message: 'Are you sure you want to delete this note?',
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Delete',
+          role: 'destructive',
+          handler: () => {
+            this.api.deleteDealNote(this.dealId!, noteId).subscribe({
+              next: () => {
+                this.loadDealNotes();
+              }
+            });
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  getUserInitials(user: any): string {
+    if (!user?.name) return '?';
+    return user.name.charAt(0).toUpperCase();
   }
 
   async editDeal(): Promise<void> {

@@ -48,4 +48,9 @@ class Deal extends Model
     {
         return $this->belongsTo(DealGroup::class, 'group_id');
     }
+
+    public function notes()
+    {
+        return $this->hasMany(DealNote::class)->orderBy('created_at', 'desc');
+    }
 }

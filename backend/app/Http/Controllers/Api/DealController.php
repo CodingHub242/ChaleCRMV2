@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\ScopesByOrganization;
 use App\Models\Deal;
+use App\Models\DealNote;
 use App\Models\Activity;
 use Illuminate\Http\Request;
 
@@ -327,6 +328,113 @@ class DealController extends Controller
             'subject_id' => $dealId,
             'user_id' => auth()->id(),
             'activity_date' => now(),
+        ]);
+    }
+
+    /**
+     * Get all notes for a deal
+     */
+    public function getDealNotes(int $id)
+    {
+        $organizationId = $this->getOrganizationId();
+        
+        $deal = Deal::query();
+        if ($organizationId) {
+            $deal = $deal->where('organization_id', $organizationId);
+        }
+        $deal = $deal->findOrFail($id);
+
+        $notes = $deal->notes()->with('user')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $notes
+        ]);
+    }
+
+    /**
+     * Add a note to a deal
+     */
+    public function addDealNote(Request $request, int $id)
+    {
+        $organizationId = $this->getOrganizationId();
+        
+        $deal = Deal::query();
+        if ($organizationId) {
+            $deal = $deal->where('organization_id', $organizationId);
+        }
+        $deal = $deal->findOrFail($id);
+
+        $request->validate([
+            'content' => 'required|string'
+        ]);
+
+        $note = DealNote::create([
+            'deal_id' => $deal->id,
+            'user_id' => auth()->id(),
+            'content' => $request->content
+        ]);
+
+        $note->load('user');
+
+        return response()->json([
+            'success' => true,
+            'data' => $note,
+            'message' => 'Note added successfully'
+        ]);
+    }
+
+    /**
+     * Update a deal note
+     */
+    public function updateDealNote(Request $request, int $id, int $noteId)
+    {
+        $organizationId = $this->getOrganizationId();
+        
+        $deal = Deal::query();
+        if ($organizationId) {
+            $deal = $deal->where('organization_id', $organizationId);
+        }
+        $deal = $deal->findOrFail($id);
+
+        $note = DealNote::where('deal_id', $deal->id)->findOrFail($noteId);
+
+        $request->validate([
+            'content' => 'required|string'
+        ]);
+
+        $note->update([
+            'content' => $request->content
+        ]);
+
+        $note->load('user');
+
+        return response()->json([
+            'success' => true,
+            'data' => $note,
+            'message' => 'Note updated successfully'
+        ]);
+    }
+
+    /**
+     * Delete a deal note
+     */
+    public function deleteDealNote(int $id, int $noteId)
+    {
+        $organizationId = $this->getOrganizationId();
+        
+        $deal = Deal::query();
+        if ($organizationId) {
+            $deal = $deal->where('organization_id', $organizationId);
+        }
+        $deal = $deal->findOrFail($id);
+
+        $note = DealNote::where('deal_id', $deal->id)->findOrFail($noteId);
+        $note->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Note deleted successfully'
         ]);
     }
 }

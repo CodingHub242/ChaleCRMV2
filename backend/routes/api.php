@@ -155,6 +155,12 @@ Route::patch('deals/bulk-update-stage', [App\Http\Controllers\Api\DealController
 Route::post('deals/bulk-delete', [App\Http\Controllers\Api\DealController::class, 'bulkDelete']);
 Route::apiResource('deals', App\Http\Controllers\Api\DealController::class);
 
+// Deal Notes
+Route::get('deals/{id}/notes', [App\Http\Controllers\Api\DealController::class, 'getDealNotes']);
+Route::post('deals/{id}/notes', [App\Http\Controllers\Api\DealController::class, 'addDealNote']);
+Route::put('deals/{id}/notes/{noteId}', [App\Http\Controllers\Api\DealController::class, 'updateDealNote']);
+Route::delete('deals/{id}/notes/{noteId}', [App\Http\Controllers\Api\DealController::class, 'deleteDealNote']);
+
 // Deal Groups (for Sales Pipeline)
 Route::apiResource('deal-groups', App\Http\Controllers\Api\DealGroupController::class);
 Route::get('deal-groups/{id}/stage-counts', [App\Http\Controllers\Api\DealGroupController::class, 'stageCounts']);

@@ -333,6 +333,27 @@ export class ApiService {
     return this.http.post<ApiResponse<any>>(`${this.baseUrl}/deals/bulk-delete`, this.addOrganizationToBody({ ids }));
   }
 
+  // Deal Notes
+  getDealNotes(dealId: number): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    httpParams = this.addOrganizationParams(httpParams);
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/deals/${dealId}/notes`, { params: httpParams });
+  }
+
+  addDealNote(dealId: number, content: string): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/deals/${dealId}/notes`, this.addOrganizationToBody({ content }));
+  }
+
+  updateDealNote(dealId: number, noteId: number, content: string): Observable<ApiResponse<any>> {
+    return this.http.put<ApiResponse<any>>(`${this.baseUrl}/deals/${dealId}/notes/${noteId}`, this.addOrganizationToBody({ content }));
+  }
+
+  deleteDealNote(dealId: number, noteId: number): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    httpParams = this.addOrganizationParams(httpParams);
+    return this.http.delete<ApiResponse<any>>(`${this.baseUrl}/deals/${dealId}/notes/${noteId}`, { params: httpParams });
+  }
+
   // Tasks
   getTasks(params?: { page?: number; per_page?: number; status?: string; assigned_to?: number }): Observable<PaginatedResponse<Task>> {
     let httpParams = new HttpParams();
