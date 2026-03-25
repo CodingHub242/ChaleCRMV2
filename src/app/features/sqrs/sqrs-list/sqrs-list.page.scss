@@ -244,15 +244,16 @@
   gap: 8px;
 }
 
-// Vertical Divider
+// Vertical Divider - Enhanced to match Zoho Bigin style
 .column-divider {
-  width: 1px;
-  background: #e9ecef;
+  width: 2px;
+  background: #d1d5db;
   margin: 8px 0;
   flex-shrink: 0;
+  border-left: 1px dashed #9ca3af;
 }
 
-// SQR Card
+// SQR Card - Enhanced to match Zoho Bigin style
 .sqr-card {
   background: white;
   border-radius: 8px;
@@ -261,15 +262,17 @@
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
-  border: 2px solid transparent;
+  border: 1px solid #e5e7eb;
   
   &:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     transform: translateY(-1px);
+    border-color: #9ca3af;
   }
   
   &.selected {
     border-color: #073336;
+    border-width: 2px;
     background: #f0f7f7;
   }
 }
@@ -279,6 +282,19 @@
   top: 8px;
   right: 8px;
   z-index: 10;
+  --size: 20px;
+  
+  ion-checkbox {
+    --checkbox-size: 18px;
+    --checkbox-background: #f8f9fa;
+    --checkbox-border-color: #ced4da;
+    --checkbox-border-radius: 4px;
+    
+    &.checkbox-checked {
+      --checkbox-background: #073336;
+      --checkbox-border-color: #073336;
+    }
+  }
 }
 
 .card-header {
