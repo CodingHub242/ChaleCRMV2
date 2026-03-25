@@ -355,13 +355,17 @@ class SqrController extends Controller
      */
     private function logActivity(int $sqrId, string $type, string $description): void
     {
+        $userName = auth()->user()->name ?? 'Unknown User';
+        $fullDescription = $userName . ' ' . $description;
+        
         \App\Models\Activity::create([
             'organization_id' => $this->getOrganizationId(),
             'activity_type' => $type,
-            'description' => $description,
-            'related_to_type' => 'sqr',
-            'related_to_id' => $sqrId,
+            'description' => $fullDescription,
+            'subject_type' => 'sqr',
+            'subject_id' => $sqrId,
             'user_id' => auth()->id(),
+            'activity_date' => now(),
         ]);
     }
 }
