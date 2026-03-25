@@ -479,7 +479,7 @@ export class DealsListPage implements OnInit {
   getDealsByStage(stage: string): Deal[] {
     // For Prospect stage, also include deals with stage = 'New'
     if (stage === 'Prospect') {
-      return this.deals.filter(deal => deal.stage === 'Prospect' || deal.stage === 'New' || !deal.stage);
+      return this.deals.filter(deal => deal.stage === 'Prospect' || deal.stage === 'New' || deal.stage === 'Prospect Client' || !deal.stage);
     }
     return this.deals.filter(deal => deal.stage === stage);
   }
