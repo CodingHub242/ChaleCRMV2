@@ -38,7 +38,7 @@
     <div class="profile-header">
       <div class="avatar-upload" (click)="triggerFileInput()">
         <ion-avatar class="large-avatar">
-          <img *ngIf="profileAvatar" [src]="'https://expiry.codepps.online/' + profileAvatar" alt="Profile">
+          <img *ngIf="profileAvatar" [src]="'https://expiry.codepps.online' + profileAvatar" alt="Profile">
           <div class="avatar-placeholder" *ngIf="!profileAvatar">{{ userInitials }}</div>
         </ion-avatar>
         <div class="upload-overlay">
