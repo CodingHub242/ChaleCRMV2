@@ -36,13 +36,20 @@
   <!-- Profile Settings -->
   <div *ngIf="selectedSegment === 'profile'" class="settings-section">
     <div class="profile-header">
-      <ion-avatar class="large-avatar">
-        <div class="avatar-placeholder">{{ userInitials }}</div>
-      </ion-avatar>
+      <div class="avatar-upload" (click)="triggerFileInput()">
+        <ion-avatar class="large-avatar">
+          <img *ngIf="profileAvatar" [src]="profileAvatar" alt="Profile">
+          <div class="avatar-placeholder" *ngIf="!profileAvatar">{{ userInitials }}</div>
+        </ion-avatar>
+        <div class="upload-overlay">
+          <ion-icon name="camera-outline"></ion-icon>
+        </div>
+      </div>
       <p class="role-badge" *ngIf="currentUser?.role">
         <ion-icon name="shield-outline"></ion-icon>
         {{ currentUser?.role | titlecase }}
       </p>
+      <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" style="display: none;">
     </div>
 
     <form (ngSubmit)="saveProfile()">

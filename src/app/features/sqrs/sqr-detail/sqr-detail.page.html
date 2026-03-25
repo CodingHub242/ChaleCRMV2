@@ -152,7 +152,7 @@
           
           <div class="info-row" *ngIf="sqr.creator">
             <span class="label">Created By</span>
-            <span class="value">{{ sqr.creator.name }}</span>
+            <span class="value">{{ sqr.creator?.name }}</span>
           </div>
           
           <div class="info-row" *ngIf="sqr.updated_at">
@@ -162,7 +162,7 @@
           
           <div class="info-row" *ngIf="sqr.updater">
             <span class="label">Updated By</span>
-            <span class="value">{{ sqr.updater.name }}</span>
+            <span class="value">{{ sqr.updater?.name }}</span>
           </div>
           
           <div class="info-row" *ngIf="sqr.resolved_at">
@@ -186,12 +186,12 @@
           </div>
           <div class="assignee-info" *ngIf="sqr.assignee">
             <div class="avatar">
-              <img *ngIf="sqr.assignee.avatar" [src]="sqr.assignee.avatar" [alt]="sqr.assignee.name">
-              <span *ngIf="!sqr.assignee.avatar">{{ sqr.assignee.name?.charAt(0) || '?' }}</span>
+              <img *ngIf="sqr.assignee?.avatar" [src]="sqr.assignee?.avatar" [alt]="sqr.assignee?.name">
+              <span *ngIf="!sqr.assignee?.avatar">{{ sqr.assignee?.name?.charAt(0) || '?' }}</span>
             </div>
             <div class="info">
-              <div class="name">{{ sqr.assignee.name }}</div>
-              <div class="subtitle">{{ sqr.assignee.role || 'User' }}</div>
+              <div class="name">{{ sqr.assignee?.name }}</div>
+              <div class="subtitle">{{ sqr.assignee?.role || 'User' }}</div>
             </div>
           </div>
           <div class="owner-info" *ngIf="sqr.owner && !sqr.assignee">
@@ -199,7 +199,7 @@
               {{ sqr.owner.name?.charAt(0) || '?' }}
             </div>
             <div class="info">
-              <div class="name">{{ sqr.owner.name }}</div>
+              <div class="name">{{ sqr.owner?.name }}</div>
               <div class="subtitle">Owner</div>
             </div>
           </div>
@@ -280,7 +280,7 @@
                 <div class="note-item" *ngFor="let note of sqrNotes">
                   <div class="note-header">
                     <div class="note-avatar" *ngIf="note.user?.avatar">
-                      <img [src]="note.user.avatar" [alt]="note.user.name">
+                      <img [src]="note.user?.avatar" [alt]="note.user?.name">
                     </div>
                     <div class="note-avatar initials" *ngIf="!note.user?.avatar">
                       {{ getUserInitials(note.user) }}

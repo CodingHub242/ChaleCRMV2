@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { 
@@ -19,7 +19,7 @@ import {
   IonSpinner
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { personOutline, businessOutline, saveOutline, shieldOutline, lockClosedOutline } from 'ionicons/icons';
+import { personOutline, businessOutline, saveOutline, shieldOutline, lockClosedOutline, cameraOutline } from 'ionicons/icons';
 import { AuthService } from '../../../core/services/auth.service';
 import { ApiService } from '../../../core/services/api.service';
 import { User, Organization } from '../../../models';
@@ -50,6 +50,8 @@ import { User, Organization } from '../../../models';
   ]
 })
 export class SettingsPage implements OnInit {
+  @ViewChild('fileInput') fileInput!: ElementRef;
+
   selectedSegment = 'profile';
   isLoading = false;
   public isSaving = false;
@@ -82,7 +84,7 @@ export class SettingsPage implements OnInit {
     public authService: AuthService,
     public apiService: ApiService
   ) {
-    addIcons({ personOutline, businessOutline, saveOutline, shieldOutline, lockClosedOutline });
+    addIcons({ personOutline, businessOutline, saveOutline, shieldOutline, lockClosedOutline, cameraOutline });
   }
 
   ngOnInit(): void {
@@ -123,10 +125,15 @@ export class SettingsPage implements OnInit {
     this.successMessage = '';
     this.errorMessage = '';
 
-    const data = {
+    const data: any = {
       name: this.profileName,
       phone: this.profilePhone || undefined
     };
+
+    // Include avatar if it's a data URL (newly uploaded)
+    if (this.profileAvatar && this.profileAvatar.startsWith('data:')) {
+      data.avatar = this.profileAvatar;
+    }
 
     this.authService.updateProfile(data).subscribe({
       next: (response) => {
@@ -242,5 +249,36 @@ export class SettingsPage implements OnInit {
 
   get userInitials(): string {
     return this.profileName?.charAt(0).toUpperCase() || 'U';
+  }
+
+  triggerFileInput(): void {
+    this.fileInput.nativeElement.click();
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        this.errorMessage = 'Please select an image file';
+        return;
+      }
+
+      // Validate file size (max 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        this.errorMessage = 'Image size must be less than 2MB';
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.profileAvatar = e.target?.result as string;
+        // Auto-save the avatar
+        this.saveProfile();
+      };
+      reader.readAsDataURL(file);
+    }
   }
 }
