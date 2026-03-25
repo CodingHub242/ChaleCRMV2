@@ -175,8 +175,8 @@ export class DealsListPage implements OnInit {
       }
     }
 
-    // Build params
-    const params: any = { 
+    // Build params for count request
+    const countParams: any = { 
       page: 1, 
       per_page: 1,
       search: this.searchQuery,
@@ -185,14 +185,23 @@ export class DealsListPage implements OnInit {
 
     // Add group_id if a group is selected
     if (this.selectedGroupId) {
-      params.group_id = this.selectedGroupId;
+      countParams.group_id = this.selectedGroupId;
     }
 
     // First, get total count to know how many pages to fetch
-    this.api.getDeals(params).subscribe({
+    this.api.getDeals(countParams).subscribe({
       next: (response) => {
-        // Get total count from response
-        const total = response.total || 0;
+        // Get total count - check data array or root-level total
+        let total = 0;
+        if (response.data && response.data.length > 0) {
+          // Response has data in data array
+          total = response.total || 0;
+        } else if (response.total !== undefined) {
+          total = response.total;
+        } else if (Array.isArray(response)) {
+          // Response might be an array directly
+          total = response.length;
+        }
         
         if (total === 0) {
           this.deals = [];
@@ -222,7 +231,7 @@ export class DealsListPage implements OnInit {
           promises.push(
             new Promise((resolve) => {
               this.api.getDeals(pageParams).subscribe({
-                next: (res) => resolve(res.data),
+                next: (res) => resolve(res.data || []),
                 error: () => resolve([])
               });
             })
