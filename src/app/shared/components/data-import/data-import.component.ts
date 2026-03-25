@@ -105,7 +105,11 @@ export class DataImportComponent implements OnInit {
       { key: 'probability', label: 'Probability', type: 'number' },
       { key: 'expected_close_date', label: 'Expected Close Date', type: 'date' },
       { key: 'contact_id', label: 'Contact ID', type: 'number' },
+      { key: 'contact_name', label: 'Contact Name', type: 'text' },
       { key: 'company_id', label: 'Company ID', type: 'number' },
+      { key: 'company_name', label: 'Company Name', type: 'text' },
+      { key: 'assigned_to', label: 'Assigned To (User ID)', type: 'number' },
+      { key: 'assigned_to_name', label: 'Assigned To (Name)', type: 'text' },
       { key: 'description', label: 'Description', type: 'textarea' },
       { key: 'group_name', label: 'Group Name', type: 'text' }
     ],
@@ -137,6 +141,9 @@ export class DataImportComponent implements OnInit {
     this.initializeMappings();
     if (this.entityType === 'deal') {
       this.loadGroups();
+      this.loadContactsForLookup();
+      this.loadCompaniesForLookup();
+      this.loadUsersForLookup();
     }
     if (this.entityType === 'sqr') {
       this.loadContactsForLookup();
@@ -414,6 +421,32 @@ export class DataImportComponent implements OnInit {
           );
         }
         
+        // For contact_name in deals, also try common variations
+        if (field.key === 'contact_name' && this.entityType === 'deal') {
+          possibleHeaders.push(
+            'contact',
+            'contact name',
+            'contactname',
+            'contactfullname',
+            'full name',
+            'fullname',
+            'person'
+          );
+        }
+        
+        // For company_name in deals, also try common variations
+        if (field.key === 'company_name' && this.entityType === 'deal') {
+          possibleHeaders.push(
+            'company',
+            'company name',
+            'companyname',
+            'account',
+            'account name',
+            'organization',
+            'org'
+          );
+        }
+        
         for (const header of this.headers) {
           const lowerHeader = header.toLowerCase().replace(/[\s_]/g, '');
           
@@ -538,6 +571,132 @@ export class DataImportComponent implements OnInit {
         } else if (this.selectedGroupId) {
           // Use selected default group
           record.group_id = this.selectedGroupId;
+        }
+        
+        // Map common stage variations to valid Deal stage values
+        const stageMapping: { [key: string]: string } = {
+          'prospect': 'Prospect',
+          'prospecting': 'Prospect',
+          'new': 'Prospect',
+          'new lead': 'Prospect',
+          'lead': 'Prospect',
+          'client': 'Client',
+          'customer': 'Client',
+          'qualified': 'Client',
+          'demo': 'Demo Requested',
+          'demo requested': 'Demo Requested',
+          'demo request': 'Demo Requested',
+          'demo done': 'Demo Completed',
+          'demo completed': 'Demo Completed',
+          'presentation': 'Demo Completed',
+          'contract': 'Contract In-Review',
+          'contract in-review': 'Contract In-Review',
+          'contract in review': 'Contract In-Review',
+          'contract review': 'Contract In-Review',
+          'in review': 'Contract In-Review',
+          'won': 'Closed Won',
+          'closed won': 'Closed Won',
+          'success': 'Closed Won',
+          'lost': 'Closed Lost',
+          'closed lost': 'Closed Lost',
+          'failed': 'Closed Lost',
+          'declined': 'Closed Lost'
+        };
+
+        if (record.stage) {
+          const normalizedStage = record.stage.toString().toLowerCase().trim();
+          record.stage = stageMapping[normalizedStage] || record.stage;
+        } else {
+          record.stage = 'Prospect'; // Default stage
+        }
+
+        // Handle contact_name -> contact_id lookup (only if contact_id not already set)
+        const contactNameField = this.fieldMappings.find(m => m.appField === 'contact_name');
+        if (contactNameField?.excelColumn && row[contactNameField.excelColumn] && !record.contact_id) {
+          const contactName = row[contactNameField.excelColumn].toString().trim().toLowerCase();
+          const nameParts = contactName.split(' ');
+          
+          // Try exact match first
+          let foundId = this.contactsMap[contactName];
+          
+          // If no exact match, try partial match
+          if (!foundId) {
+            for (const part of nameParts) {
+              if (part.length > 2) {
+                foundId = this.contactsMap[part];
+                if (foundId) break;
+              }
+            }
+          }
+          
+          // Try matching by first name + last name combination
+          if (!foundId && nameParts.length >= 2) {
+            const firstLast = `${nameParts[0]} ${nameParts[nameParts.length - 1]}`;
+            foundId = this.contactsMap[firstLast];
+          }
+          
+          if (foundId) {
+            record.contact_id = foundId;
+          }
+        }
+
+        // Handle company_name -> company_id lookup (only if company_id not already set)
+        const companyNameField = this.fieldMappings.find(m => m.appField === 'company_name');
+        if (companyNameField?.excelColumn && row[companyNameField.excelColumn] && !record.company_id) {
+          const companyName = row[companyNameField.excelColumn].toString().trim().toLowerCase();
+          const foundId = this.companiesMap[companyName];
+          if (foundId) {
+            record.company_id = foundId;
+          }
+        }
+
+        // Handle assigned_to_name -> assigned_to lookup
+        const assignedToNameField = this.fieldMappings.find(m => m.appField === 'assigned_to_name');
+        const assignedToValue = assignedToNameField?.excelColumn ? row[assignedToNameField.excelColumn] : null;
+        
+        if (assignedToNameField?.excelColumn && assignedToValue && !record.assigned_to) {
+          const userName = assignedToValue.toString().trim();
+          const userNameLower = userName.toLowerCase();
+          
+          // Try exact match
+          let foundId = this.usersMap[userNameLower];
+          
+          // Try partial match
+          if (!foundId) {
+            const nameParts = userNameLower.split(' ');
+            for (const part of nameParts) {
+              if (part.length > 2) {
+                foundId = this.usersMap[part];
+                if (foundId) break;
+              }
+            }
+          }
+          
+          // Try email match
+          if (!foundId && userNameLower.includes('@')) {
+            foundId = this.usersMap[userNameLower];
+          }
+          
+          if (foundId) {
+            record.assigned_to = foundId;
+          }
+        }
+
+        // Ensure IDs are numbers
+        if (record.contact_id && record.contact_id > 0) {
+          record.contact_id = parseInt(record.contact_id, 10);
+        } else {
+          delete record.contact_id;
+        }
+        if (record.company_id && record.company_id > 0) {
+          record.company_id = parseInt(record.company_id, 10);
+        } else {
+          delete record.company_id;
+        }
+        if (record.assigned_to && record.assigned_to > 0) {
+          record.assigned_to = parseInt(record.assigned_to, 10);
+        } else {
+          delete record.assigned_to;
         }
       }
 

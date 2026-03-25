@@ -142,7 +142,7 @@
           </ion-checkbox>
           <ion-icon name="person-outline" class="column-icon stage-prospect"></ion-icon>
           <span class="column-title">Prospect</span>
-          <span class="column-count">{{ getDealsByStage('Prospect').length }}</span>
+          <span class="column-count">{{ getDealsByStage('Prospect' || 'New').length }}</span>
         </div>
         <div class="column-content">
           <div 
