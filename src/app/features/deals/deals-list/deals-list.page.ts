@@ -175,9 +175,10 @@ export class DealsListPage implements OnInit {
       }
     }
 
+    // Build params
     const params: any = { 
-      page: this.currentPage, 
-      per_page: 100, // Load more records for Kanban view
+      page: 1, 
+      per_page: 1,
       search: this.searchQuery,
       stage: stageParam
     };
@@ -187,17 +188,62 @@ export class DealsListPage implements OnInit {
       params.group_id = this.selectedGroupId;
     }
 
+    // First, get total count to know how many pages to fetch
     this.api.getDeals(params).subscribe({
       next: (response) => {
-        if (loadMore) {
-          this.deals = [...this.deals, ...response.data];
-        } else {
-          this.deals = response.data;
-          this.totalDeals = response.total || 0;
+        // Get total count from response
+        const total = response.total || 0;
+        
+        if (total === 0) {
+          this.deals = [];
+          this.isLoading = false;
+          this.hasMore = false;
+          this.totalDeals = 0;
+          return;
         }
-        this.calculateTotal();
-        this.hasMore = response.current_page < response.last_page;
-        this.isLoading = false;
+        
+        // Calculate how many pages we need
+        const perPage = 100;
+        const totalPages = Math.ceil(total / perPage);
+        
+        // Fetch all pages
+        const promises: Promise<any>[] = [];
+        for (let page = 1; page <= totalPages; page++) {
+          const pageParams: any = { 
+            page: page, 
+            per_page: perPage,
+            search: this.searchQuery,
+            stage: stageParam
+          };
+          if (this.selectedGroupId) {
+            pageParams.group_id = this.selectedGroupId;
+          }
+          
+          promises.push(
+            new Promise((resolve) => {
+              this.api.getDeals(pageParams).subscribe({
+                next: (res) => resolve(res.data),
+                error: () => resolve([])
+              });
+            })
+          );
+        }
+        
+        Promise.all(promises).then((results) => {
+          // Flatten all results
+          const allDeals: Deal[] = [];
+          results.forEach((pageData: Deal[]) => {
+            if (pageData && pageData.length > 0) {
+              allDeals.push(...pageData);
+            }
+          });
+          
+          this.deals = allDeals;
+          this.totalDeals = total;
+          this.hasMore = false; // No more since we loaded all
+          this.calculateTotal();
+          this.isLoading = false;
+        });
       },
       error: () => {
         this.isLoading = false;

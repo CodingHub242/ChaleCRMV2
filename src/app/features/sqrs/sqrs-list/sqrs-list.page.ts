@@ -136,11 +136,23 @@ export class SqrsListPage implements OnInit {
   scrollKanban(direction: 'left' | 'right'): void {
     const kanbanContainer = document.querySelector('.kanban-container') as HTMLElement;
     if (kanbanContainer) {
+      // Use scrollLeft instead of scrollBy for better control
       const scrollAmount = 300;
       if (direction === 'left') {
         kanbanContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
       } else {
         kanbanContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      }
+    } else {
+      // Fallback: try scrolling the content element
+      const content = document.querySelector('ion-content') as HTMLElement;
+      if (content) {
+        const scrollAmount = 300;
+        if (direction === 'left') {
+          content.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        } else {
+          content.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
       }
     }
   }
@@ -262,25 +274,64 @@ export class SqrsListPage implements OnInit {
       }
     }
 
-    // For Kanban view, load all records without pagination to display in correct columns
+    // First, get total count to know how many pages to fetch
     this.api.getSqrs({ 
       page: 1, 
-      per_page: 100, // Load more records for Kanban view
+      per_page: 1,
       search: this.searchQuery,
       status: statusParam
     }).subscribe({
       next: (response) => {
-        if (loadMore) {
-          this.sqrs = [...this.sqrs, ...response.data];
-        } else {
-          this.sqrs = response.data;
-        }
-        // Use meta if available, otherwise use root-level properties
+        // Get total count from response
         const meta = response.meta;
-        this.hasMore = meta ? meta.current_page < meta.last_page : response.current_page < response.last_page;
-        this.totalItems = meta ? meta.total : response.total;
-        this.lastPage = meta ? meta.last_page : response.last_page;
-        this.isLoading = false;
+        const total = meta ? meta.total : response.total;
+        
+        if (total === 0) {
+          this.sqrs = [];
+          this.isLoading = false;
+          this.hasMore = false;
+          this.totalItems = 0;
+          this.lastPage = 1;
+          return;
+        }
+        
+        // Calculate how many pages we need
+        const perPage = 100;
+        const totalPages = Math.ceil(total / perPage);
+        
+        // Fetch all pages
+        const promises: Promise<any>[] = [];
+        for (let page = 1; page <= totalPages; page++) {
+          promises.push(
+            new Promise((resolve) => {
+              this.api.getSqrs({ 
+                page: page, 
+                per_page: perPage,
+                search: this.searchQuery,
+                status: statusParam
+              }).subscribe({
+                next: (res) => resolve(res.data),
+                error: () => resolve([])
+              });
+            })
+          );
+        }
+        
+        Promise.all(promises).then((results) => {
+          // Flatten all results
+          const allSqrs: Sqr[] = [];
+          results.forEach((pageData: Sqr[]) => {
+            if (pageData && pageData.length > 0) {
+              allSqrs.push(...pageData);
+            }
+          });
+          
+          this.sqrs = allSqrs;
+          this.totalItems = total;
+          this.lastPage = totalPages;
+          this.hasMore = false; // No more since we loaded all
+          this.isLoading = false;
+        });
       },
       error: () => {
         this.isLoading = false;
