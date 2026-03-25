@@ -547,6 +547,57 @@
         font-size: 14px;
       }
     }
+     .note-meta {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      
+      .note-author {
+        font-weight: 600;
+        color: #1a1a2e;
+        font-size: 13px;
+      }
+      
+      .note-date {
+        font-size: 11px;
+        color: #999;
+      }
+    }
+    
+    .delete-note-btn {
+      --color: #999;
+      --padding-start: 4px;
+      --padding-end: 4px;
+      
+      &:hover {
+        --color: #f44336;
+      }
+    }
+  
+  
+  .note-content {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+  
+  .empty-notes {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+    
+    ion-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      color: #ccc;
+    }
+    
+    p {
+      margin: 0;
+      font-size: 14px;
+    }
+  }
 .add-note {
   background: #fff;
   border-radius: 12px;
