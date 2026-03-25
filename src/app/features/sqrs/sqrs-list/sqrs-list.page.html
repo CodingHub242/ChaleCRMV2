@@ -36,7 +36,7 @@
 
   <!-- Tabs -->
   <ion-toolbar class="tabs-toolbar">
-    <div class="tabs-container">
+    <div class="tabs-container" #tabsContainer>
       <div 
         *ngFor="let tab of tabs" 
         class="tab-item" 
@@ -46,6 +46,15 @@
         <span class="tab-label">{{ tab.label }}</span>
         <span class="tab-count">{{ tab.count }}</span>
       </div>
+    </div>
+    <!-- Scroll Buttons -->
+    <div class="scroll-buttons" *ngIf="tabsScrollable">
+      <ion-button fill="clear" class="scroll-btn" (click)="scrollTabs('left')">
+        <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" class="scroll-btn" (click)="scrollTabs('right')">
+        <ion-icon slot="icon-only" name="chevron-forward"></ion-icon>
+      </ion-button>
     </div>
   </ion-toolbar>
 </ion-header>
@@ -393,5 +402,16 @@
         loading-text="Loading more...">
       </ion-infinite-scroll-content>
     </ion-infinite-scroll>
+  </div>
+  
+  <!-- Horizontal Scroll Controls for Kanban -->
+  <div class="kanban-scroll-controls" *ngIf="sqrs.length > 0">
+    <ion-button fill="clear" class="scroll-btn" (click)="scrollKanban('left')">
+      <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
+    </ion-button>
+    <span class="scroll-indicator">Scroll to view more stages</span>
+    <ion-button fill="clear" class="scroll-btn" (click)="scrollKanban('right')">
+      <ion-icon slot="icon-only" name="chevron-forward"></ion-icon>
+    </ion-button>
   </div>
 </ion-content>

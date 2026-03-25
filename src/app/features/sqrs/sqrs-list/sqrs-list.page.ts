@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, SearchbarCustomEvent, AlertController, ModalController } from '@ionic/angular';
@@ -25,6 +25,8 @@ interface TabCount {
   styleUrls: ['./sqrs-list.page.scss']
 })
 export class SqrsListPage implements OnInit {
+  @ViewChild('tabsContainer') tabsContainer!: ElementRef;
+
   sqrs: Sqr[] = [];
   isLoading = true;
   searchQuery = '';
@@ -34,6 +36,10 @@ export class SqrsListPage implements OnInit {
   lastPage = 1;
   statusFilter = '';
   activeTab = 'all';
+  
+  // Scroll state
+  tabsScrollable = false;
+  kanbanScrollable = false;
 
   // Selection tracking
   selectedIds = new Set<number>();
@@ -93,6 +99,49 @@ export class SqrsListPage implements OnInit {
   ngOnInit(): void {
     this.loadSqrCounts();
     this.loadSqrs();
+    // Check for scrollability after view is initialized
+    setTimeout(() => this.checkScrollability(), 500);
+  }
+
+  // Check if tabs and kanban are scrollable
+  checkScrollability(): void {
+    if (this.tabsContainer) {
+      const el = this.tabsContainer.nativeElement;
+      this.tabsScrollable = el.scrollWidth > el.clientWidth;
+    }
+    
+    // Check kanban scrollability
+    const kanbanBoard = document.querySelector('.kanban-board') as HTMLElement;
+    const kanbanContainer = document.querySelector('.kanban-container') as HTMLElement;
+    if (kanbanBoard && kanbanContainer) {
+      this.kanbanScrollable = kanbanBoard.scrollWidth > kanbanContainer.clientWidth;
+    }
+  }
+
+  // Scroll tabs horizontally
+  scrollTabs(direction: 'left' | 'right'): void {
+    if (this.tabsContainer) {
+      const el = this.tabsContainer.nativeElement;
+      const scrollAmount = 150;
+      if (direction === 'left') {
+        el.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      }
+    }
+  }
+
+  // Scroll kanban board horizontally
+  scrollKanban(direction: 'left' | 'right'): void {
+    const kanbanContainer = document.querySelector('.kanban-container') as HTMLElement;
+    if (kanbanContainer) {
+      const scrollAmount = 300;
+      if (direction === 'left') {
+        kanbanContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+      } else {
+        kanbanContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      }
+    }
   }
 
   // Selection methods
