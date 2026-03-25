@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule, AlertController, ModalController } from '@ionic/angular';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
-import { Sqr, Contact, Company, Activity } from '../../../models';
+import { Sqr, Contact, Company, Activity, SqrNote } from '../../../models';
 import { addIcons } from 'ionicons';
 import { 
   warning, alertCircle, person, business, add, chevronBack, chevronDown, linkOutline,
@@ -53,6 +53,8 @@ export class SqrDetailPage implements OnInit {
   // Notes
   notes: string = '';
   isSavingNote = false;
+  sqrNotes: SqrNote[] = [];
+  isLoadingNotes = true;
 
   // Activities
   activities: Activity[] = [];
@@ -203,6 +205,8 @@ export class SqrDetailPage implements OnInit {
       this.loadActivities();
     } else if (tabKey === 'emails') {
       this.loadEmails();
+    } else if (tabKey === 'notes' && this.sqrNotes.length === 0) {
+      this.loadNotes();
     }
   }
 
@@ -246,26 +250,67 @@ export class SqrDetailPage implements OnInit {
     
     this.isSavingNote = true;
     
-    // For now, we'll just save the note as part of the description
-    if (this.sqr) {
-      const updateData = {
-        ...this.sqr,
-        description: (this.sqr.description || '') + '\n\n--- Note ---\n' + this.notes
-      };
-      
-      this.api.updateSqr(this.sqrId!, updateData as any).subscribe({
-        next: (response) => {
-          this.isSavingNote = false;
-          if (response.success) {
-            this.notes = '';
-            this.loadTimeline();
-          }
-        },
-        error: () => {
-          this.isSavingNote = false;
+    // Use the new notes API
+    this.api.addSqrNote(this.sqrId!, this.notes).subscribe({
+      next: (response) => {
+        this.isSavingNote = false;
+        if (response.success) {
+          this.notes = '';
+          this.loadNotes(); // Reload notes
         }
-      });
+      },
+      error: () => {
+        this.isSavingNote = false;
+      }
+    });
+  }
+
+  loadNotes(): void {
+    if (!this.sqrId) return;
+    
+    this.isLoadingNotes = true;
+    this.api.getSqrNotes(this.sqrId).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.sqrNotes = response.data;
+        }
+        this.isLoadingNotes = false;
+      },
+      error: () => {
+        this.isLoadingNotes = false;
+      }
+    });
+  }
+
+  async deleteNote(noteId: number): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Delete Note',
+      message: 'Are you sure you want to delete this note?',
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Delete',
+          role: 'destructive',
+          handler: () => {
+            this.api.deleteSqrNote(this.sqrId!, noteId).subscribe({
+              next: () => {
+                this.loadNotes();
+              }
+            });
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  getUserInitials(user: any): string {
+    if (!user?.name) return '?';
+    const parts = user.name.split(' ');
+    if (parts.length >= 2) {
+      return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
     }
+    return user.name.substring(0, 2).toUpperCase();
   }
 
   async editSqr(): Promise<void> {

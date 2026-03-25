@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\ScopesByOrganization;
 use App\Models\Sqr;
+use App\Models\SqrNote;
 use Illuminate\Http\Request;
 
 class SqrController extends Controller
@@ -200,6 +201,133 @@ class SqrController extends Controller
             'success' => true,
             'data' => $sqr->load(['contact', 'company', 'assignee', 'owner', 'creator', 'updater']),
             'message' => 'SQR updated successfully'
+        ]);
+    }
+
+    /**
+     * Get all notes for a specific SQR
+     */
+    public function getNotes(int $id)
+    {
+        $organizationId = $this->getOrganizationId();
+        
+        $sqr = Sqr::query();
+        if ($organizationId) {
+            $sqr = $sqr->where('organization_id', $organizationId);
+        }
+        $sqr = $sqr->findOrFail($id);
+        
+        $notes = $sqr->notes()->with('user:id,name,avatar')->get();
+        
+        return response()->json([
+            'success' => true,
+            'data' => $notes
+        ]);
+    }
+
+    /**
+     * Add a new note to a specific SQR
+     */
+    public function addNote(Request $request, int $id)
+    {
+        $organizationId = $this->getOrganizationId();
+        
+        $sqr = Sqr::query();
+        if ($organizationId) {
+            $sqr = $sqr->where('organization_id', $organizationId);
+        }
+        $sqr = $sqr->findOrFail($id);
+        
+        $validated = $request->validate([
+            'content' => 'required|string|max:5000',
+        ]);
+        
+        $note = SqrNote::create([
+            'sqr_id' => $sqr->id,
+            'user_id' => auth()->id(),
+            'content' => $validated['content'],
+        ]);
+        
+        // Log activity
+        $this->logActivity($sqr->id, 'note_added', 'added a note');
+        
+        return response()->json([
+            'success' => true,
+            'data' => $note->load('user:id,name,avatar'),
+            'message' => 'Note added successfully'
+        ], 201);
+    }
+
+    /**
+     * Update a specific note
+     */
+    public function updateNote(Request $request, int $id, int $noteId)
+    {
+        $organizationId = $this->getOrganizationId();
+        
+        $sqr = Sqr::query();
+        if ($organizationId) {
+            $sqr = $sqr->where('organization_id', $organizationId);
+        }
+        $sqr = $sqr->findOrFail($id);
+        
+        $note = SqrNote::where('sqr_id', $sqr->id)->findOrFail($noteId);
+        
+        // Only allow the note creator to update their note
+        if ($note->user_id !== auth()->id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You can only edit your own notes'
+            ], 403);
+        }
+        
+        $validated = $request->validate([
+            'content' => 'required|string|max:5000',
+        ]);
+        
+        $note->update($validated);
+        
+        // Log activity
+        $this->logActivity($sqr->id, 'note_updated', 'updated a note');
+        
+        return response()->json([
+            'success' => true,
+            'data' => $note->load('user:id,name,avatar'),
+            'message' => 'Note updated successfully'
+        ]);
+    }
+
+    /**
+     * Delete a specific note
+     */
+    public function deleteNote(int $id, int $noteId)
+    {
+        $organizationId = $this->getOrganizationId();
+        
+        $sqr = Sqr::query();
+        if ($organizationId) {
+            $sqr = $sqr->where('organization_id', $organizationId);
+        }
+        $sqr = $sqr->findOrFail($id);
+        
+        $note = SqrNote::where('sqr_id', $sqr->id)->findOrFail($noteId);
+        
+        // Only allow the note creator or admin to delete
+        if ($note->user_id !== auth()->id() && !auth()->user()->isAdmin()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You can only delete your own notes'
+            ], 403);
+        }
+        
+        $note->delete();
+        
+        // Log activity
+        $this->logActivity($sqr->id, 'note_deleted', 'deleted a note');
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Note deleted successfully'
         ]);
     }
 

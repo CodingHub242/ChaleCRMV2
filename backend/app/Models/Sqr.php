@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Sqr extends Model
 {
@@ -66,5 +67,10 @@ class Sqr extends Model
     public function updater(): BelongsTo
     {
         return $this->belongsTo(ZohoUser::class, 'updated_by');
+    }
+
+    public function notes()
+    {
+        return $this->hasMany(SqrNote::class)->orderBy('created_at', 'desc');
     }
 }

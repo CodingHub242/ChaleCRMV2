@@ -1081,6 +1081,27 @@ export class ApiService {
     return this.http.post<ApiResponse<any>>(`${this.baseUrl}/sqrs/bulk-delete`, this.addOrganizationToBody({ ids }));
   }
 
+  // SQR Notes
+  getSqrNotes(sqrId: number): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    httpParams = this.addOrganizationParams(httpParams);
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/sqrs/${sqrId}/notes`, { params: httpParams });
+  }
+
+  addSqrNote(sqrId: number, content: string): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/sqrs/${sqrId}/notes`, this.addOrganizationToBody({ content }));
+  }
+
+  updateSqrNote(sqrId: number, noteId: number, content: string): Observable<ApiResponse<any>> {
+    return this.http.put<ApiResponse<any>>(`${this.baseUrl}/sqrs/${sqrId}/notes/${noteId}`, this.addOrganizationToBody({ content }));
+  }
+
+  deleteSqrNote(sqrId: number, noteId: number): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    httpParams = this.addOrganizationParams(httpParams);
+    return this.http.delete<ApiResponse<any>>(`${this.baseUrl}/sqrs/${sqrId}/notes/${noteId}`, { params: httpParams });
+  }
+
   // ==================== DEAL GROUPS (Sales Pipeline) ====================
   getDealGroups(): Observable<ApiResponse<any>> {
     let httpParams = new HttpParams();

@@ -131,6 +131,12 @@ Route::patch('sqrs/bulk-update-status', [App\Http\Controllers\Api\SqrController:
 Route::post('sqrs/bulk-delete', [App\Http\Controllers\Api\SqrController::class, 'bulkDelete']);
 Route::apiResource('sqrs', App\Http\Controllers\Api\SqrController::class);
 
+// SQR Notes
+Route::get('sqrs/{id}/notes', [App\Http\Controllers\Api\SqrController::class, 'getNotes']);
+Route::post('sqrs/{id}/notes', [App\Http\Controllers\Api\SqrController::class, 'addNote']);
+Route::put('sqrs/{id}/notes/{noteId}', [App\Http\Controllers\Api\SqrController::class, 'updateNote']);
+Route::delete('sqrs/{id}/notes/{noteId}', [App\Http\Controllers\Api\SqrController::class, 'deleteNote']);
+
 // Email Accounts (IMAP)
 Route::get('email-accounts/default', [App\Http\Controllers\Api\EmailAccountController::class, 'getDefault']);
 Route::post('email-accounts/test', [App\Http\Controllers\Api\EmailAccountController::class, 'testConnection']);

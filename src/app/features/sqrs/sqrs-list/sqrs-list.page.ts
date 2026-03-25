@@ -47,10 +47,10 @@ export class SqrsListPage implements OnInit {
   // Tab configuration with counts
   tabs: TabCount[] = [
     { key: 'all', label: 'All Tickets', icon: 'documents', count: 0, status: '' },
-    { key: 'new', label: 'New', icon: 'alert-circle', count: 0, status: 'Open' },
-    { key: 'in_progress', label: 'In Progress', icon: 'time', count: 0, status: 'In Progress' },
-    { key: 'escalated', label: 'Escalated', icon: 'arrow-up-circle', count: 0, status: 'Escalated' },
-    { key: 'closed', label: 'Closed', icon: 'checkmark-circle', count: 0, status: 'Closed' }
+    // { key: 'new', label: 'New', icon: 'alert-circle', count: 0, status: 'Open' },
+    // { key: 'in_progress', label: 'In Progress', icon: 'time', count: 0, status: 'In Progress' },
+    // { key: 'escalated', label: 'Escalated', icon: 'arrow-up-circle', count: 0, status: 'Escalated' },
+    // { key: 'closed', label: 'Closed', icon: 'checkmark-circle', count: 0, status: 'Closed' }
   ];
 
   // Filter options for dropdown

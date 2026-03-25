@@ -267,12 +267,38 @@
                 </ion-button>
               </div>
               
-              <div class="notes-list" *ngIf="sqr.description">
-                <h4>All Notes</h4>
-                <div class="note-item">
-                  <p>{{ sqr.description }}</p>
-                  <span class="note-date">{{ formatDate(sqr.updated_at) }}</span>
+              <div class="notes-list" *ngIf="isLoadingNotes">
+                <div class="loading">
+                  <ion-spinner name="lines"></ion-spinner>
+                  <p>Loading notes...</p>
                 </div>
+              </div>
+              
+              <div class="notes-list" *ngIf="!isLoadingNotes && sqrNotes.length > 0">
+                <h4>All Notes</h4>
+                <div class="note-item" *ngFor="let note of sqrNotes">
+                  <div class="note-header">
+                    <div class="note-avatar" *ngIf="note.user?.avatar">
+                      <img [src]="note.user.avatar" [alt]="note.user.name">
+                    </div>
+                    <div class="note-avatar initials" *ngIf="!note.user?.avatar">
+                      {{ getUserInitials(note.user) }}
+                    </div>
+                    <div class="note-meta">
+                      <span class="note-author">{{ note.user?.name || 'Unknown' }}</span>
+                      <span class="note-date">{{ formatDate(note.created_at) }}</span>
+                    </div>
+                    <ion-button fill="clear" size="small" class="delete-note-btn" (click)="deleteNote(note.id)">
+                      <ion-icon name="trash-outline"></ion-icon>
+                    </ion-button>
+                  </div>
+                  <p class="note-content">{{ note.content }}</p>
+                </div>
+              </div>
+              
+              <div class="empty-notes" *ngIf="!isLoadingNotes && sqrNotes.length === 0">
+                <ion-icon name="document-text-outline"></ion-icon>
+                <p>No notes yet. Add your first note above.</p>
               </div>
             </div>
           </div>

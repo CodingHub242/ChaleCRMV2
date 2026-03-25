@@ -614,3 +614,18 @@ export interface Sqr {
   updated_at: string;
   ticket_number: string;
 }
+
+// SQR Note Model
+export interface SqrNote {
+  id: number;
+  sqr_id: number;
+  user_id: number;
+  content: string;
+  created_at: string;
+  updated_at: string;
+  user?: {
+    id: number;
+    name: string;
+    avatar?: string;
+  };
+}
