@@ -130,12 +130,10 @@
             *ngFor="let sqr of getSqrsByStatus('Open')" 
             class="sqr-card"
             [class.selected]="selectedIds.has(sqr.id)"
-            (click)="toggleSelection(sqr.id, $event)">
-            <div class="card-checkbox">
+            (click)="onSqrClick(sqr, $event)">
+            <div class="card-checkbox" (click)="$event.stopPropagation(); toggleSelection(sqr.id, $event)">
               <ion-checkbox 
-                [checked]="selectedIds.has(sqr.id)"
-                (ionChange)="toggleSelection(sqr.id, $event)"
-                (click)="$event.stopPropagation()">
+                [checked]="selectedIds.has(sqr.id)">
               </ion-checkbox>
             </div>
             <div class="card-header">
@@ -181,12 +179,10 @@
             *ngFor="let sqr of getSqrsByStatus('In Progress')" 
             class="sqr-card"
             [class.selected]="selectedIds.has(sqr.id)"
-            (click)="toggleSelection(sqr.id, $event)">
-            <div class="card-checkbox">
+            (click)="onSqrClick(sqr, $event)">
+            <div class="card-checkbox" (click)="$event.stopPropagation(); toggleSelection(sqr.id, $event)">
               <ion-checkbox 
-                [checked]="selectedIds.has(sqr.id)"
-                (ionChange)="toggleSelection(sqr.id, $event)"
-                (click)="$event.stopPropagation()">
+                [checked]="selectedIds.has(sqr.id)">
               </ion-checkbox>
             </div>
             <div class="card-header">
@@ -232,12 +228,10 @@
             *ngFor="let sqr of getSqrsByStatus('Escalated')" 
             class="sqr-card"
             [class.selected]="selectedIds.has(sqr.id)"
-            (click)="toggleSelection(sqr.id, $event)">
-            <div class="card-checkbox">
+            (click)="onSqrClick(sqr, $event)">
+            <div class="card-checkbox" (click)="$event.stopPropagation(); toggleSelection(sqr.id, $event)">
               <ion-checkbox 
-                [checked]="selectedIds.has(sqr.id)"
-                (ionChange)="toggleSelection(sqr.id, $event)"
-                (click)="$event.stopPropagation()">
+                [checked]="selectedIds.has(sqr.id)">
               </ion-checkbox>
             </div>
             <div class="card-header">
@@ -283,12 +277,10 @@
             *ngFor="let sqr of getSqrsByStatus('Resolved')" 
             class="sqr-card"
             [class.selected]="selectedIds.has(sqr.id)"
-            (click)="toggleSelection(sqr.id, $event)">
-            <div class="card-checkbox">
+            (click)="onSqrClick(sqr, $event)">
+            <div class="card-checkbox" (click)="$event.stopPropagation(); toggleSelection(sqr.id, $event)">
               <ion-checkbox 
-                [checked]="selectedIds.has(sqr.id)"
-                (ionChange)="toggleSelection(sqr.id, $event)"
-                (click)="$event.stopPropagation()">
+                [checked]="selectedIds.has(sqr.id)">
               </ion-checkbox>
             </div>
             <div class="card-header">
@@ -334,12 +326,10 @@
             *ngFor="let sqr of getSqrsByStatus('Closed')" 
             class="sqr-card"
             [class.selected]="selectedIds.has(sqr.id)"
-            (click)="toggleSelection(sqr.id, $event)">
-            <div class="card-checkbox">
+            (click)="onSqrClick(sqr, $event)">
+            <div class="card-checkbox" (click)="$event.stopPropagation(); toggleSelection(sqr.id, $event)">
               <ion-checkbox 
-                [checked]="selectedIds.has(sqr.id)"
-                (ionChange)="toggleSelection(sqr.id, $event)"
-                (click)="$event.stopPropagation()">
+                [checked]="selectedIds.has(sqr.id)">
               </ion-checkbox>
             </div>
             <div class="card-header">

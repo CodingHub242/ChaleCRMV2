@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, SearchbarCustomEvent, AlertController, ModalController } from '@ionic/angular';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { Sqr } from '../../../models';
 import { DataImportComponent } from '../../../shared/components/data-import/data-import.component';
@@ -91,7 +91,8 @@ export class SqrsListPage implements OnInit {
   constructor(
     private api: ApiService,
     private alertController: AlertController,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private router: Router
   ) {
     addIcons({ trashOutline, warning, chatbubbles, helpCircle, add, trash, create, chevronBack, chevronForward, chevronDown, alertCircle, bulb: alertCircle, person, documents, time, checkmarkCircle, arrowUpCircle, cloudUploadOutline, swapHorizontal, flag, chatbubblesOutline, checkmarkDoneCircle, close });
   }
@@ -167,6 +168,18 @@ export class SqrsListPage implements OnInit {
       } else {
         this.selectedIds.add(id);
       }
+    }
+  }
+
+  // Handle SQR card click - navigate to detail or toggle selection
+  onSqrClick(sqr: Sqr, event: any): void {
+    // If Shift is held or items are selected, toggle selection
+    if (event.shiftKey || this.selectedIds.size > 0) {
+      // Toggle selection
+      this.toggleSelection(sqr.id, event);
+    } else {
+      // Navigate to SQR detail page
+      this.router.navigate(['/sqrs/view', sqr.id]);
     }
   }
 
