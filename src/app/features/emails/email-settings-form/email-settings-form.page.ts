@@ -119,13 +119,20 @@ export class EmailSettingsFormPage implements OnInit {
   }
 
   async testConnection(): Promise<void> {
-    if (!this.validateForm()) return;
+    console.log('testConnection clicked');
+    if (!this.validateForm()) {
+      console.log('Validation failed');
+      return;
+    }
 
     this.isTesting = true;
-    const loading = await this.loadingController.create({
-      message: 'Testing connection...'
-    });
-    await loading.present();
+    console.log('isTesting set to true');
+    
+    // const loading = await this.loadingController.create({
+    //   message: 'Testing connection...'
+    // });
+    // await loading.present();
+    // console.log('Loading presented');
 
     const testData = {
       imap_host: this.account.imap_host,
@@ -135,9 +142,12 @@ export class EmailSettingsFormPage implements OnInit {
       password: this.account.password
     };
 
+    console.log('Testing email connection with:', { ...testData, password: '***' });
+
     this.api.testEmailConnection(testData).subscribe({
       next: (response) => {
-        loading.dismiss();
+        console.log('Connection test response:', response);
+      //  loading.dismiss();
         this.isTesting = false;
         if (response.success) {
           this.showSuccess('Connection successful!');
@@ -146,21 +156,29 @@ export class EmailSettingsFormPage implements OnInit {
         }
       },
       error: (err) => {
-        loading.dismiss();
+        console.error('Connection test error:', err);
+       // loading.dismiss();
         this.isTesting = false;
-        this.showError('Connection test failed');
+        this.showError('Connection test failed: ' + (err.message || 'Unknown error'));
       }
     });
   }
 
   async save(): Promise<void> {
-    if (!this.validateForm()) return;
+    console.log('save clicked');
+    if (!this.validateForm()) {
+      console.log('Validation failed');
+      return;
+    }
 
     this.isSaving = true;
-    const loading = await this.loadingController.create({
-      message: 'Saving...'
-    });
-    await loading.present();
+    console.log('isSaving set to true');
+    
+    // const loading = await this.loadingController.create({
+    //   message: 'Saving...'
+    // });
+    // await loading.present();
+    // console.log('Loading presented');
 
     if (this.isEdit && this.accountId) {
       const updateData = { ...this.account };
@@ -169,29 +187,37 @@ export class EmailSettingsFormPage implements OnInit {
         delete updateData.password;
       }
       
+      console.log('Updating account:', this.accountId, updateData);
+      
       this.api.updateEmailAccount(this.accountId, updateData).subscribe({
-        next: () => {
-          loading.dismiss();
+        next: (response) => {
+          console.log('Update response:', response);
+        //  loading.dismiss();
           this.isSaving = false;
           this.showSuccess('Account updated successfully');
           this.router.navigate(['/email-settings']);
         },
-        error: () => {
-          loading.dismiss();
+        error: (err) => {
+          console.error('Update error:', err);
+        //  loading.dismiss();
           this.isSaving = false;
           this.showError('Failed to update account');
         }
       });
     } else {
+      console.log('Creating account:', this.account);
+      
       this.api.createEmailAccount(this.account).subscribe({
-        next: () => {
-          loading.dismiss();
+        next: (response) => {
+          console.log('Create response:', response);
+       //   loading.dismiss();
           this.isSaving = false;
           this.showSuccess('Account added successfully');
           this.router.navigate(['/email-settings']);
         },
-        error: () => {
-          loading.dismiss();
+        error: (err) => {
+          console.error('Create error:', err);
+        //  loading.dismiss();
           this.isSaving = false;
           this.showError('Failed to add account');
         }
