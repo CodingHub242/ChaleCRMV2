@@ -191,15 +191,17 @@ export class DealsListPage implements OnInit {
     // First, get total count to know how many pages to fetch
     this.api.getDeals(countParams).subscribe({
       next: (response) => {
-        // Get total count - check data array or root-level total
+        // Get total count - check meta first, then root-level total
         let total = 0;
-        if (response.data && response.data.length > 0) {
-          // Response has data in data array
-          total = response.total || 0;
+        if (response.meta && response.meta.total !== undefined) {
+          // Response has meta with total
+          total = response.meta.total;
         } else if (response.total !== undefined) {
           total = response.total;
+        } else if (response.data && Array.isArray(response.data)) {
+          // Fallback: count items in data array
+          total = response.data.length;
         } else if (Array.isArray(response)) {
-          // Response might be an array directly
           total = response.length;
         }
         

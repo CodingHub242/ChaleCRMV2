@@ -282,9 +282,15 @@ export class SqrsListPage implements OnInit {
       status: statusParam
     }).subscribe({
       next: (response) => {
-        // Get total count from response
-        const meta = response.meta;
-        const total = meta ? meta.total : response.total;
+        // Get total count from response - check meta first, then root-level
+        let total = 0;
+        if (response.meta && response.meta.total !== undefined) {
+          total = response.meta.total;
+        } else if (response.total !== undefined) {
+          total = response.total;
+        } else if (response.data && Array.isArray(response.data)) {
+          total = response.data.length;
+        }
         
         if (total === 0) {
           this.sqrs = [];
