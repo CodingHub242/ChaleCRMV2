@@ -289,13 +289,14 @@ export class ApiService {
   }
 
   // Deals
-  getDeals(params?: { page?: number; per_page?: number; search?: string; stage?: string }): Observable<PaginatedResponse<Deal>> {
+  getDeals(params?: { page?: number; per_page?: number; search?: string; stage?: string; group_id?: number }): Observable<PaginatedResponse<Deal>> {
     let httpParams = new HttpParams();
     if (params) {
       if (params.page) httpParams = httpParams.set('page', params.page.toString());
       if (params.per_page) httpParams = httpParams.set('per_page', params.per_page.toString());
       if (params.search) httpParams = httpParams.set('search', params.search);
       if (params.stage) httpParams = httpParams.set('stage', params.stage);
+      if (params.group_id) httpParams = httpParams.set('group_id', params.group_id.toString());
     }
     httpParams = this.addOrganizationParams(httpParams);
     return this.http.get<PaginatedResponse<Deal>>(`${this.baseUrl}/deals`, { params: httpParams });
