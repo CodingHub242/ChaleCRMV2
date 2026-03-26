@@ -152,6 +152,7 @@ Route::apiResource('custom-fields', App\Http\Controllers\Api\CustomFieldControll
 Route::get('/deals/counts', [App\Http\Controllers\Api\DealController::class, 'counts']);
 Route::patch('deals/{id}/stage', [App\Http\Controllers\Api\DealController::class, 'updateStage']);
 Route::patch('deals/bulk-update-stage', [App\Http\Controllers\Api\DealController::class, 'bulkUpdateStage']);
+Route::patch('deals/bulk-update-group', [App\Http\Controllers\Api\DealController::class, 'bulkUpdateGroup']);
 Route::post('deals/bulk-delete', [App\Http\Controllers\Api\DealController::class, 'bulkDelete']);
 Route::apiResource('deals', App\Http\Controllers\Api\DealController::class);
 

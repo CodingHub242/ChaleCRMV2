@@ -311,6 +311,47 @@ class DealController extends Controller
             'message' => 'Deals deleted successfully'
         ]);
     }
+
+    /**
+     * Bulk update group for multiple deals
+     */
+    public function bulkUpdateGroup(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|exists:deals,id',
+            'group_id' => 'nullable|integer|exists:deal_groups,id',
+        ]);
+
+        $organizationId = $this->getOrganizationId();
+        
+        // Get deals before update to log activity
+        $deals = Deal::whereIn('id', $validated['ids']);
+        if ($organizationId) {
+            $deals = $deals->where('organization_id', $organizationId);
+        }
+        $deals = $deals->get();
+        
+        $query = Deal::whereIn('id', $validated['ids']);
+        if ($organizationId) {
+            $query->where('organization_id', $organizationId);
+        }
+
+        $query->update(['group_id' => $validated['group_id']]);
+
+        // Log activity for bulk update
+        $groupName = $validated['group_id'] ? 
+            (\App\Models\DealGroup::find($validated['group_id'])->name ?? 'Unknown') : 
+            'None (removed)';
+        foreach ($deals as $deal) {
+            $this->logActivity($deal->id, 'group_changed', 'Group changed to ' . $groupName . ' (bulk update)');
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Deals group updated successfully'
+        ]);
+    }
     
     /**
      * Log activity for deal changes

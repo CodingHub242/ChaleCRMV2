@@ -98,6 +98,13 @@
       </ion-button>
       <ion-button 
         fill="clear" 
+        class="bulk-action-btn"
+        (click)="openBulkGroupUpdate()">
+        <ion-icon slot="start" name="folder"></ion-icon>
+        Update Group
+      </ion-button>
+      <ion-button 
+        fill="clear" 
         class="bulk-action-btn delete-btn"
         (click)="bulkDelete()">
         <ion-icon slot="start" name="trash-outline"></ion-icon>

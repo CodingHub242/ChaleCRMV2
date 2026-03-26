@@ -330,6 +330,10 @@ export class ApiService {
     return this.http.patch<ApiResponse<any>>(`${this.baseUrl}/deals/bulk-update-stage`, this.addOrganizationToBody({ ids, stage }));
   }
 
+  bulkUpdateDealGroup(ids: number[], groupId: number | null): Observable<ApiResponse<any>> {
+    return this.http.patch<ApiResponse<any>>(`${this.baseUrl}/deals/bulk-update-group`, this.addOrganizationToBody({ ids, group_id: groupId }));
+  }
+
   bulkDeleteDeals(ids: number[]): Observable<ApiResponse<any>> {
     return this.http.post<ApiResponse<any>>(`${this.baseUrl}/deals/bulk-delete`, this.addOrganizationToBody({ ids }));
   }
