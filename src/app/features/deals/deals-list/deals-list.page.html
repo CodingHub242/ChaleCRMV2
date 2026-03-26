@@ -41,7 +41,7 @@
     </div>
   </ion-toolbar>
 
-  <!-- Groups Tabs (like Leads, USA Leads, etc.) -->
+  <!-- Groups Tabs (All Deals, Groups Dropdown, Add Group) -->
   <ion-toolbar class="groups-toolbar">
     <div class="groups-container">
       <!-- All Deals Tab -->
@@ -53,18 +53,30 @@
         <span class="group-name">All Deals</span>
       </div>
       
-      <!-- Custom Groups -->
-      <div 
-        *ngFor="let group of groups" 
-        class="group-tab" 
-        [class.active]="selectedGroupId === group.id"
-        (click)="onGroupSelect(group.id)">
-        <ion-icon name="folder" class="group-icon"></ion-icon>
-        <span class="group-name">{{ group.name }}</span>
-        <ion-icon 
-          name="close-circle" 
-          class="group-delete"
-          (click)="deleteGroup(group); $event.stopPropagation()"></ion-icon>
+      <!-- Groups Dropdown -->
+      <div class="group-dropdown" *ngIf="groups.length > 0">
+        <div 
+          class="group-tab dropdown-trigger" 
+          [class.active]="selectedGroupId !== null"
+          (click)="toggleGroupDropdown()">
+          <ion-icon name="folder" class="group-icon"></ion-icon>
+          <span class="group-name">{{ getSelectedGroupName() }}</span>
+          <ion-icon name="chevron-down" class="dropdown-arrow"></ion-icon>
+        </div>
+        <div class="dropdown-menu" *ngIf="groupDropdownOpen">
+          <div 
+            *ngFor="let group of groups" 
+            class="dropdown-item"
+            [class.active]="selectedGroupId === group.id"
+            (click)="selectGroupFromDropdown(group.id)">
+            <ion-icon name="folder" class="dropdown-item-icon"></ion-icon>
+            <span>{{ group.name }}</span>
+            <ion-icon 
+              name="trash" 
+              class="dropdown-delete"
+              (click)="deleteGroup(group); $event.stopPropagation()"></ion-icon>
+          </div>
+        </div>
       </div>
       
       <!-- Add Group Button -->

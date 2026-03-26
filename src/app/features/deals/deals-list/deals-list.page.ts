@@ -54,6 +54,9 @@ export class DealsListPage implements OnInit {
   // Toggle for showing empty stages in kanban
   showEmptyStages = true;
 
+  // Group dropdown state
+  groupDropdownOpen = false;
+
   // Sales Pipeline Stages
   tabs: StageTab[] = [
     { key: 'all', label: 'All', icon: 'layers', count: 0, stage: '' },
@@ -307,6 +310,24 @@ export class DealsListPage implements OnInit {
 
   toggleEmptyStages(): void {
     this.showEmptyStages = !this.showEmptyStages;
+  }
+
+  // Group dropdown methods
+  toggleGroupDropdown(): void {
+    this.groupDropdownOpen = !this.groupDropdownOpen;
+  }
+
+  getSelectedGroupName(): string {
+    if (!this.selectedGroupId) {
+      return 'Groups';
+    }
+    const group = this.groups.find(g => g.id === this.selectedGroupId);
+    return group ? group.name : 'Groups';
+  }
+
+  selectGroupFromDropdown(groupId: number): void {
+    this.onGroupSelect(groupId);
+    this.groupDropdownOpen = false;
   }
 
   loadMore(event: any): void {
