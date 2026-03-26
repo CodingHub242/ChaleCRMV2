@@ -589,36 +589,15 @@ export class DealsListPage implements OnInit {
 
   // Scroll kanban board horizontally
   scrollKanban(direction: 'left' | 'right'): void {
-    // Try using ViewChild first
-    if (this.kanbanContainer?.nativeElement) {
-      const el = this.kanbanContainer.nativeElement;
+    // Find the kanban-board element which has overflow-x: auto
+    const kanbanBoard = window.document.querySelector('.kanban-board') as HTMLElement;
+    
+    if (kanbanBoard) {
       const scrollAmount = 300;
       if (direction === 'left') {
-        el.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        kanbanBoard.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
       } else {
-        el.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-      }
-    } else {
-      // Fallback: use window.document to avoid any type issues
-      const kanbanContainer = window.document.querySelector('.kanban-container') as HTMLElement;
-      if (kanbanContainer) {
-        const scrollAmount = 300;
-        if (direction === 'left') {
-          kanbanContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-        } else {
-          kanbanContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-        }
-      } else {
-        // Last fallback: try scrolling the ion-content element
-        const content = window.document.querySelector('ion-content') as HTMLElement;
-        if (content) {
-          const scrollAmount = 300;
-          if (direction === 'left') {
-            content.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-          } else {
-            content.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-          }
-        }
+        kanbanBoard.scrollBy({ left: scrollAmount, behavior: 'smooth' });
       }
     }
   }
