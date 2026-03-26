@@ -432,7 +432,9 @@
       </ng-container>
 
       <!-- Vertical Divider -->
+      <ng-container *ngIf="shouldShowDivider('Contract In-Review', 'Closed Won')">
       <div class="column-divider"></div>
+      </ng-container>
 
       <!-- Closed Won Column -->
       <ng-container *ngIf="showEmptyStages || hasDealsInStage('Closed Won')">
@@ -490,7 +492,9 @@
       </ng-container>
 
       <!-- Vertical Divider -->
+      <ng-container *ngIf="shouldShowDivider('Closed Won', 'Closed Lost')">
       <div class="column-divider"></div>
+      </ng-container>
 
       <!-- Closed Lost Column -->
       <ng-container *ngIf="showEmptyStages || hasDealsInStage('Closed Lost')">
