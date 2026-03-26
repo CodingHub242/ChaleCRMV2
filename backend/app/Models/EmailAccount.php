@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Crypt;
+use Webklex\PHPIMAP\Client;
+use Webklex\PHPIMAP\ClientManager;
 
 class EmailAccount extends Model
 {
@@ -70,90 +72,150 @@ class EmailAccount extends Model
     }
 
     /**
-     * Test IMAP connection.
+     * Get the IMAP encryption type for webklex.
      */
-    public function testConnection(): bool
+    private function getImapEncryption(): string
     {
-        try {
-            $hostname = sprintf(
-                '{%s:%d/imap/%s}',
-                $this->imap_host,
-                $this->imap_port,
-                $this->imap_encryption ?? 'ssl'
-            );
-
-            $imap = @imap_open($hostname, $this->username, $this->getDecryptedPassword(), OP_HALFOPEN);
-            
-            if ($imap) {
-                imap_close($imap);
-                return true;
-            }
-            return false;
-        } catch (\Exception $e) {
-            return false;
+        $encryption = strtolower($this->imap_encryption ?? 'ssl');
+        switch ($encryption) {
+            case 'ssl':
+                return 'ssl';
+            case 'tls':
+                return 'tls';
+            case 'starttls':
+                return 'tls';
+            default:
+                return 'ssl';
         }
     }
 
     /**
-     * Fetch new emails from the IMAP server.
+     * Create and return an IMAP client instance.
+     */
+    public function getClient(): ?Client
+    {
+        try {
+            $encryption = $this->getImapEncryption();
+            
+            // Initialize ClientManager with config
+            $cm = new ClientManager([
+                'accounts' => [
+                    'default' => [
+                        'driver' => 'imap',
+                        'host' => $this->imap_host,
+                        'port' => $this->imap_port,
+                        'encryption' => $encryption,
+                        'validate_cert' => false,
+                        'username' => $this->username,
+                        'password' => $this->getDecryptedPassword(),
+                        'protocol' => 'imap',
+                    ],
+                ],
+            ]);
+            
+            // Get the account config from the ClientManager
+            $accountConfig = $cm->getConfig('default');
+            
+            // Create and return the Client with array config
+            $client = new Client($accountConfig);
+            
+            return $client;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Test IMAP connection using webklex/php-imap.
+     * Returns array with success status and message/error details.
+     */
+    public function testConnection(): array
+    {
+        try {
+            $client = $this->getClient();
+            if (!$client) {
+                return [
+                    'success' => false,
+                    'message' => 'Failed to create IMAP client',
+                    'error' => 'Could not initialize the IMAP client with the given settings'
+                ];
+            }
+
+            // Actually connect to the server
+            $client->connect();
+            
+            // Try to access the INBOX folder
+            $folder = $client->getFolder('INBOX');
+            if ($folder) {
+                // Try a simple operation to verify connection
+                $folder->checkConnection();
+                return [
+                    'success' => true,
+                    'message' => 'Connection successful!',
+                    'error' => null
+                ];
+            }
+            
+            return [
+                'success' => false,
+                'message' => 'Failed to access INBOX folder',
+                'error' => 'Connected but could not access email folder'
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Connection failed',
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Fetch new emails from the IMAP server using webklex/php-imap.
      */
     public function fetchEmails(int $limit = 50): array
     {
         try {
-            $hostname = sprintf(
-                '{%s:%d/imap/%s}',
-                $this->imap_host,
-                $this->imap_port,
-                $this->imap_encryption ?? 'ssl'
-            );
-
-            $imap = @imap_open(
-                $hostname, 
-                $this->username, 
-                $this->getDecryptedPassword(),
-                0,
-                1 // Don't validate certificates
-            );
-
-            if (!$imap) {
+            $client = $this->getClient();
+            if (!$client) {
                 return [];
             }
 
-            // Search for unseen emails (INBOX)
-            $emails = imap_search($imap, 'UNSEEN', SE_FREE, 'UTF-8');
-
-            if (!$emails) {
-                imap_close($imap);
+            $folder = $client->getFolder('INBOX');
+            if (!$folder) {
                 return [];
             }
 
-            // Sort by date (newest first) and limit
-            rsort($emails);
-            $emails = array_slice($emails, 0, $limit);
+            // Get unseen messages
+            $query = $folder->query()->unseen();
+            $messages = $query->limit($limit)->get();
+
+            if ($messages->isEmpty()) {
+                return [];
+            }
 
             $results = [];
-            foreach ($emails as $emailNumber) {
-                $overview = imap_fetch_overview($imap, $emailNumber, 0);
-                if ($overview) {
-                    $results[] = [
-                        'uid' => $overview[0]->uid,
-                        'message_id' => $overview[0]->message_id ?? null,
-                        'from' => $overview[0]->from ?? '',
-                        'from_email' => $this->extractEmail($overview[0]->from ?? ''),
-                        'to' => $overview[0]->to ?? '',
-                        'cc' => $overview[0]->cc ?? '',
-                        'subject' => $overview[0]->subject ?? '(No Subject)',
-                        'date' => $overview[0]->date ?? now()->toIso8601String(),
-                        'seen' => $overview[0]->seen ?? false,
-                        'answered' => $overview[0]->answered ?? false,
-                        'flagged' => $overview[0]->flagged ?? false,
-                        'size' => $overview[0]->size ?? 0,
-                    ];
-                }
+            /** @var \Webklex\PHPIMAP\Message $message */
+            foreach ($messages as $message) {
+                $from = $message->getFrom()->first();
+                
+                $results[] = [
+                    'uid' => $message->getUid(),
+                    'message_id' => $message->getMessageId(),
+                    'from' => $from ? $from->mail : '',
+                    'from_email' => $from ? $from->mail : '',
+                    'from_name' => $from ? ($from->personal ?? '') : '',
+                    'to' => $message->getTo()->pluck('mail')->implode(', '),
+                    'cc' => $message->getCc()->pluck('mail')->implode(', '),
+                    'subject' => $message->getSubject() ?? '(No Subject)',
+                    'date' => $message->getDate()->toIso8601String(),
+                    'seen' => false, // It's unseen since we queried for unseen
+                    'answered' => $message->getAnswered(),
+                    'flagged' => $message->getFlagged(),
+                    'size' => $message->getSize(),
+                ];
             }
 
-            imap_close($imap);
-            
             // Update last sync time
             $this->update(['last_sync_at' => now()]);
 
@@ -164,164 +226,73 @@ class EmailAccount extends Model
     }
 
     /**
-     * Get full email content.
+     * Get full email content using webklex/php-imap.
      */
     public function getEmailContent(int $uid): ?array
     {
         try {
-            $hostname = sprintf(
-                '{%s:%d/imap/%s}',
-                $this->imap_host,
-                $this->imap_port,
-                $this->imap_encryption ?? 'ssl'
-            );
-
-            $imap = @imap_open(
-                $hostname, 
-                $this->username, 
-                $this->getDecryptedPassword(),
-                0,
-                1
-            );
-
-            if (!$imap) {
+            $client = $this->getClient();
+            if (!$client) {
                 return null;
             }
 
-            // Find the message number by UID
-            $messageNumber = imap_msgno($imap, $uid);
-            
-            if (!$messageNumber) {
-                imap_close($imap);
+            $folder = $client->getFolder('INBOX');
+            if (!$folder) {
                 return null;
             }
 
-            // Get structure
-            $structure = imap_fetchstructure($imap, $messageNumber, 0);
+            // Find message by UID
+            $message = $folder->query()->uid($uid)->get()->first();
             
-            // Get overview
-            $overview = imap_fetch_overview($imap, $messageNumber, 0);
-            
-            // Get body (plain text)
+            if (!$message) {
+                return null;
+            }
+
+            // Get from address
+            $from = $message->getFrom()->first();
+            $to = $message->getTo()->first();
+            $cc = $message->getCc()->first();
+
+            // Get body content
             $body = '';
             $htmlBody = '';
-            
-            if (isset($structure->parts)) {
-                // Multipart message
-                $body = $this->getPart($imap, $messageNumber, $structure->parts, 'TEXT', 'PLAIN');
-                $htmlBody = $this->getPart($imap, $messageNumber, $structure->parts, 'TEXT', 'HTML');
-            } else {
-                // Simple message
-                $body = imap_body($imap, $messageNumber, 0);
+
+            // Try to get HTML body first
+            try {
+                $htmlBody = $message->getHTMLBody();
+            } catch (\Exception $e) {
+                // HTML body not available
             }
 
-            // Decode body
-            $body = $this->decodeBody($body, $structure->encoding ?? null);
-            $htmlBody = $this->decodeBody($htmlBody, $structure->encoding ?? null);
+            // Fall back to plain text
+            if (empty($htmlBody)) {
+                try {
+                    $body = $message->getTextBody();
+                } catch (\Exception $e) {
+                    $body = '';
+                }
+            }
 
             // Mark as seen
-            imap_setflag_full($imap, $messageNumber, '\\Seen', ST_UID);
-
-            imap_close($imap);
+            $message->setFlag(['\\Seen']);
 
             return [
-                'uid' => $uid,
-                'message_id' => $overview[0]->message_id ?? null,
-                'from' => $overview[0]->from ?? '',
-                'from_email' => $this->extractEmail($overview[0]->from ?? ''),
-                'from_name' => $this->extractName($overview[0]->from ?? ''),
-                'to' => $overview[0]->to ?? '',
-                'to_email' => $this->extractEmail($overview[0]->to ?? ''),
-                'cc' => $overview[0]->cc ?? '',
-                'subject' => $overview[0]->subject ?? '(No Subject)',
-                'date' => $overview[0]->date ?? now()->toIso8601String(),
-                'seen' => true, // Now marked as seen
+                'uid' => $message->getUid(),
+                'message_id' => $message->getMessageId(),
+                'from' => $from ? ($from->personal ?? $from->mail) : '',
+                'from_email' => $from ? $from->mail : '',
+                'from_name' => $from ? ($from->personal ?? '') : '',
+                'to' => $to ? $to->mail : '',
+                'to_email' => $to ? $to->mail : '',
+                'cc' => $cc ? $cc->mail : '',
+                'subject' => $message->getSubject() ?? '(No Subject)',
+                'date' => $message->getDate()->toIso8601String(),
+                'seen' => true,
                 'body' => $body,
                 'html_body' => $htmlBody,
             ];
         } catch (\Exception $e) {
             return null;
-        }
-    }
-
-    /**
-     * Extract email address from string.
-     */
-    private function extractEmail(string $str): string
-    {
-        if (preg_match('/<(.+)>/', $str, $matches)) {
-            return $matches[1];
-        }
-        return trim($str);
-    }
-
-    /**
-     * Extract name from email string.
-     */
-    private function extractName(string $str): string
-    {
-        if (preg_match('/^(.+)\s*</', $str, $matches)) {
-            return trim($matches[1], '"');
-        }
-        return '';
-    }
-
-    /**
-     * Decode body content.
-     */
-    private function decodeBody(?string $body, ?int $encoding): string
-    {
-        if (empty($body)) {
-            return '';
-        }
-
-        switch ($encoding) {
-            case 1: // 7BIT
-            case 2: // 8BIT
-            case 4: // QUOTED-PRINTABLE
-                return quoted_printable_decode($body);
-            case 3: // BASE64
-                return base64_decode($body);
-            default:
-                return $body;
-        }
-    }
-
-    /**
-     * Get part of multipart message.
-     */
-    private function getPart($imap, int $messageNumber, array $parts, string $type, string $subtype): ?string
-    {
-        foreach ($parts as $part) {
-            if ($part->type == $this->getPartType($type) && $part->subtype == $subtype) {
-                $body = imap_fetchbody($imap, $messageNumber, $part->number, 0);
-                return $this->decodeBody($body, $part->encoding);
-            }
-            
-            if (isset($part->parts)) {
-                $result = $this->getPart($imap, $messageNumber, $part->parts, $type, $subtype);
-                if ($result) {
-                    return $result;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Get IMAP part type number.
-     */
-    private function getPartType(string $type): int
-    {
-        switch (strtoupper($type)) {
-            case 'TEXT': return 0;
-            case 'MULTIPART': return 1;
-            case 'MESSAGE': return 2;
-            case 'APPLICATION': return 3;
-            case 'AUDIO': return 4;
-            case 'IMAGE': return 5;
-            case 'VIDEO': return 6;
-            default: return 0;
         }
     }
 }

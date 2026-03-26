@@ -33,6 +33,11 @@
           class="clear-icon"
           (click)="clearSearch()"></ion-icon>
       </div>
+      <!-- Toggle for empty stages -->
+      <div class="empty-stages-toggle" (click)="toggleEmptyStages()">
+        <ion-icon [name]="showEmptyStages ? 'eye-outline' : 'eye-off-outline'"></ion-icon>
+        <span>{{ showEmptyStages ? 'Hide' : 'Show' }} empty</span>
+      </div>
     </div>
   </ion-toolbar>
 
@@ -132,6 +137,7 @@
   <div *ngIf="deals.length > 0" class="kanban-container" #kanbanContainer>
     <div class="kanban-board">
       <!-- Prospect Column -->
+      <ng-container *ngIf="showEmptyStages || hasDealsInStage('Prospect')">
       <div class="kanban-column">
         <div class="column-header">
           <ion-checkbox 
@@ -183,11 +189,15 @@
           </div>
         </div>
       </div>
+      </ng-container>
 
       <!-- Vertical Divider -->
+      <ng-container *ngIf="shouldShowDivider('Prospect', 'Client')">
       <div class="column-divider"></div>
+      </ng-container>
 
       <!-- Client Column -->
+      <ng-container *ngIf="showEmptyStages || hasDealsInStage('Client')">
       <div class="kanban-column">
         <div class="column-header">
           <ion-checkbox 
@@ -239,11 +249,15 @@
           </div>
         </div>
       </div>
+      </ng-container>
 
       <!-- Vertical Divider -->
+      <ng-container *ngIf="shouldShowDivider('Client', 'Demo Requested')">
       <div class="column-divider"></div>
+      </ng-container>
 
       <!-- Demo Requested Column -->
+      <ng-container *ngIf="showEmptyStages || hasDealsInStage('Demo Requested')">
       <div class="kanban-column">
         <div class="column-header">
           <ion-checkbox 
@@ -295,11 +309,15 @@
           </div>
         </div>
       </div>
+      </ng-container>
 
       <!-- Vertical Divider -->
+      <ng-container *ngIf="shouldShowDivider('Demo Requested', 'Demo Completed')">
       <div class="column-divider"></div>
+      </ng-container>
 
       <!-- Demo Completed Column -->
+      <ng-container *ngIf="showEmptyStages || hasDealsInStage('Demo Completed')">
       <div class="kanban-column">
         <div class="column-header">
           <ion-checkbox 
@@ -351,11 +369,15 @@
           </div>
         </div>
       </div>
+      </ng-container>
 
       <!-- Vertical Divider -->
+      <ng-container *ngIf="shouldShowDivider('Demo Completed', 'Contract In-Review')">
       <div class="column-divider"></div>
+      </ng-container>
 
       <!-- Contract In-Review Column -->
+      <ng-container *ngIf="showEmptyStages || hasDealsInStage('Contract In-Review')">
       <div class="kanban-column">
         <div class="column-header">
           <ion-checkbox 
@@ -407,11 +429,13 @@
           </div>
         </div>
       </div>
+      </ng-container>
 
       <!-- Vertical Divider -->
       <div class="column-divider"></div>
 
       <!-- Closed Won Column -->
+      <ng-container *ngIf="showEmptyStages || hasDealsInStage('Closed Won')">
       <div class="kanban-column">
         <div class="column-header">
           <ion-checkbox 
@@ -463,11 +487,13 @@
           </div>
         </div>
       </div>
+      </ng-container>
 
       <!-- Vertical Divider -->
       <div class="column-divider"></div>
 
       <!-- Closed Lost Column -->
+      <ng-container *ngIf="showEmptyStages || hasDealsInStage('Closed Lost')">
       <div class="kanban-column">
         <div class="column-header">
           <ion-checkbox 
@@ -519,6 +545,7 @@
           </div>
         </div>
       </div>
+      </ng-container>
     </div>
 
     <!-- Horizontal Scroll Controls for Kanban -->

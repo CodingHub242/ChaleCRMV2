@@ -213,10 +213,9 @@ class EmailAccountController extends Controller
         $result = $account->testConnection();
 
         return response()->json([
-            'success' => $result,
-            'message' => $result 
-                ? 'Connection successful!' 
-                : 'Failed to connect. Please check your credentials and settings.'
+            'success' => $result['success'],
+            'message' => $result['message'],
+            'error' => $result['error'] ?? null
         ]);
     }
 

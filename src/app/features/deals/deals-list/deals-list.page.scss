@@ -63,6 +63,34 @@
   }
 }
 
+// Empty stages toggle
+.empty-stages-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #f5f7fa;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+  
+  &:hover {
+    background: #e9ecef;
+  }
+  
+  ion-icon {
+    font-size: 16px;
+    color: #666;
+  }
+  
+  span {
+    font-size: 12px;
+    color: #666;
+    font-weight: 500;
+  }
+}
+
 // Groups Toolbar (like Ghana Leads, USA Leads, etc.)
 .groups-toolbar {
   --background: #f8f9fa;

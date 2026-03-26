@@ -7,7 +7,7 @@ import { ApiService } from '../../../core/services/api.service';
 import { Deal } from '../../../models';
 import { DataImportComponent } from '../../../shared/components/data-import/data-import.component';
 import { addIcons } from 'ionicons';
-import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, cloudUploadOutline, trashOutline, ellipsisVertical, searchOutline, funnelOutline, gridOutline, folder, createOutline, pricetagOutline, swapHorizontal, trendingUpOutline, calendarOutline as calendarIcon, videocamOutline, documentTextOutline, peopleOutline, checkmarkCircleOutline, closeCircleOutline } from 'ionicons/icons';
+import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, checkmarkCircle, layers, time, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, cloudUploadOutline, trashOutline, ellipsisVertical, searchOutline, funnelOutline, gridOutline, folder, createOutline, pricetagOutline, swapHorizontal, trendingUpOutline, calendarOutline as calendarIcon, videocamOutline, documentTextOutline, peopleOutline, checkmarkCircleOutline, closeCircleOutline, eyeOutline, eyeOffOutline } from 'ionicons/icons';
 
 interface DealGroup {
   id: number;
@@ -51,6 +51,9 @@ export class DealsListPage implements OnInit {
   // Show "All Deals" tab at the beginning
   showAllDealsTab = true;
 
+  // Toggle for showing empty stages in kanban
+  showEmptyStages = true;
+
   // Sales Pipeline Stages
   tabs: StageTab[] = [
     { key: 'all', label: 'All', icon: 'layers', count: 0, stage: '' },
@@ -81,7 +84,8 @@ export class DealsListPage implements OnInit {
       videocamOutline: videocamOutline, 
       documentTextOutlineAlt: documentTextOutline,
       peopleOutlineAlt: peopleOutline, 
-      checkmarkCircleOutline
+      checkmarkCircleOutline,
+      eyeOutline, eyeOffOutline
     });
   }
 
@@ -299,6 +303,10 @@ export class DealsListPage implements OnInit {
   clearSearch(): void {
     this.searchQuery = '';
     this.loadDeals();
+  }
+
+  toggleEmptyStages(): void {
+    this.showEmptyStages = !this.showEmptyStages;
   }
 
   loadMore(event: any): void {
@@ -534,11 +542,49 @@ export class DealsListPage implements OnInit {
   }
 
   getDealsByStage(stage: string): Deal[] {
+    // Filter deals by stage, but always show all stages (empty if no data)
+    // When a group is selected, the deals are already filtered by group_id in loadDeals
+    
     // For Prospect stage, also include deals with stage = 'New'
     if (stage === 'Prospect') {
       return this.deals.filter(deal => deal.stage === 'Prospect' || deal.stage === 'New' || deal.stage === 'Prospect Client' || !deal.stage);
     }
     return this.deals.filter(deal => deal.stage === stage);
+  }
+
+  // Check if a stage has any deals (for conditional rendering)
+  hasDealsInStage(stage: string): boolean {
+    return this.getDealsByStage(stage).length > 0;
+  }
+
+  // Get all stages that should be displayed
+  get displayedStages(): string[] {
+    return [
+      'Prospect',
+      'Client',
+      'Demo Requested',
+      'Demo Completed',
+      'Contract In-Review',
+      'Closed Won',
+      'Closed Lost'
+    ];
+  }
+
+  // Check if divider should show between two stages
+  shouldShowDivider(beforeStage: string, afterStage: string): boolean {
+    const beforeHasDeals = this.hasDealsInStage(beforeStage);
+    const afterHasDeals = this.hasDealsInStage(afterStage);
+    
+    // Show divider if either:
+    // 1. Both stages have deals (always show)
+    // 2. One has deals and we're showing empty stages
+    // 3. showEmptyStages is true (show all dividers)
+    if (this.showEmptyStages) {
+      return true; // Show all dividers when showing empty stages
+    }
+    
+    // Show divider if at least one stage has deals
+    return beforeHasDeals || afterHasDeals;
   }
 
   // Scroll kanban board horizontally
