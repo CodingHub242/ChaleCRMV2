@@ -207,66 +207,6 @@
       <div class="column-divider"></div>
       </ng-container>
 
-      <!-- Client Column -->
-      <ng-container *ngIf="showEmptyStages || hasDealsInStage('Client')">
-      <div class="kanban-column">
-        <div class="column-header">
-          <ion-checkbox 
-            class="column-select-all"
-            [checked]="isAllSelectedForStage('Client')"
-            [indeterminate]="isSomeSelectedForStage('Client')"
-            (ionChange)="toggleSelectAllForStage('Client', $event)">
-          </ion-checkbox>
-          <ion-icon name="people-outline" class="column-icon stage-client"></ion-icon>
-          <span class="column-title">Client</span>
-          <span class="column-count">{{ getDealsByStage('Client').length }}</span>
-        </div>
-        <div class="column-content">
-          <div 
-            *ngFor="let deal of getDealsByStage('Client')" 
-            class="deal-card"
-            [class.selected]="selectedIds.has(deal.id)"
-            (click)="onDealClick(deal, $event)">
-            <div class="card-checkbox" (click)="$event.stopPropagation(); toggleSelection(deal.id, $event)">
-              <ion-checkbox 
-                [checked]="selectedIds.has(deal.id)">
-              </ion-checkbox>
-            </div>
-            <h4 class="card-title">{{ deal.name }}</h4>
-            <div class="card-amount">
-              <span class="amount">{{ formatCurrency(deal.amount) }}</span>
-              <span class="currency" *ngIf="deal.currency">{{ deal.currency }}</span>
-            </div>
-            <div class="card-meta">
-              <span class="probability" *ngIf="deal.probability">
-                <ion-icon name="trending-up"></ion-icon>
-                {{ deal.probability }}%
-              </span>
-              <span class="date" *ngIf="deal.expected_close_date">
-                <ion-icon name="calendar-outline"></ion-icon>
-                {{ deal.expected_close_date | date:'shortDate' }}
-              </span>
-            </div>
-            <div class="card-footer">
-              <div class="contact" *ngIf="deal.contact">
-                <ion-icon name="person"></ion-icon>
-                {{ deal.contact.first_name }} {{ deal.contact.last_name }}
-              </div>
-              <div class="company" *ngIf="deal.company">
-                <ion-icon name="business"></ion-icon>
-                {{ deal.company.name }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      </ng-container>
-
-      <!-- Vertical Divider -->
-      <ng-container *ngIf="shouldShowDivider('Client', 'Demo Requested')">
-      <div class="column-divider"></div>
-      </ng-container>
-
       <!-- Demo Requested Column -->
       <ng-container *ngIf="showEmptyStages || hasDealsInStage('Demo Requested')">
       <div class="kanban-column">
@@ -444,6 +384,66 @@
 
       <!-- Vertical Divider -->
       <ng-container *ngIf="shouldShowDivider('Contract In-Review', 'Closed Won')">
+      <div class="column-divider"></div>
+      </ng-container>
+
+      <!-- Client Column -->
+      <ng-container *ngIf="showEmptyStages || hasDealsInStage('Client')">
+      <div class="kanban-column">
+        <div class="column-header">
+          <ion-checkbox 
+            class="column-select-all"
+            [checked]="isAllSelectedForStage('Client')"
+            [indeterminate]="isSomeSelectedForStage('Client')"
+            (ionChange)="toggleSelectAllForStage('Client', $event)">
+          </ion-checkbox>
+          <ion-icon name="people-outline" class="column-icon stage-client"></ion-icon>
+          <span class="column-title">Client</span>
+          <span class="column-count">{{ getDealsByStage('Client').length }}</span>
+        </div>
+        <div class="column-content">
+          <div 
+            *ngFor="let deal of getDealsByStage('Client')" 
+            class="deal-card"
+            [class.selected]="selectedIds.has(deal.id)"
+            (click)="onDealClick(deal, $event)">
+            <div class="card-checkbox" (click)="$event.stopPropagation(); toggleSelection(deal.id, $event)">
+              <ion-checkbox 
+                [checked]="selectedIds.has(deal.id)">
+              </ion-checkbox>
+            </div>
+            <h4 class="card-title">{{ deal.name }}</h4>
+            <div class="card-amount">
+              <span class="amount">{{ formatCurrency(deal.amount) }}</span>
+              <span class="currency" *ngIf="deal.currency">{{ deal.currency }}</span>
+            </div>
+            <div class="card-meta">
+              <span class="probability" *ngIf="deal.probability">
+                <ion-icon name="trending-up"></ion-icon>
+                {{ deal.probability }}%
+              </span>
+              <span class="date" *ngIf="deal.expected_close_date">
+                <ion-icon name="calendar-outline"></ion-icon>
+                {{ deal.expected_close_date | date:'shortDate' }}
+              </span>
+            </div>
+            <div class="card-footer">
+              <div class="contact" *ngIf="deal.contact">
+                <ion-icon name="person"></ion-icon>
+                {{ deal.contact.first_name }} {{ deal.contact.last_name }}
+              </div>
+              <div class="company" *ngIf="deal.company">
+                <ion-icon name="business"></ion-icon>
+                {{ deal.company.name }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </ng-container>
+
+      <!-- Vertical Divider -->
+      <ng-container *ngIf="shouldShowDivider('Client', 'Demo Requested')">
       <div class="column-divider"></div>
       </ng-container>
 
