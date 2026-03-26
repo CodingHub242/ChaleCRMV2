@@ -707,6 +707,56 @@ export class DealsListPage implements OnInit {
     await alert.present();
   }
 
+  // Bulk group update
+  async openBulkGroupUpdate(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Update Group',
+      message: `Update group for ${this.selectedIds.size} selected deal(s)`,
+      inputs: [
+        {
+          name: 'group',
+          type: 'radio',
+          label: 'No Group',
+          value: null,
+          checked: !this.selectedGroupId
+        },
+        ...this.groups.map(group => ({
+          name: 'group',
+          type: 'radio' as const,
+          label: group.name,
+          value: group.id,
+          checked: false
+        }))
+      ],
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Update',
+          handler: (data) => {
+            if (data.group !== undefined) {
+              this.bulkUpdateGroup(data.group);
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  bulkUpdateGroup(groupId: number | null): void {
+    const ids = Array.from(this.selectedIds);
+    this.api.bulkUpdateDealGroup(ids, groupId).subscribe({
+      next: () => {
+        this.loadDeals();
+        this.loadStageCounts();
+        this.clearSelection();
+      },
+      error: () => {
+        this.showError('Failed to update group');
+      }
+    });
+  }
+
   bulkUpdateStage(stage: string): void {
     const ids = Array.from(this.selectedIds);
     this.api.bulkUpdateDealStage(ids, stage).subscribe({
