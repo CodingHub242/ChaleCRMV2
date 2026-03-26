@@ -137,10 +137,10 @@ export class DealsListPage implements OnInit {
           const counts = response.data;
           this.tabs[0].count = counts.total || 0;
           this.tabs[1].count = counts.prospect || 0;
-          this.tabs[2].count = counts.client || 0;
-          this.tabs[3].count = counts.demo_requested || 0;
-          this.tabs[4].count = counts.demo_completed || 0;
-          this.tabs[5].count = counts.contract_in_review || 0;
+          this.tabs[2].count = counts.demo_requested || 0;
+          this.tabs[3].count = counts.demo_completed || 0;
+          this.tabs[4].count = counts.contract_in_review || 0;
+          this.tabs[5].count = counts.client || 0;
           this.tabs[6].count = counts.closed_won || 0;
           this.tabs[7].count = counts.closed_lost || 0;
         }
@@ -152,10 +152,10 @@ export class DealsListPage implements OnInit {
           const counts = response.data;
           this.tabs[0].count = counts.total || 0;
           this.tabs[1].count = counts.prospect || 0;
-          this.tabs[2].count = counts.client || 0;
-          this.tabs[3].count = counts.demo_requested || 0;
-          this.tabs[4].count = counts.demo_completed || 0;
-          this.tabs[5].count = counts.contract_in_review || 0;
+          this.tabs[2].count = counts.demo_requested || 0;
+          this.tabs[3].count = counts.demo_completed || 0;
+          this.tabs[4].count = counts.contract_in_review || 0;
+          this.tabs[5].count = counts.client || 0;
           this.tabs[6].count = counts.closed_won || 0;
           this.tabs[7].count = counts.closed_lost || 0;
         },
@@ -499,10 +499,10 @@ export class DealsListPage implements OnInit {
   // Stage options for bulk update
   stageOptions = [
     { value: 'Prospect', label: 'Prospect' },
-    { value: 'Client', label: 'Client' },
     { value: 'Demo Requested', label: 'Demo Requested' },
     { value: 'Demo Completed', label: 'Demo Completed' },
     { value: 'Contract In-Review', label: 'Contract In-Review' },
+    { value: 'Client', label: 'Client' },
     { value: 'Closed Won', label: 'Closed Won' },
     { value: 'Closed Lost', label: 'Closed Lost' }
   ];
@@ -595,10 +595,10 @@ export class DealsListPage implements OnInit {
   get displayedStages(): string[] {
     return [
       'Prospect',
-      'Client',
       'Demo Requested',
       'Demo Completed',
       'Contract In-Review',
+      'Client',
       'Closed Won',
       'Closed Lost'
     ];
@@ -652,13 +652,6 @@ export class DealsListPage implements OnInit {
         {
           name: 'stage',
           type: 'radio',
-          label: 'Client',
-          value: 'Client',
-          checked: false
-        },
-        {
-          name: 'stage',
-          type: 'radio',
           label: 'Demo Requested',
           value: 'Demo Requested',
           checked: false
@@ -675,6 +668,13 @@ export class DealsListPage implements OnInit {
           type: 'radio',
           label: 'Contract In-Review',
           value: 'Contract In-Review',
+          checked: false
+        },
+        {
+          name: 'stage',
+          type: 'radio',
+          label: 'Client',
+          value: 'Client',
           checked: false
         },
         {
