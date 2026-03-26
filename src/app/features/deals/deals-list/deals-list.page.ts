@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, SearchbarCustomEvent, ModalController, AlertController } from '@ionic/angular';
@@ -76,7 +76,8 @@ export class DealsListPage implements OnInit {
     private api: ApiService,
     private modalController: ModalController,
     private alertController: AlertController,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     addIcons({
       cloudUploadOutline, trashOutline, ellipsisVertical, searchOutline, 
@@ -88,7 +89,8 @@ export class DealsListPage implements OnInit {
       documentTextOutlineAlt: documentTextOutline,
       peopleOutlineAlt: peopleOutline, 
       checkmarkCircleOutline,
-      eyeOutline, eyeOffOutline
+      eyeOutline, eyeOffOutline,
+      chevronDown
     });
   }
 
@@ -315,6 +317,17 @@ export class DealsListPage implements OnInit {
   // Group dropdown methods
   toggleGroupDropdown(): void {
     this.groupDropdownOpen = !this.groupDropdownOpen;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    // Close dropdown when clicking outside
+    const target = event.target as HTMLElement;
+    const dropdownElement = window.document.querySelector('.group-dropdown');
+    if (dropdownElement && !dropdownElement.contains(target)) {
+      this.groupDropdownOpen = false;
+      this.cdr.detectChanges();
+    }
   }
 
   getSelectedGroupName(): string {
