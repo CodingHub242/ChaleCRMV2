@@ -180,90 +180,35 @@
   }
 }
 
-// Group Dropdown
+// Group Dropdown (using ion-select)
 .group-dropdown {
   position: relative;
 }
 
-.dropdown-trigger {
-  .dropdown-arrow {
-    font-size: 14px;
-    margin-left: 4px;
-    transition: transform 0.2s ease;
-  }
-  
-  &.active .dropdown-arrow {
-    transform: rotate(180deg);
-  }
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  min-width: 180px;
+.group-select {
+  --background: white;
+  --border-radius: 20px;
+  --border-color: #e9ecef;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  --min-height: 36px;
+  width: 120px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 100;
-  margin-top: 4px;
-  overflow: hidden;
-}
-
-.dropdown-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  cursor: pointer;
-  transition: background 0.2s ease;
+  border: 1px solid #e9ecef;
+  border-radius: 20px;
+  margin-right: 8px;
   
-  &:hover {
-    background: #f5f7fa;
-  }
-  
-  &.active {
-    background: #073336;
-    color: white;
-    
-    .dropdown-item-icon {
-      color: white;
-    }
-  }
-  
-  .dropdown-item-icon {
-    font-size: 16px;
+  &::part(icon) {
     color: #666;
   }
-  
-  span {
-    flex: 1;
-    font-size: 13px;
-    color: #333;
-  }
-  
-  .dropdown-delete {
-    font-size: 14px;
-    color: #999;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    
-    &:hover {
-      color: #f44336;
-    }
-  }
-  
-  &:hover .dropdown-delete {
-    opacity: 1;
-  }
-  
-  &.active .dropdown-delete {
-    color: rgba(255, 255, 255, 0.7);
-    
-    &:hover {
-      color: white;
-    }
-  }
+}
+
+// Hide the native select wrapper styling
+.group-select.ion-invalid.ion-touched {
+  --border-color: #f44336;
 }
 
 // Stage Tabs Toolbar

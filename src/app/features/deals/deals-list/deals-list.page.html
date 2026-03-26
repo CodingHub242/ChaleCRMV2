@@ -53,30 +53,18 @@
         <span class="group-name">All Deals</span>
       </div>
       
-      <!-- Groups Dropdown -->
+      <!-- Groups Dropdown (ion-select) -->
       <div class="group-dropdown" *ngIf="groups.length > 0">
-        <div 
-          class="group-tab dropdown-trigger" 
-          [class.active]="selectedGroupId !== null"
-          (click)="toggleGroupDropdown()">
-          <ion-icon name="folder" class="group-icon"></ion-icon>
-          <span class="group-name">{{ getSelectedGroupName() }}</span>
-          <ion-icon name="chevron-down" class="dropdown-arrow"></ion-icon>
-        </div>
-        <div class="dropdown-menu" *ngIf="groupDropdownOpen">
-          <div 
-            *ngFor="let group of groups" 
-            class="dropdown-item"
-            [class.active]="selectedGroupId === group.id"
-            (click)="selectGroupFromDropdown(group.id)">
-            <ion-icon name="folder" class="dropdown-item-icon"></ion-icon>
-            <span>{{ group.name }}</span>
-            <ion-icon 
-              name="trash" 
-              class="dropdown-delete"
-              (click)="deleteGroup(group); $event.stopPropagation()"></ion-icon>
-          </div>
-        </div>
+        <ion-select
+          [value]="selectedGroupId"
+          (ionChange)="onGroupSelect($event.detail.value)"
+          placeholder="Groups"
+          interface="popover"
+          class="group-select">
+          <ion-select-option *ngFor="let group of groups" [value]="group.id">
+            {{ group.name }}
+          </ion-select-option>
+        </ion-select>
       </div>
       
       <!-- Add Group Button -->
