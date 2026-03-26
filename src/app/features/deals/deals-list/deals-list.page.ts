@@ -61,10 +61,10 @@ export class DealsListPage implements OnInit {
   tabs: StageTab[] = [
     { key: 'all', label: 'All', icon: 'layers', count: 0, stage: '' },
     { key: 'prospect', label: 'Prospect', icon: 'person-outline', count: 0, stage: 'Prospect' },
-    { key: 'client', label: 'Client', icon: 'people-outline', count: 0, stage: 'Client' },
     { key: 'demo_requested', label: 'Demo', icon: 'videocam-outline', count: 0, stage: 'Demo Requested' },
     { key: 'demo_completed', label: 'Demo Done', icon: 'checkmark-circle-outline', count: 0, stage: 'Demo Completed' },
     { key: 'contract_review', label: 'Contract', icon: 'document-text-outline', count: 0, stage: 'Contract In-Review' },
+    { key: 'client', label: 'Client', icon: 'people-outline', count: 0, stage: 'Client' },
     { key: 'closed_won', label: 'Won', icon: 'trophy-outline', count: 0, stage: 'Closed Won' },
     { key: 'closed_lost', label: 'Lost', icon: 'close-circle-outline', count: 0, stage: 'Closed Lost' }
   ];
