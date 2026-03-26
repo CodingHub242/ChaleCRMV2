@@ -178,6 +178,10 @@
                 <ion-icon name="trending-up"></ion-icon>
                 {{ deal.probability }}%
               </span>
+              <span class="probability">
+                <ion-icon name="trending-up"></ion-icon>
+                {{ deal.group.name }}
+              </span>
               <span class="date" *ngIf="deal.expected_close_date">
                 <ion-icon name="calendar-outline"></ion-icon>
                 {{ deal.expected_close_date | date:'shortDate' }}
