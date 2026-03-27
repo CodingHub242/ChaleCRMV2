@@ -747,8 +747,9 @@ export class DealsListPage implements OnInit {
     const ids = Array.from(this.selectedIds);
     this.api.bulkUpdateDealGroup(ids, groupId).subscribe({
       next: () => {
-        this.loadDeals();
-        this.loadStageCounts();
+        // this.loadDeals();
+        // this.loadStageCounts();
+        this.ionViewWillEnter();
         this.clearSelection();
       },
       error: () => {
