@@ -5,6 +5,7 @@ import { IonicModule, AlertController, ModalController } from '@ionic/angular';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { Sqr, Contact, Company, Activity, SqrNote } from '../../../models';
+import { PickerModalComponent } from '../../../shared/components/picker-modal/picker-modal.component';
 import { addIcons } from 'ionicons';
 import { 
   warning, alertCircle, person, business, add, chevronBack, chevronDown, linkOutline,
@@ -25,7 +26,7 @@ interface TabItem {
 @Component({
   selector: 'app-sqr-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule, RouterModule],
+  imports: [CommonModule, FormsModule, IonicModule, RouterModule, PickerModalComponent],
   templateUrl: './sqr-detail.page.html',
   styleUrls: ['./sqr-detail.page.scss']
 })
@@ -415,5 +416,65 @@ export class SqrDetailPage implements OnInit {
       ]
     });
     await alert.present();
+  }
+
+  // Contact picker methods
+  async openContactPicker(): Promise<void> {
+    const modal = await this.modalController.create({
+      component: PickerModalComponent,
+      componentProps: {
+        title: 'Contact',
+        pickerType: 'contact',
+        selectedId: this.sqr?.contact_id
+      }
+    });
+
+    modal.onDidDismiss().then((result) => {
+      if (result.data) {
+        this.updateContact(result.data.id);
+      }
+    });
+
+    await modal.present();
+  }
+
+  updateContact(contactId: number): void {
+    this.api.updateSqr(this.sqrId!, { contact_id: contactId }).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.loadSqr();
+        }
+      }
+    });
+  }
+
+  // Company picker methods
+  async openCompanyPicker(): Promise<void> {
+    const modal = await this.modalController.create({
+      component: PickerModalComponent,
+      componentProps: {
+        title: 'Company',
+        pickerType: 'company',
+        selectedId: this.sqr?.company_id
+      }
+    });
+
+    modal.onDidDismiss().then((result) => {
+      if (result.data) {
+        this.updateCompany(result.data.id);
+      }
+    });
+
+    await modal.present();
+  }
+
+  updateCompany(companyId: number): void {
+    this.api.updateSqr(this.sqrId!, { company_id: companyId }).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.loadSqr();
+        }
+      }
+    });
   }
 }

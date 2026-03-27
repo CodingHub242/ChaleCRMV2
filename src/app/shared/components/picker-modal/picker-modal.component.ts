@@ -480,7 +480,7 @@ export class PickerModalComponent implements OnInit, OnDestroy {
   }
 
   close(): void {
-    this.modalController.dismiss();
+    this.modalController.dismiss(this.selectedItem);
   }
 
   // Load more when scrolling near bottom

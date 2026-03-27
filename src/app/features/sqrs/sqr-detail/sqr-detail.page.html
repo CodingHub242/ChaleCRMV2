@@ -53,7 +53,7 @@
           </div>
           
           <!-- Contact -->
-          <div class="related-item" *ngIf="sqr.contact">
+          <div class="related-item clickable" *ngIf="sqr.contact" (click)="openContactPicker()">
             <div class="avatar">
               {{ getContactInitials() }}
             </div>
@@ -72,18 +72,18 @@
             </div>
           </div>
           
-          <div class="related-item empty" *ngIf="!sqr.contact">
+          <div class="related-item empty clickable" *ngIf="!sqr.contact" (click)="openContactPicker()">
             <div class="avatar">
               <ion-icon name="person-outline"></ion-icon>
             </div>
             <div class="info">
               <div class="name">No Contact</div>
-              <div class="subtitle">Click edit to add</div>
+              <div class="subtitle">Click to add</div>
             </div>
           </div>
 
           <!-- Company -->
-          <div class="related-item" *ngIf="sqr.company">
+          <div class="related-item clickable" *ngIf="sqr.company" (click)="openCompanyPicker()">
             <div class="avatar company">
               {{ getCompanyInitials() }}
             </div>
@@ -101,13 +101,13 @@
             </div>
           </div>
 
-          <div class="related-item empty" *ngIf="!sqr.company">
+          <div class="related-item empty clickable" *ngIf="!sqr.company" (click)="openCompanyPicker()">
             <div class="avatar company">
               <ion-icon name="business-outline"></ion-icon>
             </div>
             <div class="info">
               <div class="name">No Company</div>
-              <div class="subtitle">Click edit to add</div>
+              <div class="subtitle">Click to add</div>
             </div>
           </div>
         </div>
