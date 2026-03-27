@@ -7,6 +7,7 @@ import { IonToggle,IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonBu
 import { ApiService } from '../../../core/services/api.service';
 import { Deal, Contact, Company, CustomField } from '../../../models';
 import { CustomFieldsComponent } from '../../../shared/components/custom-fields/custom-fields.component';
+import { PickerModalComponent, PickerItem } from '../../../shared/components/picker-modal/picker-modal.component';
 import { addIcons } from 'ionicons';
 import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, layers, time, checkmarkCircle, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, personOutline, flagOutline, locationOutline, folder, pricetagOutline, folderOutline } from 'ionicons/icons';
 
@@ -19,7 +20,7 @@ interface DealGroup {
 @Component({
   selector: 'app-deal-form',
   standalone: true,
-  imports: [IonToggle,CommonModule, FormsModule, IonicModule, RouterModule, CustomFieldsComponent],
+  imports: [IonToggle,CommonModule, FormsModule, IonicModule, RouterModule, CustomFieldsComponent, PickerModalComponent],
   templateUrl: './deal-form.page.html',
   styleUrls: ['./deal-form.page.scss']
 })
@@ -209,78 +210,63 @@ export class DealFormPage implements OnInit {
   }
 
   async showContactPicker(): Promise<void> {
-    const alert = await this.alertController.create({
-      header: 'Select Contact',
-      buttons: [
-        ...this.contacts.map(contact => ({
-          text: `${contact.first_name} ${contact.last_name}`,
-          handler: () => {
-            this.deal.contact_id = contact.id;
-          }
-        })),
-        ...(this.deal.contact_id ? [{
-          text: 'Remove Contact',
-          handler: () => {
-            this.deal.contact_id = undefined;
-          }
-        }] : []),
-        {
-          text: 'Cancel',
-          role: 'cancel' as const
-        }
-      ]
+    const modal = await this.modalController.create({
+      component: PickerModalComponent,
+      componentProps: {
+        title: 'Contact',
+        pickerType: 'contact',
+        selectedId: this.deal.contact_id
+      },
+      cssClass: 'picker-modal'
     });
-    await alert.present();
+
+    modal.onDidDismiss().then((result) => {
+      if (result.data) {
+        this.deal.contact_id = result.data.id;
+      }
+    });
+
+    await modal.present();
   }
 
   async showCompanyPicker(): Promise<void> {
-    const alert = await this.alertController.create({
-      header: 'Select Company',
-      buttons: [
-        ...this.companies.map(company => ({
-          text: company.name,
-          handler: () => {
-            this.deal.company_id = company.id;
-          }
-        })),
-        ...(this.deal.company_id ? [{
-          text: 'Remove Company',
-          handler: () => {
-            this.deal.company_id = undefined;
-          }
-        }] : []),
-        {
-          text: 'Cancel',
-          role: 'cancel' as const
-        }
-      ]
+    const modal = await this.modalController.create({
+      component: PickerModalComponent,
+      componentProps: {
+        title: 'Company',
+        pickerType: 'company',
+        selectedId: this.deal.company_id
+      },
+      cssClass: 'picker-modal'
     });
-    await alert.present();
+
+    modal.onDidDismiss().then((result) => {
+      if (result.data) {
+        this.deal.company_id = result.data.id;
+      }
+    });
+
+    await modal.present();
   }
 
   async showGroupPicker(): Promise<void> {
-    const alert = await this.alertController.create({
-      header: 'Select Group',
-      buttons: [
-        ...this.groups.map(group => ({
-          text: group.name,
-          handler: () => {
-            this.deal.group_id = group.id;
-          }
-        })),
-        ...(this.deal.group_id ? [{
-          text: 'Remove Group',
-          handler: () => {
-            this.deal.group_id = undefined;
-          }
-        }] : []),
-        {
-          text: 'Cancel',
-          role: 'cancel' as const
-        }
-      ]
+    const modal = await this.modalController.create({
+      component: PickerModalComponent,
+      componentProps: {
+        title: 'Pipeline',
+        pickerType: 'group',
+        selectedId: this.deal.group_id
+      },
+      cssClass: 'picker-modal'
     });
-    await alert.present();
+
+    modal.onDidDismiss().then((result) => {
+      if (result.data) {
+        this.deal.group_id = result.data.id;
+      }
+    });
+
+    await modal.present();
   }
 
   getContactName(contactId: number | undefined): string {
