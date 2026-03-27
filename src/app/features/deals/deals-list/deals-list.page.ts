@@ -446,7 +446,7 @@ export class DealsListPage implements OnInit {
   async deleteGroup(group: DealGroup): Promise<void> {
     const alert = await this.alertController.create({
       header: 'Delete Group',
-      message: `Are you sure you want to delete "${group.name}"? Deals in this group will not be deleted.`,
+      message: `Are you sure you want to delete "${group.name}"? Leads in this group will not be deleted.`,
       buttons: [
         { text: 'Cancel', role: 'cancel' },
         {
@@ -640,7 +640,7 @@ export class DealsListPage implements OnInit {
   async openBulkStageUpdate(): Promise<void> {
     const alert = await this.alertController.create({
       header: 'Update Stage',
-      message: `Update stage for ${this.selectedIds.size} selected deal(s)`,
+      message: `Update stage for ${this.selectedIds.size} selected lead(s)`,
       inputs: [
         {
           name: 'stage',
@@ -711,7 +711,7 @@ export class DealsListPage implements OnInit {
   async openBulkGroupUpdate(): Promise<void> {
     const alert = await this.alertController.create({
       header: 'Update Group',
-      message: `Update group for ${this.selectedIds.size} selected deal(s)`,
+      message: `Update group for ${this.selectedIds.size} selected lead(s)`,
       inputs: [
         {
           name: 'group',
@@ -761,8 +761,9 @@ export class DealsListPage implements OnInit {
     const ids = Array.from(this.selectedIds);
     this.api.bulkUpdateDealStage(ids, stage).subscribe({
       next: () => {
-        this.loadDeals();
-        this.loadStageCounts();
+        // this.loadDeals();
+        // this.loadStageCounts();
+        this.ionViewWillEnter();
         this.clearSelection();
       },
       error: () => {
@@ -775,7 +776,7 @@ export class DealsListPage implements OnInit {
   async bulkDelete(): Promise<void> {
     const alert = await this.alertController.create({
       header: 'Delete Deals',
-      message: `Are you sure you want to delete ${this.selectedIds.size} selected deal(s)? This action cannot be undone.`,
+      message: `Are you sure you want to delete ${this.selectedIds.size} selected lead(s)? This action cannot be undone.`,
       buttons: [
         { text: 'Cancel', role: 'cancel' },
         {
@@ -794,8 +795,9 @@ export class DealsListPage implements OnInit {
     const ids = Array.from(this.selectedIds);
     this.api.bulkDeleteDeals(ids).subscribe({
       next: () => {
-        this.loadDeals();
-        this.loadStageCounts();
+        // this.loadDeals();
+        // this.loadStageCounts();
+        this.ionViewWillEnter();
         this.clearSelection();
       },
       error: () => {
