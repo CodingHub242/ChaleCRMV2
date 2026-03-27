@@ -228,6 +228,40 @@
     .avatar {
       background: #ddd;
     }
+    
+    &.clickable {
+      cursor: pointer;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: #e8f4f4;
+        border-color: #073336;
+        border-style: solid;
+        
+        .avatar {
+          background: #073336;
+          color: #fff;
+        }
+        
+        .info .name {
+          color: #073336;
+        }
+      }
+    }
+  }
+  
+  &.clickable {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: #f0f7f7;
+      border-color: #073336;
+      
+      .info .name {
+        color: #073336;
+      }
+    }
   }
   
   .avatar {

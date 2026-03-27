@@ -5,6 +5,7 @@ import { IonicModule, AlertController, ModalController } from '@ionic/angular';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { Deal, Contact, Company, Activity } from '../../../models';
+import { PickerModalComponent, PickerItem } from '../../../shared/components/picker-modal/picker-modal.component';
 import { addIcons } from 'ionicons';
 import { 
   person, business, add, chevronBack, chevronDown, linkOutline,
@@ -34,7 +35,7 @@ interface TimelineItem {
 @Component({
   selector: 'app-deal-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule, RouterModule],
+  imports: [CommonModule, FormsModule, IonicModule, RouterModule, PickerModalComponent],
   templateUrl: './deal-detail.page.html',
   styleUrls: ['./deal-detail.page.scss']
 })
@@ -456,5 +457,69 @@ export class DealDetailPage implements OnInit {
       ]
     });
     await alert.present();
+  }
+
+  // Open contact picker
+  async openContactPicker(): Promise<void> {
+    const modal = await this.modalController.create({
+      component: PickerModalComponent,
+      componentProps: {
+        title: 'Contact',
+        pickerType: 'contact',
+        selectedId: this.deal?.contact_id
+      },
+      cssClass: 'picker-modal'
+    });
+
+    modal.onDidDismiss().then((result) => {
+      if (result.data) {
+        this.updateContact(result.data.id);
+      }
+    });
+
+    await modal.present();
+  }
+
+  // Open company picker
+  async openCompanyPicker(): Promise<void> {
+    const modal = await this.modalController.create({
+      component: PickerModalComponent,
+      componentProps: {
+        title: 'Company',
+        pickerType: 'company',
+        selectedId: this.deal?.company_id
+      },
+      cssClass: 'picker-modal'
+    });
+
+    modal.onDidDismiss().then((result) => {
+      if (result.data) {
+        this.updateCompany(result.data.id);
+      }
+    });
+
+    await modal.present();
+  }
+
+  // Update contact
+  updateContact(contactId: number): void {
+    this.api.updateDeal(this.dealId!, { contact_id: contactId }).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.loadDeal();
+        }
+      }
+    });
+  }
+
+  // Update company
+  updateCompany(companyId: number): void {
+    this.api.updateDeal(this.dealId!, { company_id: companyId }).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.loadDeal();
+        }
+      }
+    });
   }
 }
