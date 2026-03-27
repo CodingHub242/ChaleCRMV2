@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
@@ -16,16 +16,15 @@ export interface PickerItem {
   selector: 'app-picker-modal',
   standalone: true,
   imports: [CommonModule, FormsModule, IonicModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ion-header class="picker-header">
       <ion-toolbar>
         <ion-buttons slot="start">
           <ion-button (click)="close()">
-            <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
+            <ion-icon style="color:#fff;" slot="icon-only" name="chevron-back"></ion-icon>
           </ion-button>
         </ion-buttons>
-        <ion-title>{{ title }}</ion-title>
+        <ion-title style="color:#fff;">{{ title }}</ion-title>
         <ion-buttons slot="end" *ngIf="selectedItem">
           <ion-button (click)="removeSelection()" color="medium">
             Remove
@@ -386,6 +385,7 @@ export class PickerModalComponent implements OnInit, OnDestroy {
 
     request.subscribe({
       next: (response: any) => {
+        console.log('Picker API Response:', this.pickerType, response);
         const data = response.data || [];
         
         // Map data to PickerItem format
@@ -440,7 +440,8 @@ export class PickerModalComponent implements OnInit, OnDestroy {
 
         this.isLoading = false;
       },
-      error: () => {
+      error: (err: any) => {
+        console.error('Picker API Error:', this.pickerType, err);
         this.isLoading = false;
         this.isLoadingMore = false;
       }
