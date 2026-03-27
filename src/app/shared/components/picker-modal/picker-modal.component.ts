@@ -69,22 +69,24 @@ export interface PickerItem {
         <p *ngIf="!searchQuery">No {{ title.toLowerCase() }} available</p>
       </div>
 
-      <!-- Items List with Virtual Scroll -->
-      <div class="items-list" *ngIf="filteredItems.length > 0" [style.height]="'100%'">
-        <ion-virtual-scroll [items]="filteredItems" [itemHeight]="72" approxItemHeight="72">
-          <ion-item *virtualItem="let item" class="picker-item" [class.selected]="selectedItem?.id === item.id" (click)="selectItem(item)">
-            <div class="item-avatar">
-              <ion-icon [name]="icon"></ion-icon>
-            </div>
-            <div class="item-info">
-              <div class="item-name">{{ item.name }}</div>
-              <div class="item-subtitle" *ngIf="item.subtitle">{{ item.subtitle }}</div>
-            </div>
-            <div class="item-check" *ngIf="selectedItem?.id === item.id">
-              <ion-icon name="checkmark-circle" color="primary"></ion-icon>
-            </div>
-          </ion-item>
-        </ion-virtual-scroll>
+      <!-- Items List -->
+      <div class="items-list" *ngIf="filteredItems.length > 0">
+        <div 
+          *ngFor="let item of filteredItems" 
+          class="picker-item"
+          [class.selected]="selectedItem?.id === item.id"
+          (click)="selectItem(item)">
+          <div class="item-avatar">
+            <ion-icon [name]="icon"></ion-icon>
+          </div>
+          <div class="item-info">
+            <div class="item-name">{{ item.name }}</div>
+            <div class="item-subtitle" *ngIf="item.subtitle">{{ item.subtitle }}</div>
+          </div>
+          <div class="item-check" *ngIf="selectedItem?.id === item.id">
+            <ion-icon name="checkmark-circle" color="primary"></ion-icon>
+          </div>
+        </div>
       </div>
 
       <!-- Load More / Loading More -->
