@@ -600,7 +600,7 @@
 // Kanban Board
 .kanban-container {
   padding: 16px;
-  height: calc(110vh - 250px);
+  height: calc(100vh - 180px);
   overflow: auto;
 }
 
@@ -609,15 +609,15 @@
   gap: 0;
   min-width: 100%;
   height: 100%;
-  overflow-x: auto;
-  max-height: 350px;
+  // overflow-x: auto;
+  // max-height: 350px;
 }
 
 // Kanban Column
 .kanban-column {
   flex: 1;
-  min-width: 260px;
-  max-width: 300px;
+  min-width: 280px;
+  max-width: 320px;
   display: flex;
   flex-direction: column;
   background: #f8f9fa;
@@ -848,4 +848,58 @@
 .scroll-indicator {
   font-size: 12px;
   color: #999;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .filter-toolbar {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .filter-select {
+    width: 100%;
+    min-width: unset;
+  }
+  
+  .bigin-search {
+    width: 100%;
+  }
+  
+  .tabs-container {
+    justify-content: flex-start;
+  }
+  
+  .tab-item {
+    padding: 12px 12px;
+  }
+  
+  .tab-label {
+    font-size: 12px;
+  }
+  
+  .kanban-board {
+    flex-direction: column;
+  }
+  
+  .kanban-column {
+    max-width: 100%;
+    min-width: 100%;
+    margin-bottom: 8px;
+  }
+  
+  .column-divider {
+    display: none;
+  }
+  
+  .bulk-action-bar {
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+  }
+  
+  .bulk-actions {
+    width: 100%;
+    justify-content: space-around;
+  }
 }
