@@ -765,6 +765,36 @@
 
 // Files Section
 .files-section {
+  // Center and constrain width
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  
+  .empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    
+    ion-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      color: #ccc;
+    }
+    
+    p {
+      margin: 0 0 16px;
+      font-size: 14px;
+    }
+    
+    ion-button {
+      --background: #073336;
+      --color: #fff;
+    }
+  }
+  
   .file-list {
     display: flex;
     flex-direction: column;
