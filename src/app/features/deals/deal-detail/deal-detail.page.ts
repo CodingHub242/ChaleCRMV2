@@ -100,7 +100,7 @@ export class DealDetailPage implements OnInit {
   ) {
     addIcons({
       time, trashOutline, documentText, call, mail, folder, pricetag, ticket, send, createOutline, trash,
-      chevronForward, checkmarkCircle, closeCircle, playCircle, play, cloudUpload,cloudUploadOutline,
+      chevronForward, checkmarkCircle, closeCircle, playCircle, play, cloudUpload,
       personOutline, businessOutline, locationOutline, flagOutline, calendarOutline,
       chatbubbleOutline, listOutline, fileTrayStacked, pricetagOutline, chatbox, locate,
       addCircle, arrowUpCircle,videocamOutline,
