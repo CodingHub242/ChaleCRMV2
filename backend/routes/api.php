@@ -162,6 +162,11 @@ Route::post('deals/{id}/notes', [App\Http\Controllers\Api\DealController::class,
 Route::put('deals/{id}/notes/{noteId}', [App\Http\Controllers\Api\DealController::class, 'updateDealNote']);
 Route::delete('deals/{id}/notes/{noteId}', [App\Http\Controllers\Api\DealController::class, 'deleteDealNote']);
 
+// Deal Files
+Route::get('deals/{id}/files', [App\Http\Controllers\Api\DealController::class, 'getDealFiles']);
+Route::post('deals/{id}/files', [App\Http\Controllers\Api\DealController::class, 'uploadDealFile']);
+Route::delete('deals/{id}/files/{fileId}', [App\Http\Controllers\Api\DealController::class, 'deleteDealFile']);
+
 // Deal Groups (for Sales Pipeline)
 Route::apiResource('deal-groups', App\Http\Controllers\Api\DealGroupController::class);
 Route::get('deal-groups/{id}/stage-counts', [App\Http\Controllers\Api\DealGroupController::class, 'stageCounts']);

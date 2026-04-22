@@ -359,6 +359,30 @@ export class ApiService {
     return this.http.delete<ApiResponse<any>>(`${this.baseUrl}/deals/${dealId}/notes/${noteId}`, { params: httpParams });
   }
 
+  // Deal Files
+  getDealFiles(dealId: number): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    httpParams = this.addOrganizationParams(httpParams);
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/deals/${dealId}/files`, { params: httpParams });
+  }
+
+  uploadDealFile(dealId: number, formData: FormData): Observable<ApiResponse<any>> {
+    // Add organization_id to FormData
+    const orgId = this.getOrganizationId();
+    if (orgId) {
+      formData.append('organization_id', orgId.toString());
+    }
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/deals/${dealId}/files`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+  }
+
+  deleteDealFile(dealId: number, fileId: number): Observable<ApiResponse<any>> {
+    let httpParams = new HttpParams();
+    httpParams = this.addOrganizationParams(httpParams);
+    return this.http.delete<ApiResponse<any>>(`${this.baseUrl}/deals/${dealId}/files/${fileId}`, { params: httpParams });
+  }
+
   // Tasks
   getTasks(params?: { page?: number; per_page?: number; status?: string; assigned_to?: number }): Observable<PaginatedResponse<Task>> {
     let httpParams = new HttpParams();

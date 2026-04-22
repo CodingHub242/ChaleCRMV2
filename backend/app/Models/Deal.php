@@ -53,4 +53,9 @@ class Deal extends Model
     {
         return $this->hasMany(DealNote::class)->orderBy('created_at', 'desc');
     }
+
+    public function files()
+    {
+        return $this->hasMany(DealFile::class)->orderBy('created_at', 'desc');
+    }
 }

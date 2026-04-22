@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, AlertController, ModalController } from '@ionic/angular';
@@ -72,6 +72,10 @@ export class DealDetailPage implements OnInit {
   // Emails
   emails: any[] = [];
   isLoadingEmails = true;
+
+  // Files
+  files: any[] = [];
+  isUploading = false;
 
   // Sales Pipeline Stages
   stageColors: { [key: string]: string } = {
@@ -259,6 +263,8 @@ export class DealDetailPage implements OnInit {
       this.loadActivities();
     } else if (tabKey === 'emails') {
       this.loadEmails();
+    } else if (tabKey === 'files') {
+      this.loadFiles();
     }
   }
 
@@ -521,5 +527,75 @@ export class DealDetailPage implements OnInit {
         }
       }
     });
+  }
+
+  // File upload methods
+  triggerFileUpload(): void {
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    }
+  }
+
+  onFileSelected(event: any): void {
+    const file = event.target.files?.[0];
+    if (file) {
+      this.uploadFile(file);
+    }
+  }
+
+  uploadFile(file: File): void {
+    if (!this.dealId) return;
+    
+    this.isUploading = true;
+    // Create form data and upload
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('deal_id', String(this.dealId));
+    
+    this.api.uploadDealFile(this.dealId, formData).subscribe({
+      next: (response: any) => {
+        this.isUploading = false;
+        if (response.success) {
+          this.loadFiles();
+        }
+      },
+      error: () => {
+        this.isUploading = false;
+      }
+    });
+  }
+
+  loadFiles(): void {
+    if (!this.dealId) return;
+    this.api.getDealFiles(this.dealId).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.files = response.data || [];
+        }
+      }
+    });
+  }
+
+  deleteFile(fileId: number): void {
+    this.api.deleteDealFile(this.dealId!, fileId).subscribe({
+      next: () => {
+        this.loadFiles();
+      }
+    });
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  viewFile(file: any): void {
+    const baseUrl = 'https://expiry.codepps.online';
+    const fileUrl = baseUrl + '/storage/' + file.file_path;
+    window.open(fileUrl, '_blank');
   }
 }

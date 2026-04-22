@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Traits\ScopesByOrganization;
 use App\Models\Deal;
 use App\Models\DealNote;
+use App\Models\DealFile;
 use App\Models\Activity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class DealController extends Controller
 {
@@ -476,6 +479,96 @@ class DealController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Note deleted successfully'
+        ]);
+    }
+
+    /**
+     * Get all files for a deal
+     */
+    public function getDealFiles(int $id)
+    {
+        $organizationId = $this->getOrganizationId();
+        
+        $deal = Deal::query();
+        if ($organizationId) {
+            $deal = $deal->where('organization_id', $organizationId);
+        }
+        $deal = $deal->findOrFail($id);
+
+        $files = $deal->files()->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $files
+        ]);
+    }
+
+    /**
+     * Upload a file to a deal
+     */
+    public function uploadDealFile(Request $request, int $id)
+    {
+        $organizationId = $this->getOrganizationId();
+        
+        $deal = Deal::query();
+        if ($organizationId) {
+            $deal = $deal->where('organization_id', $organizationId);
+        }
+        $deal = $deal->findOrFail($id);
+
+        $request->validate([
+            'file' => 'required|file|max:10240', // 10MB max
+        ]);
+
+        $file = $request->file('file');
+        $originalName = $file->getClientOriginalName();
+        $extension = $file->getClientOriginalExtension();
+        $fileName = time() . '_' . Str::slug(pathinfo($originalName, PATHINFO_FILENAME)) . '.' . $extension;
+        
+        // Store in public/deal-files directory
+        $path = $file->storeAs('deal-files', $fileName, 'public');
+
+        // Create file record
+        $dealFile = \App\Models\DealFile::create([
+            'deal_id' => $deal->id,
+            'file_name' => $originalName,
+            'file_path' => $path,
+            'file_size' => $file->getSize(),
+            'mime_type' => $file->getMimeType(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'data' => $dealFile,
+            'message' => 'File uploaded successfully'
+        ]);
+    }
+
+    /**
+     * Delete a deal file
+     */
+    public function deleteDealFile(int $id, int $fileId)
+    {
+        $organizationId = $this->getOrganizationId();
+        
+        $deal = Deal::query();
+        if ($organizationId) {
+            $deal = $deal->where('organization_id', $organizationId);
+        }
+        $deal = $deal->findOrFail($id);
+
+        $file = $deal->files()->findOrFail($fileId);
+        
+        // Delete physical file
+        if (\Storage::disk('public')->exists($file->file_path)) {
+            \Storage::disk('public')->delete($file->file_path);
+        }
+        
+        $file->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'File deleted successfully'
         ]);
     }
 }
