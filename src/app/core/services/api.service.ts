@@ -372,9 +372,8 @@ export class ApiService {
     if (orgId) {
       formData.append('organization_id', orgId.toString());
     }
-    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/deals/${dealId}/files`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    });
+    // Don't set Content-Type header - Angular automatically sets it with correct boundary for FormData
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/deals/${dealId}/files`, formData);
   }
 
   deleteDealFile(dealId: number, fileId: number): Observable<ApiResponse<any>> {
@@ -587,9 +586,8 @@ export class ApiService {
     if (orgId) {
       formData.append('organization_id', orgId.toString());
     }
-    return this.http.post(`${this.baseUrl}/upload/photo`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    });
+    // Don't set Content-Type header - Angular automatically sets it with correct boundary for FormData
+    return this.http.post(`${this.baseUrl}/upload/photo`, formData);
   }
 
   // ==================== CAMPAIGNS ====================
