@@ -505,25 +505,28 @@ export class PickerModalComponent implements OnInit, OnDestroy {
   }
 
   async createContact(): Promise<void> {
-      const modal = await this.modalController.create({
-        component: CreateContactModalComponent,
-        cssClass: 'create-contact-modal'
-      });
+     const modal = await this.modalController.create({
+       component: CreateContactModalComponent,
+       cssClass: 'create-contact-modal'
+     });
 
-      const result = await modal.onDidDismiss();
-      this.ngZone.run(() => {
-        if (result.data) {
-          // Contact was created, add it to the items list
-          const newContact = result.data;
-          this.items.unshift({
-            id: newContact.id,
-            name: newContact.name || `${newContact.first_name || ''} ${newContact.last_name || ''}`.trim(),
-            subtitle: newContact.email || ''
-          });
-          this.filteredItems = [...this.items];
-          // Select the newly created contact
-          this.selectedItem = this.filteredItems.find(item => item.id === newContact.id) || null;
-        }
-      });
-    }
+     modal.onDidDismiss().then((result) => {
+       this.ngZone.run(() => {
+         if (result.data) {
+           // Contact was created, add it to the items list
+           const newContact = result.data;
+           this.items.unshift({
+             id: newContact.id,
+             name: newContact.name || `${newContact.first_name || ''} ${newContact.last_name || ''}`.trim(),
+             subtitle: newContact.email || ''
+           });
+           this.filteredItems = [...this.items];
+           // Select the newly created contact
+           this.selectedItem = this.filteredItems.find(item => item.id === newContact.id) || null;
+         }
+       });
+     });
+
+     await modal.present();
+   }
 }
