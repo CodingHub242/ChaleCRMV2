@@ -527,6 +527,7 @@ import { CustomFieldsComponent } from '../../custom-fields/custom-fields.compone
 })
 export class CreateContactModalComponent implements OnInit {
   isLoading = false;
+  isSaving = false;
   companies: Company[] = [];
 
   // Custom fields
@@ -679,7 +680,7 @@ export class CreateContactModalComponent implements OnInit {
       return;
     }
 
-    this.isLoading = true;
+    this.isSaving = true;
 
     try {
       if (this.selectedFile != null) {
@@ -688,7 +689,7 @@ export class CreateContactModalComponent implements OnInit {
         this.saveContact(null);
       }
     } catch (error) {
-      this.isLoading = false;
+      this.isSaving = false;
       this.showAlert('Error', 'Failed to initialize save process');
     }
   }
