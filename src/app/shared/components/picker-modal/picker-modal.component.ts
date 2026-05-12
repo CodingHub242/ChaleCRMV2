@@ -5,6 +5,8 @@ import { IonicModule, ModalController } from '@ionic/angular';
 import { ApiService } from '../../../core/services/api.service';
 import { addIcons } from 'ionicons';
 import { searchOutline, close, chevronBack, person, business, folder } from 'ionicons/icons';
+import { Router } from '@angular/router';
+import { CreateContactModalComponent } from './create-contact-modal/create-contact-modal.component';
 
 export interface PickerItem {
   id: number;
@@ -22,6 +24,10 @@ export interface PickerItem {
         <ion-buttons slot="start">
           <ion-button (click)="close()">
             <ion-icon style="color:#fff;" slot="icon-only" name="chevron-back"></ion-icon>
+          </ion-button>
+
+          <ion-button (click)="createContact()" slot="end" *ngIf="pickerType === 'contact'">
+            <ion-icon style="color:#fff;" slot="icon-only" name="add-outline"></ion-icon>
           </ion-button>
         </ion-buttons>
         <ion-title style="color:#fff;">{{ title }}</ion-title>
@@ -331,7 +337,8 @@ export class PickerModalComponent implements OnInit, OnDestroy {
 
   constructor(
     private api: ApiService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private router: Router
   ) {
     addIcons({ searchOutline, close, chevronBack, person, business, folder });
   }
@@ -495,4 +502,28 @@ export class PickerModalComponent implements OnInit, OnDestroy {
       this.loadItems(true);
     }
   }
+
+  async createContact(): Promise<void> {
+     const modal = await this.modalController.create({
+       component: CreateContactModalComponent,
+       cssClass: 'create-contact-modal'
+     });
+
+     modal.onDidDismiss().then((result) => {
+       if (result.data) {
+         // Contact was created, add it to the items list
+         const newContact = result.data;
+         this.items.unshift({
+           id: newContact.id,
+           name: `${newContact.first_name || ''} ${newContact.last_name || ''}`.trim(),
+           subtitle: newContact.email || ''
+         });
+         this.filteredItems = [...this.items];
+         // Select the newly created contact
+         this.selectedItem = this.filteredItems.find(item => item.id === newContact.id) || null;
+       }
+     });
+
+     await modal.present();
+   }
 }
