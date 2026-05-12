@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { ApiService } from '../../../core/services/api.service';
 import { addIcons } from 'ionicons';
-import { searchOutline, close, chevronBack, person, business, folder } from 'ionicons/icons';
+import { searchOutline, close, chevronBack, person, business, folder, addOutline, chevronForward } from 'ionicons/icons';
 import { Router } from '@angular/router';
 import { CreateContactModalComponent } from './create-contact-modal/create-contact-modal.component';
 
@@ -340,7 +340,7 @@ export class PickerModalComponent implements OnInit, OnDestroy {
     private modalController: ModalController,
     private router: Router
   ) {
-    addIcons({ searchOutline, close, chevronBack, person, business, folder });
+    addIcons({ searchOutline, close, chevronBack, person, business, folder,addOutline, chevronForward });
   }
 
   ngOnInit(): void {
