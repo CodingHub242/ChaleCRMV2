@@ -222,7 +222,7 @@ export class DealFormPage implements OnInit {
 
     modal.onDidDismiss().then((result) => {
       if (result.data) {
-        console.log('Selected contact:', result.data);
+       // console.log('Selected contact:', result.data);
         this.deal.contact_id = result.data.id;
       }
     });
