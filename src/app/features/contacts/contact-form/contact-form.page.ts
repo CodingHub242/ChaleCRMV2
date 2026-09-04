@@ -252,6 +252,9 @@ export class ContactFormPage implements OnInit {
 
   private saveContact( avatarUrl: string | null): void {
     //console.log('saveContact called with avatarUrl:', avatarUrl);
+
+    
+
     const contactData: any = { ...this.contact };
     if (avatarUrl) {
       contactData.avatar = avatarUrl;
