@@ -107,6 +107,31 @@
             </ion-select-option>
           </ion-select>
         </div>
+
+        <!-- Deal type selector for deals -->
+        <div class="group-selector" *ngIf="entityType === 'deal'">
+          <div class="group-info">
+            <ion-icon name="pricetag-outline"></ion-icon>
+            <span>Deal Type</span>
+          </div>
+          <p class="group-help">Select a default deal type for all imported deals, or map a "Deal Type Name" column above to assign deals to different types.</p>
+          <div class="type-select-wrapper">
+            <ion-select 
+              [(ngModel)]="selectedDealTypeId" 
+              placeholder="Select default deal type (optional)"
+              interface="popover"
+              class="group-select">
+              <ion-select-option [value]="null">No default deal type</ion-select-option>
+              <ion-select-option *ngFor="let dealType of dealTypes" [value]="dealType.id">
+                {{ dealType.name }}
+              </ion-select-option>
+            </ion-select>
+            <ion-button fill="clear" size="small" class="add-type-btn" (click)="showAddDealType()">
+              <ion-icon name="add" slot="start"></ion-icon>
+              Add
+            </ion-button>
+          </div>
+        </div>
         
         <div class="mapping-table">
           <div class="mapping-header">

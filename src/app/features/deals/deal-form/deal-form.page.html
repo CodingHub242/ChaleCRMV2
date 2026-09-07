@@ -101,18 +101,24 @@
 
         <div class="form-field">
           <label>Deal Type</label>
-          <ion-item lines="none">
-            <ion-select 
-              [(ngModel)]="deal.deal_type_id" 
-              name="deal_type_id" 
-              interface="popover"
-            >
-              <ion-select-option [value]="null">None</ion-select-option>
-              <ion-select-option *ngFor="let dealType of dealTypes" [value]="dealType.id">
-                {{ dealType.name }}
-              </ion-select-option>
-            </ion-select>
-          </ion-item>
+          <div class="type-select-wrapper">
+            <ion-item lines="none" class="type-select-item">
+              <ion-select 
+                [(ngModel)]="deal.deal_type_id" 
+                name="deal_type_id" 
+                interface="popover"
+              >
+                <ion-select-option [value]="null">None</ion-select-option>
+                <ion-select-option *ngFor="let dealType of dealTypes" [value]="dealType.id">
+                  {{ dealType.name }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-button fill="clear" size="small" class="add-type-btn" (click)="showAddDealType()">
+              <ion-icon name="add" slot="start"></ion-icon>
+              Add
+            </ion-button>
+          </div>
         </div>
 
         <div class="form-field full-width">

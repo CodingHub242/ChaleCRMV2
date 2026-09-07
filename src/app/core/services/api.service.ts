@@ -345,6 +345,10 @@ export class ApiService {
     return this.http.get<ApiResponse<DealType[]>>(`${this.baseUrl}/deal-types`, { params: httpParams });
   }
 
+  createDealType(data: Partial<DealType>): Observable<ApiResponse<DealType>> {
+    return this.http.post<ApiResponse<DealType>>(`${this.baseUrl}/deal-types`, this.addOrganizationToBody(data));
+  }
+
   // Deal Notes
   getDealNotes(dealId: number): Observable<ApiResponse<any>> {
     let httpParams = new HttpParams();

@@ -65,6 +65,7 @@ export class DataImportComponent implements OnInit {
 
   // Deal types for import
   dealTypes: DealType[] = [];
+  selectedDealTypeId: number | null = null;
 
   // For SQR name lookups
   contactsMap: { [key: string]: number } = {};
@@ -121,7 +122,7 @@ export class DataImportComponent implements OnInit {
       { key: 'assigned_to_name', label: 'Assigned To (Name)', type: 'text' },
       { key: 'description', label: 'Description', type: 'textarea' },
       { key: 'group_name', label: 'Group Name', type: 'text' },
-      { key: 'deal_type_name', label: 'Deal Type Name', type: 'text' }
+      { key: 'deal_type_name', label: 'Lead Type Name', type: 'text' }
     ],
     sqr: [
       { key: 'title', label: 'Title', type: 'text' },
@@ -177,6 +178,51 @@ export class DataImportComponent implements OnInit {
         this.dealTypes = response.data || [];
       }
     });
+  }
+
+  async showAddDealType(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'New Deal Type',
+      inputs: [
+        {
+          name: 'name',
+          type: 'text',
+          placeholder: 'e.g., Event, Travel And Tour'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Create',
+          handler: async (data) => {
+            const name = data?.name?.trim();
+            if (!name) return false;
+            
+            return new Promise((resolve) => {
+              this.api.createDealType({ name }).subscribe({
+                next: (response) => {
+                  if (response.success) {
+                    this.loadDealTypes();
+                    const newId = response.data.id;
+                    this.selectedDealTypeId = newId;
+                    resolve(true);
+                  } else {
+                    resolve(false);
+                  }
+                },
+                error: () => {
+                  resolve(false);
+                }
+              });
+            });
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   // Load all contacts recursively (handles pagination)
@@ -616,6 +662,9 @@ export class DataImportComponent implements OnInit {
         if (dealTypeNameField?.excelColumn && row[dealTypeNameField.excelColumn]) {
           const dealTypeName = row[dealTypeNameField.excelColumn];
           record.deal_type_id = dealTypeIdMap[dealTypeName.toLowerCase()] || null;
+        } else if (this.selectedDealTypeId) {
+          // Use selected default deal type
+          record.deal_type_id = this.selectedDealTypeId;
         }
         
         // Map common stage variations to valid Deal stage values

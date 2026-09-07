@@ -157,6 +157,51 @@ export class DealFormPage implements OnInit {
     });
   }
 
+  async showAddDealType(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'New Deal Type',
+      inputs: [
+        {
+          name: 'name',
+          type: 'text',
+          placeholder: 'e.g., Event, Travel And Tour'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Create',
+          handler: async (data) => {
+            const name = data?.name?.trim();
+            if (!name) return false;
+            
+            return new Promise((resolve) => {
+              this.api.createDealType({ name }).subscribe({
+                next: (response) => {
+                  if (response.success) {
+                    this.loadDealTypes();
+                    const newId = response.data.id;
+                    this.deal.deal_type_id = newId;
+                    resolve(true);
+                  } else {
+                    resolve(false);
+                  }
+                },
+                error: () => {
+                  resolve(false);
+                }
+              });
+            });
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
   onCustomFieldValuesChanged(values: { [key: string]: string }): void {
     this.customFieldValues = values;
   }
