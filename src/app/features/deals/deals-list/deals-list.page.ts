@@ -717,22 +717,26 @@ export class DealsListPage implements OnInit {
       inputs: [
         {
           name: 'group',
-          type: 'select' as any,
-          label: 'Group',
-          value: this.selectedGroupId || null,
-          options: [
-            { label: 'No Group', value: null },
-            ...this.groups.map(group => ({ label: group.name, value: group.id }))
-          ]
-        }
-      ] as any[],
+          type: 'radio',
+          label: 'No Group',
+          value: null,
+          checked: !this.selectedGroupId
+        },
+        ...this.groups.map(group => ({
+          name: 'group',
+          type: 'radio' as const,
+          label: group.name,
+          value: group.id,
+          checked: this.selectedGroupId === group.id
+        }))
+      ],
       buttons: [
         { text: 'Cancel', role: 'cancel' },
         {
           text: 'Update',
           handler: (data) => {
-            if (data !== undefined && data !== null) {
-              this.bulkUpdateGroup(data);
+            if (data && data.group !== undefined) {
+              this.bulkUpdateGroup(data.group);
               return true;
             }
             this.showError('Please select a group');
