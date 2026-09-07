@@ -717,7 +717,7 @@ export class DealsListPage implements OnInit {
       inputs: [
         {
           name: 'group',
-          type: 'select',
+          type: 'select' as any,
           label: 'Group',
           value: this.selectedGroupId || null,
           options: [
