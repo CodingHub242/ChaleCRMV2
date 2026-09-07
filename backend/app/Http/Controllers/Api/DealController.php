@@ -8,6 +8,7 @@ use App\Models\Deal;
 use App\Models\DealNote;
 use App\Models\DealFile;
 use App\Models\Activity;
+use App\Models\DealType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -24,7 +25,7 @@ class DealController extends Controller
         $groupId = $request->input('group_id', '');
         $organizationId = $this->getOrganizationId();
         
-        $query = Deal::with(['contact', 'company', 'group']);
+        $query = Deal::with(['contact', 'company', 'group', 'dealType']);
         
         if ($organizationId) {
             $query->where('organization_id', $organizationId);
@@ -96,6 +97,7 @@ class DealController extends Controller
             'contact_id' => 'nullable|integer|exists:contacts,id',
             'company_id' => 'nullable|integer',
             'group_id' => 'nullable|integer|exists:deal_groups,id',
+            'deal_type_id' => 'nullable|integer|exists:deal_types,id',
             'description' => 'nullable|string',
         ]);
 
@@ -107,7 +109,7 @@ class DealController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $deal->load(['contact', 'company', 'group']),
+            'data' => $deal->load(['contact', 'company', 'group', 'dealType']),
             'message' => 'Deal created successfully'
         ], 201);
     }
@@ -116,7 +118,7 @@ class DealController extends Controller
     {
         $organizationId = $this->getOrganizationId();
         
-        $deal = Deal::with(['contact', 'company', 'group']);
+        $deal = Deal::with(['contact', 'company', 'group', 'dealType']);
         if ($organizationId) {
             $deal = $deal->where('organization_id', $organizationId);
         }
@@ -148,6 +150,7 @@ class DealController extends Controller
             'contact_id' => 'nullable|integer|exists:contacts,id',
             'company_id' => 'nullable|integer',
             'group_id' => 'nullable|integer|exists:deal_groups,id',
+            'deal_type_id' => 'nullable|integer|exists:deal_types,id',
             'description' => 'nullable|string',
         ]);
 
@@ -177,6 +180,9 @@ class DealController extends Controller
         if (isset($validated['group_id']) && $validated['group_id'] != $deal->group_id) {
             $changes[] = 'group';
         }
+        if (isset($validated['deal_type_id']) && $validated['deal_type_id'] != $deal->deal_type_id) {
+            $changes[] = 'deal type';
+        }
 
         $deal->update($validated);
 
@@ -187,7 +193,7 @@ class DealController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $deal->load(['contact', 'company', 'group']),
+            'data' => $deal->load(['contact', 'company', 'group', 'dealType']),
             'message' => 'Deal updated successfully'
         ]);
     }

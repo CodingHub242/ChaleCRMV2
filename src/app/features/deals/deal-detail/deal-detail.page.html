@@ -136,7 +136,7 @@
         <!-- Deal Info Card -->
         <div class="info-card">
           <div class="card-header">
-            <h3>Deal Information</h3>
+            <h3>Lead Information</h3>
           </div>
           
           <div class="info-row">
@@ -157,6 +157,15 @@
             </span>
             <span class="value" *ngIf="!deal.group">
               <span class="no-group">No Group</span>
+            </span>
+          </div>
+          
+          <div class="info-row" *ngIf="deal.deal_type">
+            <span class="label">Deal Type</span>
+            <span class="value">
+              <span class="group-badge" [style.background-color]="deal.deal_type.color || '#666'">
+                {{ deal.deal_type.name }}
+              </span>
             </span>
           </div>
           

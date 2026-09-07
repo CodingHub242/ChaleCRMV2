@@ -5,13 +5,19 @@ import { IonicModule, AlertController, LoadingController, ModalController } from
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { IonToggle,IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonButtons, IonMenuButton, IonIcon, IonRow, IonCol, IonModal, IonLabel, IonItem, IonDatetime } from '@ionic/angular/standalone';
 import { ApiService } from '../../../core/services/api.service';
-import { Deal, Contact, Company, CustomField } from '../../../models';
+import { Deal, Contact, Company, CustomField, DealType } from '../../../models';
 import { CustomFieldsComponent } from '../../../shared/components/custom-fields/custom-fields.component';
 import { PickerModalComponent, PickerItem } from '../../../shared/components/picker-modal/picker-modal.component';
 import { addIcons } from 'ionicons';
 import { briefcase,add, trash, create, mail, document, close, eye, download, checkmark, arrowBack, arrowUp, arrowDown, filter, cloudUpload, layers, time, checkmarkCircle, alertCircle, chevronBack, chevronForward, chevronDown, person, logOut, list, calendar, analytics, trendingUp, flag, folderOpen, ellipse, business, notificationsOutline, settingsOutline, cash, people, trophyOutline, callOutline, chatbubbleOutline, calendarOutline, personOutline, flagOutline, locationOutline, folder, pricetagOutline, folderOutline } from 'ionicons/icons';
 
 interface DealGroup {
+  id: number;
+  name: string;
+  color?: string;
+}
+
+interface DealTypeLocal {
   id: number;
   name: string;
   color?: string;
@@ -43,6 +49,7 @@ export class DealFormPage implements OnInit {
     contact_id: undefined,
     company_id: undefined,
     group_id: undefined,
+    deal_type_id: undefined,
     description: ''
   };
 
@@ -66,6 +73,7 @@ export class DealFormPage implements OnInit {
 
   stages = ['Prospect', 'Client', 'Demo Requested', 'Demo Completed', 'Contract In-Review', 'Closed Won', 'Closed Lost'];
   currencies = ['GHS','USD', 'EUR', 'GBP', 'CAD', 'AUD'];
+  dealTypes: DealTypeLocal[] = [];
 
   constructor(
     private api: ApiService,
@@ -83,6 +91,7 @@ export class DealFormPage implements OnInit {
     this.loadCompanies();
     this.loadGroups();
     this.loadCustomFields();
+    this.loadDealTypes();
 
     
     const id = this.route.snapshot.paramMap.get('id');
@@ -132,6 +141,18 @@ export class DealFormPage implements OnInit {
     this.api.getCustomFields('deal').subscribe({
       next: (response) => {
         this.customFields = response.data || [];
+      }
+    });
+  }
+
+  loadDealTypes(): void {
+    this.api.getDealTypes().subscribe({
+      next: (response) => {
+        this.dealTypes = (response.data || []).map((dt: any) => ({
+          id: dt.id,
+          name: dt.name,
+          color: dt.color
+        }));
       }
     });
   }
@@ -304,6 +325,12 @@ export class DealFormPage implements OnInit {
     if (!groupId) return '';
     const group = this.groups.find(g => g.id === groupId);
     return group?.name || '';
+  }
+
+  getDealTypeName(dealTypeId: number | undefined): string {
+    if (!dealTypeId) return '';
+    const dealType = this.dealTypes.find(dt => dt.id === dealTypeId);
+    return dealType?.name || '';
   }
 
   getStageClass(stage: string): string {

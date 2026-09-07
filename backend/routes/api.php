@@ -171,6 +171,9 @@ Route::delete('deals/{id}/files/{fileId}', [App\Http\Controllers\Api\DealControl
 Route::apiResource('deal-groups', App\Http\Controllers\Api\DealGroupController::class);
 Route::get('deal-groups/{id}/stage-counts', [App\Http\Controllers\Api\DealGroupController::class, 'stageCounts']);
 
+// Deal Types
+Route::apiResource('deal-types', App\Http\Controllers\Api\DealTypeController::class);
+
 // Activities
 Route::get('activities', [App\Http\Controllers\Api\ActivityController::class, 'index']);
 Route::get('activities/recent', [App\Http\Controllers\Api\ActivityController::class, 'recent']);

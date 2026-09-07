@@ -112,6 +112,8 @@ export interface Deal {
   owner?: User;
   group_id?: number;
   group?: DealGroup;
+  deal_type_id?: number;
+  deal_type?: DealType;
   notes ?: string;
   description?: string;
   created_at: string;
@@ -121,6 +123,17 @@ export interface Deal {
 
 // Deal Group Model
 export interface DealGroup {
+  id: number;
+  name: string;
+  description?: string;
+  color?: string;
+  is_default?: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// Deal Type Model
+export interface DealType {
   id: number;
   name: string;
   description?: string;

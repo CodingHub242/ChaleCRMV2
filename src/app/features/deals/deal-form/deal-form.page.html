@@ -99,8 +99,23 @@
           </ion-item>
         </div>
 
+        <div class="form-field">
+          <label>Deal Type</label>
+          <ion-item lines="none">
+            <ion-select 
+              [(ngModel)]="deal.deal_type_id" 
+              name="deal_type_id" 
+              interface="popover"
+            >
+              <ion-select-option [value]="null">None</ion-select-option>
+              <ion-select-option *ngFor="let dealType of dealTypes" [value]="dealType.id">
+                {{ dealType.name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+
         <div class="form-field full-width">
-          <!-- <label>Expected Close Date</label> -->
           <!---Add toggle to show date picker-->
           <ion-toggle [(ngModel)]="showDatePicker" (ionChange)="toggleDatePicker($event)"><label>Expected Close Date</label></ion-toggle>
           <ion-item lines="none" *ngIf="showDatePicker">

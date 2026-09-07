@@ -15,6 +15,12 @@ interface DealGroup {
   color?: string;
 }
 
+interface DealType {
+  id: number;
+  name: string;
+  color?: string;
+}
+
 
 export interface ImportField {
   excelColumn: string;
@@ -56,6 +62,9 @@ export class DataImportComponent implements OnInit {
   // Deal groups for import
   groups: DealGroup[] = [];
   selectedGroupId: number | null = null;
+
+  // Deal types for import
+  dealTypes: DealType[] = [];
 
   // For SQR name lookups
   contactsMap: { [key: string]: number } = {};
@@ -111,7 +120,8 @@ export class DataImportComponent implements OnInit {
       { key: 'assigned_to', label: 'Assigned To (User ID)', type: 'number' },
       { key: 'assigned_to_name', label: 'Assigned To (Name)', type: 'text' },
       { key: 'description', label: 'Description', type: 'textarea' },
-      { key: 'group_name', label: 'Group Name', type: 'text' }
+      { key: 'group_name', label: 'Group Name', type: 'text' },
+      { key: 'deal_type_name', label: 'Deal Type Name', type: 'text' }
     ],
     sqr: [
       { key: 'title', label: 'Title', type: 'text' },
@@ -141,6 +151,7 @@ export class DataImportComponent implements OnInit {
     this.initializeMappings();
     if (this.entityType === 'deal') {
       this.loadGroups();
+      this.loadDealTypes();
       this.loadContactsForLookup();
       this.loadCompaniesForLookup();
       this.loadUsersForLookup();
@@ -156,6 +167,14 @@ export class DataImportComponent implements OnInit {
     this.api.getDealGroups().subscribe({
       next: (response) => {
         this.groups = response.data || [];
+      }
+    });
+  }
+
+  loadDealTypes(): void {
+    this.api.getDealTypes().subscribe({
+      next: (response) => {
+        this.dealTypes = response.data || [];
       }
     });
   }
@@ -537,6 +556,25 @@ export class DataImportComponent implements OnInit {
       }
     }
 
+    // For deals, pre-process deal type names to get deal_type_ids
+    let dealTypeIdMap: { [key: string]: number } = {};
+    if (this.entityType === 'deal') {
+      const dealTypeNames = new Set<string>();
+      for (const row of this.rawData) {
+        const dealTypeNameField = this.fieldMappings.find(m => m.appField === 'deal_type_name');
+        if (dealTypeNameField?.excelColumn && row[dealTypeNameField.excelColumn]) {
+          dealTypeNames.add(row[dealTypeNameField.excelColumn]);
+        }
+      }
+      
+      for (const dealTypeName of dealTypeNames) {
+        const existingDealType = this.dealTypes.find(dt => dt.name.toLowerCase() === dealTypeName.toLowerCase());
+        if (existingDealType) {
+          dealTypeIdMap[dealTypeName.toLowerCase()] = existingDealType.id;
+        }
+      }
+    }
+
     // Process one by one to avoid Promise.allSettled compatibility issues
     for (let i = 0; i < this.rawData.length; i++) {
       const row = this.rawData[i];
@@ -557,7 +595,7 @@ export class DataImportComponent implements OnInit {
         }
         
         // Skip group_name - we'll handle it separately
-        if (mapping.appField !== 'group_name') {
+        if (mapping.appField !== 'group_name' && mapping.appField !== 'deal_type_name') {
           record[mapping.appField] = value;
         }
       });
@@ -571,6 +609,13 @@ export class DataImportComponent implements OnInit {
         } else if (this.selectedGroupId) {
           // Use selected default group
           record.group_id = this.selectedGroupId;
+        }
+
+        // Add deal_type_id if deal_type_name was provided
+        const dealTypeNameField = this.fieldMappings.find(m => m.appField === 'deal_type_name');
+        if (dealTypeNameField?.excelColumn && row[dealTypeNameField.excelColumn]) {
+          const dealTypeName = row[dealTypeNameField.excelColumn];
+          record.deal_type_id = dealTypeIdMap[dealTypeName.toLowerCase()] || null;
         }
         
         // Map common stage variations to valid Deal stage values

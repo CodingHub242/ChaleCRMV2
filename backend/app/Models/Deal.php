@@ -17,6 +17,7 @@ class Deal extends Model
         'contact_id',
         'company_id',
         'group_id',
+        'deal_type_id',
         'description',
         'notes',
         'organization_id',
@@ -30,6 +31,7 @@ class Deal extends Model
         'contact_id' => 'integer',
         'company_id' => 'integer',
         'group_id' => 'integer',
+        'deal_type_id' => 'integer',
         'organization_id' => 'integer',
         'custom_fields' => 'array',
     ];
@@ -47,6 +49,11 @@ class Deal extends Model
     public function group(): BelongsTo
     {
         return $this->belongsTo(DealGroup::class, 'group_id');
+    }
+
+    public function dealType(): BelongsTo
+    {
+        return $this->belongsTo(DealType::class, 'deal_type_id');
     }
 
     public function notes()

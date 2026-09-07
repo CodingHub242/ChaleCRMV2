@@ -8,6 +8,7 @@ import {
   Contact, 
   Company, 
   Deal, 
+  DealType,
   Task, 
   Activity, 
   Product, 
@@ -336,6 +337,12 @@ export class ApiService {
 
   bulkDeleteDeals(ids: number[]): Observable<ApiResponse<any>> {
     return this.http.post<ApiResponse<any>>(`${this.baseUrl}/deals/bulk-delete`, this.addOrganizationToBody({ ids }));
+  }
+
+  getDealTypes(): Observable<ApiResponse<DealType[]>> {
+    let httpParams = new HttpParams();
+    httpParams = this.addOrganizationParams(httpParams);
+    return this.http.get<ApiResponse<DealType[]>>(`${this.baseUrl}/deal-types`, { params: httpParams });
   }
 
   // Deal Notes
