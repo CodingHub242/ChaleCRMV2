@@ -743,6 +743,30 @@ export class DealsListPage implements OnInit {
     await alert.present();
   }
 
+  async selectLast300AndUpdateGroup(): Promise<void> {
+    if (this.deals.length === 0) {
+      this.showError('No deals loaded to select');
+      return;
+    }
+
+    const last300 = this.deals.slice(0, 300);
+    const confirmAlert = await this.alertController.create({
+      header: 'Select Last 300 Deals',
+      message: `This will select the 300 most recent deals (${last300.length} available) and open the group update dialog. Continue?`,
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Continue',
+          handler: () => {
+            this.selectedIds = new Set(last300.map(d => d.id));
+            this.openBulkGroupUpdate();
+          }
+        }
+      ]
+    });
+    await confirmAlert.present();
+  }
+
   bulkUpdateGroup(groupId: number | null): void {
     const ids = Array.from(this.selectedIds);
     this.api.bulkUpdateDealGroup(ids, groupId).subscribe({

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
@@ -163,7 +163,7 @@ import { CustomField, CustomFieldValue } from '../../../models';
     }
   `]
 })
-export class CustomFieldsComponent {
+export class CustomFieldsComponent implements OnInit, OnChanges {
   @Input() fields: CustomField[] = [];
   @Input() entityValues: CustomFieldValue[] = [];
   @Output() valuesChanged = new EventEmitter<{ [key: string]: string }>();

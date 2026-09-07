@@ -5,11 +5,11 @@
         <ion-icon slot="icon-only" name="close"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title *ngIf="entityType!='deal'">
+    <ion-title *ngIf="entityType!=='deal'">
       Import {{ entityType | titlecase }}s
     </ion-title>
 
-     <ion-title *ngIf="entityType=='deal'">
+     <ion-title *ngIf="entityType==='deal'">
       Import Leads
     </ion-title>
     <!-- <ion-title *ngIf="entityType=='sqr'">
@@ -87,7 +87,7 @@
         <h3>Map Your Data</h3>
         <p *ngIf="entityType === 'deal'">Match your file columns to lead fields</p>
         <p *ngIf="entityType === 'sqr'">Match your file columns to SQR fields</p>
-        <p *ngIf="entityType != 'deal' && entityType != 'sqr'">Match your file columns to {{ entityType }} fields</p>
+        <p *ngIf="entityType !== 'deal' && entityType !== 'sqr'">Match your file columns to {{ entityType }} fields</p>
         
         <!-- Group selector for deals -->
         <div class="group-selector" *ngIf="entityType === 'deal'">
