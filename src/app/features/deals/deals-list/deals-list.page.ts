@@ -725,7 +725,7 @@ export class DealsListPage implements OnInit {
             ...this.groups.map(group => ({ label: group.name, value: group.id }))
           ]
         }
-      ],
+      ] as any[],
       buttons: [
         { text: 'Cancel', role: 'cancel' },
         {
