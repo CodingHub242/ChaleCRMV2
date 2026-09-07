@@ -709,9 +709,11 @@ export class DealsListPage implements OnInit {
 
   // Bulk group update
   async openBulkGroupUpdate(): Promise<void> {
+    const selectedCount = this.selectedIds.size;
+    
     const alert = await this.alertController.create({
       header: 'Update Group',
-      message: `Update group for ${this.selectedIds.size} selected lead(s)`,
+      message: `Update group for ${selectedCount} selected lead(s)`,
       inputs: [
         {
           name: 'group',
@@ -725,7 +727,7 @@ export class DealsListPage implements OnInit {
           type: 'radio' as const,
           label: group.name,
           value: group.id,
-          checked: false
+          checked: this.selectedGroupId === group.id
         }))
       ],
       buttons: [
@@ -733,8 +735,12 @@ export class DealsListPage implements OnInit {
         {
           text: 'Update',
           handler: (data) => {
-            if (data.group !== undefined) {
+            if (data && data.group !== undefined) {
               this.bulkUpdateGroup(data.group);
+              return true;
+            } else {
+              this.showError('Please select a group');
+              return false;
             }
           }
         }
