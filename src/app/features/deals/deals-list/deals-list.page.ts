@@ -755,10 +755,10 @@ export class DealsListPage implements OnInit {
       return;
     }
 
-    const last300 = this.deals.slice(0, 291);
+    const last300 = this.deals.slice(0, 277);
     const confirmAlert = await this.alertController.create({
       header: 'Select Last 300 Deals',
-      message: `This will select the 300 most recent deals (${last300.length} available) and open the group update dialog. Continue?`,
+      message: `This will select the most recent deals (${last300.length} available) and open the group update dialog. Continue?`,
       buttons: [
         { text: 'Cancel', role: 'cancel' },
         {
