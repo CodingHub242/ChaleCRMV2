@@ -735,13 +735,13 @@ export class DealsListPage implements OnInit {
         {
           text: 'Update',
           handler: (data) => {
-            console.log(data);
-            // if (data && data.group !== undefined) {
-            //   this.bulkUpdateGroup(data.group);
-            //   return true;
-            // }
-            // this.showError('Please select a group');
-            // return false;
+            //console.log(data);
+            if (data && data !== undefined) {
+              this.bulkUpdateGroup(data);
+              return true;
+            }
+            this.showError('Please select a group');
+            return false;
           }
         }
       ]
